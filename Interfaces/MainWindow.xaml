@@ -5,8 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Interfaces"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+        Title="MainWindow" Height="359.64" Width="327.013" SizeToContent="WidthAndHeight" IsTabStop="False" WindowStyle="None">
+  <Window.TaskbarItemInfo>
+    <TaskbarItemInfo/>
+  </Window.TaskbarItemInfo>
+  <Grid HorizontalAlignment="Right" Width="319" Height="352" VerticalAlignment="Top">
+    <TextBox x:Name="Email_Input" HorizontalAlignment="Left" Height="25" Margin="30,55,0,0" Text="Email address" VerticalAlignment="Top" Width="260" AllowDrop="False" MaxLines="1"/>
+    <PasswordBox x:Name="passwordBox" HorizontalAlignment="Left" Margin="30,142,0,0" VerticalAlignment="Top" Width="260" Height="25"/>
+  </Grid>
 </Window>

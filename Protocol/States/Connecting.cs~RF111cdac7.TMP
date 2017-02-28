@@ -1,0 +1,36 @@
+﻿using PhoenixSocket;
+
+namespace Protocol.States {
+  class Connecting : ConnectionState {
+    private bool _connectionFinished;
+
+    private Connecting(ConnectionContext context) : base(context) {
+      _context.socket = new Socket(_context.endPoint);
+
+      _context.socket.Opened += Socket_Opened;
+      _context.socket.Error += Socket_Error;
+    }
+
+    public Connecting(ConnectionContext)
+
+    public override void Stop() {
+      if (!_connectionFinished) {
+        _context.socket.Disconnect(() => { });
+      }
+    }
+
+    protected override void Start() {
+      _connectionFinished = false;
+      _context.socket.Connect();
+    }
+
+    private void Socket_Opened(object sender, System.EventArgs e) {
+      _connectionFinished = true;
+    }
+
+    private void Socket_Error(object sender, SuperSocket.ClientEngine.ErrorEventArgs e) {
+      _connectionFinished = true;
+      throw new System.NotImplementedException("", e.Exception);
+    }
+  }
+}
