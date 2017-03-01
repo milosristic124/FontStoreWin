@@ -27,7 +27,7 @@ namespace Protocol.States {
     }
     #endregion
 
-      #region methods
+    #region methods
     public override void Stop() {
     }
 
@@ -38,9 +38,9 @@ namespace Protocol.States {
         .Push("authenticate", _authPayload) // send the authentication message
         .Receive("ok", data => { // authentication succeed
           UserData userData = data as UserData;
-          // trigger the connection established event
-          _context.TriggerConnectionEstablished(userData);
-          // push the connection setup state (do nothing on start)
+          _validationChan.Leave(); // we don't need the validation channel anymore
+          _context.TriggerConnectionEstablished(userData); // trigger the connection established event
+          //FSM.State = new Setup(_context); // push the connection setup state
         })
         .Receive("ko", delegate { // authentication failed
           throw new NotImplementedException(string.Format("[{0}] Authentication failed", _authPayload.Login));

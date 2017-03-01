@@ -2,6 +2,8 @@
 
 namespace Protocol.Payloads {
   public class UserData {
+    [JsonProperty("uid")]
+    public string UID { get; set; }
     [JsonProperty("name")]
     public string Name { get; set; }
     [JsonProperty("last_name")]

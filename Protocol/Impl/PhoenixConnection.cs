@@ -4,10 +4,7 @@ using System;
 using Utilities.FSM;
 
 namespace Protocol.Impl {
-  class StatefullConnection : FiniteStateMachine<ConnectionState> {
-  }
-
-  public class PhoenixConnection : IConnection {
+  class PhoenixConnection : IConnection {
     #region private
     private FiniteStateMachine<ConnectionState> _fsm;
     private ConnectionContext _stateContext;
@@ -50,6 +47,14 @@ namespace Protocol.Impl {
     #region events
     public event ConnectionEstablishedHandler OnEstablished;
     public event ConnectionValidationFailedHandler OnValidationFailure;
+
+    public event FontDescriptionHandler OnFontDesctiptionReceived;
+    public event FontDeletedHandler OnFontDeleted;
+
+    public event FontActivationHandler OnFontActivated;
+    public event FontDeactivationHandler OnFontDeactivated;
+
+    public event UpdateFinishedHandler OnUpdateFinished;
     #endregion
 
     #region private methods

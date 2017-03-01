@@ -19,6 +19,11 @@ namespace Protocol.States {
     #region events
     public event ConnectionEstablishedHandler OnEstablished;
     public event ConnectionValidationFailedHandler OnValidationFailure;
+    public event FontDescriptionHandler OnFontDesctiptionReceived;
+    public event FontDeletedHandler OnFontDeleted;
+    public event UpdateFinishedHandler OnUpdateFinished;
+    public event FontActivationHandler OnFontActivated;
+    public event FontDeactivationHandler OnFontDeactivated;
     #endregion
   }
 }

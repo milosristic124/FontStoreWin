@@ -55,6 +55,7 @@
     <Compile Include="IConnection.cs" />
     <Compile Include="Impl\PhoenixConnection.cs" />
     <Compile Include="Payloads\Authentication.cs" />
+    <Compile Include="Payloads\FontDescription.cs" />
     <Compile Include="Payloads\UserData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="States\Connecting.cs" />
