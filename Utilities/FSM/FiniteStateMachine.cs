@@ -24,12 +24,8 @@ namespace Utilities.FSM {
       }
     }
 
-    public FiniteStateMachine(T defaultState = null) {
+    public FiniteStateMachine(T defaultState) {
       _defaultState = defaultState;
-      if (_defaultState == null) {
-        _defaultState = new IdentityState() as T;
-      }
-
       _state = _defaultState;
       _started = false;
     }
@@ -58,15 +54,6 @@ namespace Utilities.FSM {
       if (_started) {
         _state.Start(this);
       }
-    }
-
-
-    public sealed class IdentityState : IState<T> {
-      public FiniteStateMachine<T> FSM { get; private set; }
-
-      public void Start(FiniteStateMachine<T> fsm) { FSM = fsm; }
-
-      public void Stop() { }
     }
   }
 }

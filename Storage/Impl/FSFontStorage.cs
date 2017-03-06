@@ -103,7 +103,7 @@ namespace Storage.Impl {
       _connection.OnFontDeactivated += _connection_OnFontDeactivated;
 
       // pop a new thread for the update
-      Task updateTask = Task.Factory.StartNew(async () => {
+      Task updateTask = Task.Factory.StartNew(() => {
         // start the catalog update
         _connection.UpdateCatalog(_lastCatalogUpdate);
         // block the update thread until the catalog update finished event is received
@@ -117,12 +117,11 @@ namespace Storage.Impl {
         _updateFinishedEvent.WaitOne();
 
         _lastFontsUpdate = DateTime.Now;
-
-        // save all received data
-        await Save();
       });
 
       await updateTask;
+      // save all received data
+      await Save();
 
       _connection.OnUpdateFinished -= _connection_OnUpdateFinished;
 

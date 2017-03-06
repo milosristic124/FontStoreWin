@@ -3,7 +3,12 @@ using System;
 using System.Collections.Generic;
 
 namespace TestUtilities {
-  public class CallTracer {
+  public interface ICallTracer {
+    void Verify(string methodName, int times);
+    void RegisterCall(string name);
+  }
+
+  public class CallTracer: ICallTracer {
     private Dictionary<string, int> _calls;
 
     public CallTracer() {
@@ -19,7 +24,7 @@ namespace TestUtilities {
         Assert.Fail("Expected {0} calls of method {1} but method was called {2} times", times, methodName, callCount);
     }
 
-    protected void RegisterCall(string name, params object[] args) {
+    public  void RegisterCall(string name) {
       if (!this._calls.ContainsKey(name))
         this._calls[name] = 1;
       else {

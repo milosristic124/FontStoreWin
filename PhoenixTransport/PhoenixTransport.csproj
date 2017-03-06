@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B7175444-75C9-4579-87FC-706DE922C89F}</ProjectGuid>
+    <ProjectGuid>{334EAAC4-1DCA-4440-BB6E-EF64084BFF65}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Protocol</RootNamespace>
-    <AssemblyName>Protocol</AssemblyName>
+    <RootNamespace>Protocol.Transport.Phoenix</RootNamespace>
+    <AssemblyName>PhoenixTransport</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -34,6 +34,10 @@
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PhoenixSocket, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PhoenixSocket.1.0.0\lib\net452\PhoenixSocket.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,19 +46,22 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WebSocket4Net, Version=0.14.1.0, Culture=neutral, PublicKeyToken=eb4e154b696bf72a, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebSocket4Net.0.14.1\lib\net45\WebSocket4Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AConnection.cs" />
-    <Compile Include="IConnection.cs" />
-    <Compile Include="Transport\AConnectionTransport.cs" />
-    <Compile Include="IConnectionObservable.cs" />
-    <Compile Include="Transport\IBroadcastChannel.cs" />
-    <Compile Include="Transport\IBroadcastResponse.cs" />
-    <Compile Include="Transport\IConnectionTransport.cs" />
-    <Compile Include="Payloads\Authentication.cs" />
-    <Compile Include="Payloads\FontDescription.cs" />
-    <Compile Include="Payloads\UserData.cs" />
+    <Compile Include="BroadcastChannel.cs" />
+    <Compile Include="BroadcastResponse.cs" />
+    <Compile Include="ConnectionTransport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Protocol\Protocol.csproj">
+      <Project>{b7175444-75c9-4579-87fc-706de922c89f}</Project>
+      <Name>Protocol</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

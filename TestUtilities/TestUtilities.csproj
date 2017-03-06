@@ -42,8 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CallTracer.cs" />
-    <Compile Include="MockedConnection.cs" />
+    <Compile Include="Protocol\MockedBroadcastChannel.cs" />
+    <Compile Include="Protocol\MockedBroadcastResponse.cs" />
+    <Compile Include="Protocol\MockedConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocol\MockedTransport.cs" />
     <Compile Include="TestData.cs" />
   </ItemGroup>
   <ItemGroup>

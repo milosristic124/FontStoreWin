@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 
 namespace Protocol.Payloads {
-  class Authentication {
+  public class Authentication {
     [JsonProperty("login")]
     public string Login { get; set; }
     [JsonProperty("password")]

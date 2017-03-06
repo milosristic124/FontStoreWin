@@ -1,8 +1,7 @@
 ﻿using Protocol;
-using Protocol.Payloads;
 using System;
 
-namespace TestUtilities {
+namespace TestUtilities.Protocol {
   public class MockedConnection : CallTracer, IConnection {
     private bool _connected;
 
