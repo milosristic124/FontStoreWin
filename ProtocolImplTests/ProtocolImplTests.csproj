@@ -60,9 +60,17 @@
       <Project>{DFDC0E22-4E95-447B-9DE2-EF4139CDEDC1}</Project>
       <Name>ProtocolImpl</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ProtocolPayloads\ProtocolPayloads.csproj">
+      <Project>{de2e0581-3b35-44bc-a408-f3f480d70f18}</Project>
+      <Name>ProtocolPayloads</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Protocol\Protocol.csproj">
       <Project>{B7175444-75C9-4579-87FC-706DE922C89F}</Project>
       <Name>Protocol</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Storage\Storage.csproj">
+      <Project>{115a3a3e-95cd-45ae-be11-7ecc218fb91e}</Project>
+      <Name>Storage</Name>
     </ProjectReference>
     <ProjectReference Include="..\TestUtilities\TestUtilities.csproj">
       <Project>{46D69BAD-6E11-4AEE-A242-5335AE3FFC7A}</Project>

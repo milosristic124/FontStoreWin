@@ -26,11 +26,6 @@ namespace Protocol {
     #region IConnectionObservable
     public abstract event ConnectionEstablishedHandler OnEstablished;
     public abstract event ConnectionValidationFailedHandler OnValidationFailure;
-    public abstract event FontDescriptionHandler OnFontDesctiptionReceived;
-    public abstract event FontDeletedHandler OnFontDeleted;
-    public abstract event FontActivationHandler OnFontActivated;
-    public abstract event FontDeactivationHandler OnFontDeactivated;
-    public abstract event UpdateFinishedHandler OnUpdateFinished;
     #endregion
   }
 }

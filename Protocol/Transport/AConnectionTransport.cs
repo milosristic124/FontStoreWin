@@ -1,5 +1,4 @@
-﻿using Protocol.Payloads;
-using System;
+﻿using System;
 
 namespace Protocol.Transport {
   public abstract class AConnectionTransport : IConnectionTransport {

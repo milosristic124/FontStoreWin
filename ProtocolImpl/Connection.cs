@@ -1,6 +1,7 @@
 ﻿using Protocol.Impl.States;
 using Protocol.Payloads;
 using Protocol.Transport;
+using Storage;
 using System;
 using System.Threading.Tasks;
 using Utilities.FSM;
@@ -11,10 +12,16 @@ namespace Protocol.Impl {
     private FiniteStateMachine<ConnectionState> _fsm;
     #endregion
 
+    #region properties
+    public IFontStorage Storage { get; private set; }
+    #endregion
+
     #region ctor
-    public Connection(IConnectionTransport transport): base(transport) {
+    public Connection(IConnectionTransport transport, IFontStorage storage): base(transport) {
       AuthenticationRetryInterval = TimeSpan.FromSeconds(10);
       ConnectionRetryInterval = TimeSpan.FromSeconds(10);
+
+      Storage = storage;
 
       _fsm = new FiniteStateMachine<ConnectionState>(new Idle(this, Transport));
       _fsm.Start();
@@ -49,11 +56,6 @@ namespace Protocol.Impl {
     #region public events
     public override event ConnectionEstablishedHandler OnEstablished;
     public override event ConnectionValidationFailedHandler OnValidationFailure;
-    public override event FontDescriptionHandler OnFontDesctiptionReceived;
-    public override event FontDeletedHandler OnFontDeleted;
-    public override event FontActivationHandler OnFontActivated;
-    public override event FontDeactivationHandler OnFontDeactivated;
-    public override event UpdateFinishedHandler OnUpdateFinished;
     #endregion
   }
 }

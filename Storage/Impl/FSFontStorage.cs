@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Utilities.Extensions;
 
 namespace Storage.Impl {
   public class FSFontStorage : IFontStorage {
@@ -16,35 +17,33 @@ namespace Storage.Impl {
     private string _storageRoot;
     private string _fontFile;
     private string _metaFile;
-
-    private DateTime? _lastCatalogUpdate;
-    private DateTime? _lastFontsUpdate;
-    private AutoResetEvent _updateFinishedEvent;
-    private IConnection _connection;
     #endregion
 
     #region properties
     public List<Family> Families { get; }
-    public bool Loaded { get; private set; }
+    public DateTime? LastCatalogUpdate { get; private set; }
+    public DateTime? LastFontStatusUpdate { get; private set; }
 
-    public event UpdateFinishedHandler OnUpdateFinished;
+    public bool Loaded { get; private set; }
+    public bool HasChanged { get; private set; }
     #endregion
 
     #region ctor
-    public FSFontStorage(IConnection connection) : this(connection, Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)) {
+    public FSFontStorage() : this(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)) {
     }
 
-    public FSFontStorage(IConnection connection, string rootPath) {
+    public FSFontStorage(string rootPath) {
       Families = new List<Family>();
       Loaded = false;
+      HasChanged = false;
 
       _storageRoot = rootPath.Trim();
       if (!_storageRoot.EndsWith("\\")) {
         _storageRoot += "\\";
       }
 
-      _lastCatalogUpdate = null;
-      _lastFontsUpdate = null;
+      LastCatalogUpdate = null;
+      LastFontStatusUpdate = null;
 
       if (!Directory.Exists(_storageRoot)) {
         Directory.CreateDirectory(_storageRoot);
@@ -53,31 +52,33 @@ namespace Storage.Impl {
       _fontFile = string.Format("{0}{1}", _storageRoot, "fnt.db");
       _metaFile = string.Format("{0}{1}", _storageRoot, "mta.db");
 
-      _updateFinishedEvent = new AutoResetEvent(false);
+      //_updateFinishedEvent = new AutoResetEvent(false);
 
-      _connection = connection;
+      //_connection = connection;
     }
     #endregion
 
-    #region public interface
+    #region methods
     public Task Load() {
       if (Loaded) {
         return Task.Factory.StartNew(() => { });
       }
 
+      LastCatalogUpdate = null;
+      LastFontStatusUpdate = null;
+      Families.Clear();
+
       // pop a thread to read metadata
-      Task metadataLoading = ReadData(_metaFile).ContinueWith(readTask => {
-        string json = readTask.Result;
+      Task metadataLoading = ReadData(_metaFile).Then(json => {
         if (json != null) {
           StorageData metadata = JsonConvert.DeserializeObject<StorageData>(json);
-          _lastCatalogUpdate = metadata.LastCatalogUpdate;
-          _lastFontsUpdate = metadata.LastFontsUpdate;
+          LastCatalogUpdate = metadata.LastCatalogUpdate;
+          LastFontStatusUpdate = metadata.LastFontsUpdate;
         }
       });
 
       // pop a thread to read font data
-      Task fontLoading = ReadData(_fontFile).ContinueWith(readTask => {
-        string json = readTask.Result;
+      Task fontLoading = ReadData(_fontFile).Then(json => {
         if (json != null) {
           foreach (FontData fontData in JsonConvert.DeserializeObject<List<FontData>>(json)) {
             AddFont(fontData).Activated = fontData.Activated;
@@ -86,127 +87,31 @@ namespace Storage.Impl {
       });
 
       // when everything is done we have loaded all the data
-      return Task.WhenAll(metadataLoading, fontLoading).ContinueWith(_ => {
+      return Task.WhenAll(metadataLoading, fontLoading).Then(() => {
         Loaded = true;
       });
     }
 
-    public async void StartUpdate() {
-      if (!Loaded) {
-        throw new InvalidOperationException("FontStorage.Load must be called before attempting setup.");
-      }
-
-      _connection.OnUpdateFinished += _connection_OnUpdateFinished;
-      _connection.OnFontDesctiptionReceived += _connection_OnFontDesctiptionReceived;
-      _connection.OnFontDeleted += _connection_OnFontDeleted;
-      _connection.OnFontActivated += _connection_OnFontActivated;
-      _connection.OnFontDeactivated += _connection_OnFontDeactivated;
-
-      // pop a new thread for the update
-      Task updateTask = Task.Factory.StartNew(() => {
-        // start the catalog update
-        _connection.UpdateCatalog(_lastCatalogUpdate);
-        // block the update thread until the catalog update finished event is received
-        _updateFinishedEvent.WaitOne();
-
-        _lastCatalogUpdate = DateTime.Now;
-
-        // start the fonts status update
-        _connection.UpdateFontsStatus(_lastFontsUpdate);
-        // block the update thread until the fonts update finished event is received
-        _updateFinishedEvent.WaitOne();
-
-        _lastFontsUpdate = DateTime.Now;
-      });
-
-      await updateTask;
-      // save all received data
-      await Save();
-
-      _connection.OnUpdateFinished -= _connection_OnUpdateFinished;
-
-      OnUpdateFinished?.Invoke();
-    }
-
-    public Font FindFont(string uid) {
-      return FindFamilyByFontUID(uid)?.FindFond(uid);
-    }
-    #endregion
-
-    #region events handling
-    private void _connection_OnUpdateFinished() {
-      _updateFinishedEvent.Set();
-    }
-
-    private void _connection_OnFontDeleted(string uid) {
-      Family family = FindFamilyByFontUID(uid);
-
-      if (family != null) {
-        family.Remove(uid);
-        if (family.Fonts.Count == 0) {
-          Families.Remove(family);
-        }
-      }
-    }
-
-    private void _connection_OnFontDesctiptionReceived(FontDescription description) {
-      AddFont(description);
-    }
-
-    private void _connection_OnFontDeactivated(string uid) {
-      Font font = FindFont(uid);
-      if (font != null)
-        font.Activated = false;
-    }
-
-    private void _connection_OnFontActivated(string uid) {
-      Font font = FindFont(uid);
-      if (font != null)
-        font.Activated = true;
-    }
-    #endregion
-
-    #region private db management
-    private Font AddFont(FontDescription description) {
-      Font newFont = new Font(description);
-      Family family = FindFamilyByName(newFont.FamilyName);
-
-      if (family != null) {
-        family.Add(newFont);
-      }
-      else {
-        family = new Family(newFont.FamilyName, new List<Font> { newFont });
-        Families.Add(family);
-      }
-      return newFont;
-    }
-
-    private Family FindFamilyByName(string familyName) {
-      return Families.Find(family => {
-        return family.Name == familyName;
-      });
-    }
-
-    private Family FindFamilyByFontUID(string uid) {
-      return Families.Find(family => {
-        return family.FindFond(uid) != null;
-      });
-    }
-    #endregion
-
-    #region FS
-    private Task Save() {
-      if (!Loaded) {
+    public Task Save() {
+      if (!HasChanged) {
         return Task.Factory.StartNew(() => { });
       }
 
+      if (!LastCatalogUpdate.HasValue) {
+        LastCatalogUpdate = DateTime.Now;
+      }
+      if (!LastFontStatusUpdate.HasValue) {
+        LastFontStatusUpdate = DateTime.Now;
+      }
+
+
       Task metadataSaving = Task.Factory.StartNew(() => {
         return JsonConvert.SerializeObject(new StorageData() {
-          LastCatalogUpdate = _lastCatalogUpdate.Value,
-          LastFontsUpdate = _lastFontsUpdate.Value
+          LastCatalogUpdate = LastCatalogUpdate.Value,
+          LastFontsUpdate = LastFontStatusUpdate.Value
         });
-      }).ContinueWith(serialization => {
-        File.WriteAllText(_metaFile, serialization.Result);
+      }).Then(serialization => {
+        File.WriteAllText(_metaFile, serialization);
       });
 
       Task fontSaving = Task.WhenAll(Families.SelectMany(family => {
@@ -222,15 +127,79 @@ namespace Storage.Impl {
             };
           });
         });
-      })).ContinueWith(collectTask => {
-        return JsonConvert.SerializeObject(new List<FontData>(collectTask.Result));
-      }).ContinueWith(serialization => {
-        File.WriteAllText(_fontFile, serialization.Result);
+      })).Then(fontData => {
+        return JsonConvert.SerializeObject(new List<FontData>(fontData));
+      }).Then(serialization => {
+        File.WriteAllText(_fontFile, serialization);
       });
 
       return Task.WhenAll(metadataSaving, fontSaving);
     }
 
+    public Font AddFont(FontDescription description) {
+      Font newFont = new Font(description);
+      Family family = FindFamilyByName(newFont.FamilyName);
+
+      if (family != null) {
+        family.Add(newFont);
+      }
+      else {
+        family = new Family(newFont.FamilyName, new List<Font> { newFont });
+        Families.Add(family);
+      }
+
+      HasChanged = true;
+      return newFont;
+    }
+
+    public void RemoveFont(string uid) {
+      Family family = FindFamilyByFontUID(uid);
+
+      if (family != null) {
+        family.Remove(uid);
+        if (family.Fonts.Count == 0) {
+          Families.Remove(family);
+        }
+      }
+      HasChanged = true;
+    }
+
+    public void ActivateFont(string uid) {
+      Font font = FindFont(uid);
+      if (font != null) {
+        font.Activated = true;
+      }
+      HasChanged = true;
+    }
+
+    public void DeactivateFont(string uid) {
+      Font font = FindFont(uid);
+      if (font != null) {
+        font.Activated = false;
+      }
+      HasChanged = true;
+    }
+
+    public Font FindFont(string uid) {
+      return FindFamilyByFontUID(uid)?.FindFond(uid);
+    }
+    #endregion
+
+    #region private db management
+    private Family FindFamilyByName(string familyName) {
+      return Families.Find(family => {
+        return family.Name == familyName;
+      });
+    }
+
+    private Family FindFamilyByFontUID(string uid) {
+      return Families.Find(family => {
+        return family.FindFond(uid) != null;
+      });
+    }
+    #endregion
+
+    #region FS
     private Task<string> ReadData(string path) {
       return Task.Factory.StartNew<string>(() => {
         if (File.Exists(path)) {

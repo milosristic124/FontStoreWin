@@ -53,9 +53,17 @@
     <Compile Include="States\RetryStates.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ProtocolPayloads\ProtocolPayloads.csproj">
+      <Project>{de2e0581-3b35-44bc-a408-f3f480d70f18}</Project>
+      <Name>ProtocolPayloads</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Protocol\Protocol.csproj">
       <Project>{b7175444-75c9-4579-87fc-706de922c89f}</Project>
       <Name>Protocol</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Storage\Storage.csproj">
+      <Project>{115A3A3E-95CD-45AE-BE11-7ECC218FB91E}</Project>
+      <Name>Storage</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utilities\Utilities.csproj">
       <Project>{B7896312-0281-4255-B8F3-1056E053FA3C}</Project>

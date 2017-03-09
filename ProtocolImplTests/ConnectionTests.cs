@@ -8,7 +8,7 @@ using Protocol.Transport;
 
 namespace Protocol.Impl.Tests {
   class TestConnection : Connection {
-    public TestConnection(IConnectionTransport transport, int authInterval = 1000, int connInterval = 1000) : base(transport) {
+    public TestConnection(IConnectionTransport transport, int authInterval = 1000, int connInterval = 1000) : base(transport, null) {
       AuthenticationRetryInterval = TimeSpan.FromMilliseconds(authInterval);
       ConnectionRetryInterval = TimeSpan.FromMilliseconds(connInterval);
     }
