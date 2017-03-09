@@ -7,7 +7,7 @@ namespace Protocol.Payloads {
     [JsonProperty("password")]
     public string Password { get; set; }
     [JsonProperty("protocol_version")]
-    public int ProtocolVersion { get; set; }
+    public string ProtocolVersion { get; set; }
     [JsonProperty("application_version")]
     public string ApplicationVersion { get; set; }
     [JsonProperty("os")]

@@ -1,14 +1,33 @@
 ﻿using Protocol;
+using Protocol.Payloads;
+using Protocol.Transport;
 using System;
+using System.Threading;
 
 namespace TestUtilities.Protocol {
   public class MockedConnection : CallTracer, IConnection {
+    #region private data
     private bool _connected;
+    #endregion
 
+    #region properties
+    public UserData UserData { get; set; }
+    public IConnectionTransport Transport { get; }
+
+    public TimeSpan AuthenticationRetryInterval { get; private set; }
+    public TimeSpan ConnectionRetryInterval { get; private set; }
+    #endregion
+
+    #region ctor
     public MockedConnection(bool connected = false) {
       _connected = connected;
+      Transport = null;
+      AuthenticationRetryInterval = Timeout.InfiniteTimeSpan;
+      ConnectionRetryInterval = Timeout.InfiniteTimeSpan;
     }
+    #endregion
 
+    #region methods
     public void Connect(string email, string password) {
       RegisterCall("Connect");
       _connected = true;
@@ -19,23 +38,18 @@ namespace TestUtilities.Protocol {
       RegisterCall("Disconnect");
       _connected = false;
     }
+    #endregion
 
-    public void UpdateCatalog(DateTime? lastUpdate) {
-      RegisterCall("UpdateCatalog");
-    }
-
-    public void UpdateFontsStatus(DateTime? lastUpdate) {
-      RegisterCall("UpdateFontsStatus");
-    }
-
+    #region test methods
     public void SimulateEvent(ConnectionEvents eventType, dynamic data = null) {
       switch(eventType) {
         case ConnectionEvents.Established:
-          OnEstablished?.Invoke(data);
+          UserData = data as UserData;
+          OnEstablished?.Invoke(UserData);
           break;
 
         case ConnectionEvents.ValidationFailure:
-          OnValidationFailure?.Invoke();
+          OnValidationFailure?.Invoke(data);
           break;
 
         case ConnectionEvents.FontDescriptionReceived:
@@ -69,7 +83,9 @@ namespace TestUtilities.Protocol {
       FontDeactivated,
       UpdateFinished
     }
+    #endregion
 
+    #region events
     public event ConnectionEstablishedHandler OnEstablished;
     public event ConnectionValidationFailedHandler OnValidationFailure;
     public event FontDeletedHandler OnFontDeleted;
@@ -77,5 +93,6 @@ namespace TestUtilities.Protocol {
     public event FontActivationHandler OnFontActivated;
     public event FontDeactivationHandler OnFontDeactivated;
     public event UpdateFinishedHandler OnUpdateFinished;
+    #endregion
   }
 }

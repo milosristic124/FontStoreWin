@@ -2,6 +2,6 @@
 
 namespace Protocol.Transport {
   public interface IBroadcastResponse {
-    IBroadcastResponse Receive(string status, Action<dynamic> callback);
+    IBroadcastResponse Receive(ResponseStatus status, Action<dynamic> callback);
   }
 }

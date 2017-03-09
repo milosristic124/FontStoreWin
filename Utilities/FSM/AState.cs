@@ -5,6 +5,7 @@ namespace Utilities.FSM {
     protected U _context;
 
     public FiniteStateMachine<T> FSM { get; protected set; }
+    public bool WillTransition { get; protected set; }
 
     public AState(U context) {
       _context = context;
@@ -12,5 +13,6 @@ namespace Utilities.FSM {
 
     public abstract void Start(FiniteStateMachine<T> fsm);
     public abstract void Stop();
+    public abstract void Abort();
   }
 }

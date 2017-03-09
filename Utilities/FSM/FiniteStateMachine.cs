@@ -12,7 +12,10 @@ namespace Utilities.FSM {
       }
       set {
         if (_started) {
-          _state.Stop();
+          if (_state.WillTransition)
+            _state.Stop();
+          else // the state is not ready for transition
+            _state.Abort();
 
           _state = value;
           if (_state == null) {
@@ -39,14 +42,20 @@ namespace Utilities.FSM {
 
     public void Stop() {
       if (_started) {
-        State.Stop();
+        if (State.WillTransition)
+          State.Stop();
+        else
+          State.Abort();
         _started = false;
       }
     }
 
     public void Reset() {
       if (_started) {
-        _state.Stop();
+        if (State.WillTransition)
+          _state.Stop();
+        else
+          _state.Abort();
       }
 
       _state = _defaultState;

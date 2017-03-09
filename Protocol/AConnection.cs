@@ -1,14 +1,19 @@
-﻿using Protocol.Transport;
+﻿using Protocol.Payloads;
+using Protocol.Transport;
 using System;
 
 namespace Protocol {
   public abstract class AConnection: IConnection {
     #region properties
-    public AConnectionTransport Transport { get; private set; }
+    public IConnectionTransport Transport { get; private set; }
+    public UserData UserData { get; protected set; }
+
+    public TimeSpan AuthenticationRetryInterval { get; protected set; }
+    public TimeSpan ConnectionRetryInterval { get; protected set; }
     #endregion
 
     #region ctor
-    public AConnection(AConnectionTransport transport) {
+    public AConnection(IConnectionTransport transport) {
       Transport = transport;
     }
     #endregion
@@ -16,8 +21,6 @@ namespace Protocol {
     #region methods
     public abstract void Connect(string email, string password);
     public abstract void Disconnect();
-    public abstract void UpdateCatalog(DateTime? lastUpdate);
-    public abstract void UpdateFontsStatus(DateTime? lastUpdate);
     #endregion
 
     #region IConnectionObservable

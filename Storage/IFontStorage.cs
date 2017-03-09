@@ -9,6 +9,7 @@ namespace Storage {
   public interface IFontStorage {
     List<Family> Families { get; }
 
+    // load persisted family catalog
     Task Load();
     void StartUpdate();
 

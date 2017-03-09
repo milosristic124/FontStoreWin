@@ -15,7 +15,7 @@ namespace Protocol {
   }
 
   #region event handlers
-  public delegate void ConnectionValidationFailedHandler();
+  public delegate void ConnectionValidationFailedHandler(string reason);
   public delegate void ConnectionEstablishedHandler(UserData userData);
 
   public delegate void FontDescriptionHandler(FontDescription fontDesc);

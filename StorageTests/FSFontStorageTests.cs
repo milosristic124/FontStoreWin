@@ -122,8 +122,10 @@ namespace Storage.Impl.Tests {
 
       storage = new FSFontStorage(connection, storagePath);
 
-      storage.Load().Wait();
+      int timeout = 5000;
+      bool signaled = storage.Load().Wait(timeout);
 
+      Assert.IsTrue(signaled, "Load should not timeout during tests...");
       Assert.IsTrue(storage.Families.Count == 1, "Load should load saved catalog data from file system");
       Assert.IsTrue(storage.FindFont(TestData.FontDescription1.UID).Activated, "Load should load saved fonts data from file system");
     }

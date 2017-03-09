@@ -18,8 +18,8 @@ namespace Protocol.Transport.Phoenix {
     #endregion
 
     #region methods
-    public IBroadcastResponse Receive(string status, Action<dynamic> callback) {
-      return new BroadcastResponse(_push.Receive(status, callback));
+    public IBroadcastResponse Receive(ResponseStatus status, Action<dynamic> callback) {
+      return new BroadcastResponse(_push.Receive(status.Name, callback));
     }
     #endregion
   }

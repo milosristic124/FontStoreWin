@@ -55,12 +55,18 @@
     <Compile Include="BroadcastChannel.cs" />
     <Compile Include="BroadcastResponse.cs" />
     <Compile Include="ConnectionTransport.cs" />
+    <Compile Include="HttpRequest.cs" />
+    <Compile Include="HttpResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Protocol\Protocol.csproj">
       <Project>{b7175444-75c9-4579-87fc-706de922c89f}</Project>
       <Name>Protocol</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utilities\Utilities.csproj">
+      <Project>{B7896312-0281-4255-B8F3-1056E053FA3C}</Project>
+      <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

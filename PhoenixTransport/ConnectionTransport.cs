@@ -1,6 +1,7 @@
 ﻿using PhoenixSocket;
 using SuperSocket.ClientEngine;
 using System;
+using System.Net;
 
 namespace Protocol.Transport.Phoenix {
   public class ConnectionTransport : AConnectionTransport {
@@ -9,8 +10,8 @@ namespace Protocol.Transport.Phoenix {
     #endregion
 
     #region ctor
-    public ConnectionTransport(string endpoint): base(endpoint) {
-      _socket = new Socket(EndPoint);
+    public ConnectionTransport(): base() {
+      _socket = null;
       _socket.Opened += _socket_Opened;
       _socket.Closed += _socket_Closed;
       _socket.Error += _socket_Error;
@@ -19,6 +20,10 @@ namespace Protocol.Transport.Phoenix {
 
     #region methods
     public override void Connect() {
+      if (EndPoint == null) {
+        throw new Exception("An EndPoint must be defined in order to connect the connection's transport");
+      }
+      _socket = new Socket(EndPoint);
       _socket.Connect();
     }
 
@@ -34,6 +39,11 @@ namespace Protocol.Transport.Phoenix {
     public override IBroadcastChannel Channel(string name) {
       Channel chan = _socket?.Channel(name);
       return new BroadcastChannel(chan);
+    }
+
+    public override IHttpRequest CreateHttpRequest(string endpoint) {
+      HttpWebRequest request = WebRequest.CreateHttp(endpoint);
+      return new HttpRequest(request);
     }
     #endregion
 

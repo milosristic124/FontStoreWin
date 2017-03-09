@@ -21,12 +21,12 @@ namespace TestUtilities.Protocol {
     #region methods
     public IBroadcastResponse Join() {
       IsJoined = true;
-      return new MockedBroadcastResponse("ok");
+      return new MockedBroadcastResponse(ResponseStatus.Ok);
     }
 
     public IBroadcastResponse Leave() {
       IsJoined = false;
-      return new MockedBroadcastResponse("ok");
+      return new MockedBroadcastResponse(ResponseStatus.Ok);
     }
 
     public IBroadcastResponse Send(string @event, dynamic payload) {

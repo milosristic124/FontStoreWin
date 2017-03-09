@@ -5,24 +5,24 @@ using System.Collections.Generic;
 namespace TestUtilities.Protocol {
   public class MockedBroadcastResponse : IBroadcastResponse {
     #region private data
-    private string _status;
+    private ResponseStatus _status;
     private dynamic _payload;
-    private Dictionary<string, List<Action<dynamic>>> _callbacks;
+    private Dictionary<ResponseStatus, List<Action<dynamic>>> _callbacks;
     #endregion
 
     #region ctor
     public MockedBroadcastResponse() : this(null, null) {
     }
 
-    public MockedBroadcastResponse(string status, dynamic payload = null) {
+    public MockedBroadcastResponse(ResponseStatus status, dynamic payload = null) {
       _status = status;
       _payload = payload;
-      _callbacks = new Dictionary<string, List<Action<dynamic>>>();
+      _callbacks = new Dictionary<ResponseStatus, List<Action<dynamic>>>();
     }
     #endregion
 
     #region test methods
-    public void SimulateReply(string status, dynamic payload) {
+    public void SimulateReply(ResponseStatus status, dynamic payload) {
       _status = status;
       _payload = payload;
 
@@ -37,7 +37,7 @@ namespace TestUtilities.Protocol {
     #endregion
 
     #region methods
-    public IBroadcastResponse Receive(string status, Action<dynamic> callback) {
+    public IBroadcastResponse Receive(ResponseStatus status, Action<dynamic> callback) {
       if (!_callbacks.ContainsKey(status)) {
         _callbacks[status] = new List<Action<dynamic>>();
       }

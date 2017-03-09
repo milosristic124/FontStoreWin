@@ -1,15 +1,16 @@
-﻿using System;
+﻿using Protocol.Payloads;
+using System;
 
 namespace Protocol.Transport {
-  public abstract class AConnectionTransport: IConnectionTransport {
+  public abstract class AConnectionTransport : IConnectionTransport {
     #region properties
+    public string EndPoint { get; set; }
     public string AuthToken { get; set; }
-    public string EndPoint { get; protected set; }
     #endregion
 
     #region ctor
-    public AConnectionTransport(string endpoint) {
-      EndPoint = endpoint;
+    public AConnectionTransport() {
+      EndPoint = null;
       AuthToken = null;
     }
     #endregion
@@ -23,8 +24,9 @@ namespace Protocol.Transport {
     #region methods
     public abstract void Connect();
     public abstract void Disconnect(Action callback = null);
-
     public abstract IBroadcastChannel Channel(string name);
+
+    public abstract IHttpRequest CreateHttpRequest(string endpoint);
     #endregion
   }
 }
