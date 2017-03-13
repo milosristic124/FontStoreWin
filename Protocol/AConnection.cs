@@ -21,11 +21,13 @@ namespace Protocol {
     #region methods
     public abstract void Connect(string email, string password);
     public abstract void Disconnect();
+    public abstract void UpdateCatalog();
     #endregion
 
     #region IConnectionObservable
     public abstract event ConnectionEstablishedHandler OnEstablished;
     public abstract event ConnectionValidationFailedHandler OnValidationFailure;
+    public abstract event CatalogUpdateFinished OnCatalogUpdateFinished;
     #endregion
   }
 }

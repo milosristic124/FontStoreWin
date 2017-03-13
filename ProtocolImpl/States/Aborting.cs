@@ -1,10 +1,9 @@
-﻿using System;
-using Protocol.Transport;
+﻿using Protocol.Transport;
 
 namespace Protocol.Impl.States {
   class Aborting : ConnectionState {
     #region ctor
-    public Aborting(Connection connection, IConnectionTransport transport) : base(connection, transport) {
+    public Aborting(Connection connection) : base("Aborting", connection) {
     }
     #endregion
 
@@ -16,9 +15,9 @@ namespace Protocol.Impl.States {
     }
 
     protected override void Start() {
-      _context.Disconnect(() => {
-        _context.AuthToken = null;
-        FSM.State = new Idle(_connection, _context);
+      _context.Transport.Disconnect(() => {
+        _context.Transport.AuthToken = null;
+        FSM.State = new Idle(_context);
       });
     }
     #endregion

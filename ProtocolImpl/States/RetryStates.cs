@@ -1,7 +1,6 @@
 ﻿using Protocol.Transport;
 using System.Threading;
 using System;
-using Protocol.Payloads;
 
 namespace Protocol.Impl.States {
   class RetryAfterTimeInterval : ConnectionState {
@@ -15,15 +14,15 @@ namespace Protocol.Impl.States {
     #endregion
 
     #region ctor
-    public RetryAfterTimeInterval(Connection connection,
-                                  IConnectionTransport transport,
+    public RetryAfterTimeInterval(string name, 
+                                  Connection connection,
                                   TimeSpan interval,
-                                  Action retryCallback = null): this(connection, transport) {
+                                  Action retryCallback = null): this(name, connection) {
       Callback = retryCallback;
       _interval = interval;
     }
 
-    private RetryAfterTimeInterval(Connection connection, IConnectionTransport transport) : base(connection, transport) {
+    private RetryAfterTimeInterval(string name, Connection connection) : base(name, connection) {
       _retryTimer = null;
       Callback = null;
       _interval = Timeout.InfiniteTimeSpan;
@@ -53,21 +52,21 @@ namespace Protocol.Impl.States {
   }
 
   class RetryAuthenticating : RetryAfterTimeInterval {
-    public RetryAuthenticating(Connection connection, IConnectionTransport transport, string email, string password):
-      base(connection, transport, connection.AuthenticationRetryInterval)
+    public RetryAuthenticating(Connection connection, string email, string password):
+      base("RetryAuthenticating", connection, connection.AuthenticationRetryInterval)
     {
       Callback = () => {
-        FSM.State = new Authenticating(connection, transport, email, password);
+        FSM.State = new Authenticating(connection, email, password);
       };
     }
   }
 
   class RetryConnecting : RetryAfterTimeInterval {
-    public RetryConnecting(Connection connection, IConnectionTransport transport, UserData userData):
-      base(connection, transport, connection.ConnectionRetryInterval)
+    public RetryConnecting(Connection connection, Payloads.UserData userData):
+      base("RetryConnecting", connection, connection.ConnectionRetryInterval)
     {
       Callback = () => {
-        FSM.State = new Connecting(connection, transport, userData);
+        FSM.State = new Connecting(connection, userData);
       };
     }
   }

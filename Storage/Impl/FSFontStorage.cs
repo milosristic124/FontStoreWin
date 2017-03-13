@@ -21,8 +21,8 @@ namespace Storage.Impl {
 
     #region properties
     public List<Family> Families { get; }
-    public DateTime? LastCatalogUpdate { get; private set; }
-    public DateTime? LastFontStatusUpdate { get; private set; }
+    public DateTime? LastCatalogUpdate { get; set; }
+    public DateTime? LastFontStatusUpdate { get; set; }
 
     public bool Loaded { get; private set; }
     public bool HasChanged { get; private set; }
@@ -181,7 +181,7 @@ namespace Storage.Impl {
     }
 
     public Font FindFont(string uid) {
-      return FindFamilyByFontUID(uid)?.FindFond(uid);
+      return FindFamilyByFontUID(uid)?.FindFont(uid);
     }
     #endregion
 
@@ -194,7 +194,7 @@ namespace Storage.Impl {
 
     private Family FindFamilyByFontUID(string uid) {
       return Families.Find(family => {
-        return family.FindFond(uid) != null;
+        return family.FindFont(uid) != null;
       });
     }
     #endregion

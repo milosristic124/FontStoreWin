@@ -15,6 +15,7 @@ namespace Protocol {
     #region methods
     void Connect(string email, string password);
     void Disconnect();
+    void UpdateCatalog();
     #endregion
   }
 }

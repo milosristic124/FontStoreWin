@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BroadcastChannel.cs" />
+    <Compile Include="BroadcastChannelResult.cs" />
     <Compile Include="BroadcastResponse.cs" />
     <Compile Include="ConnectionTransport.cs" />
     <Compile Include="HttpRequest.cs" />
@@ -60,6 +61,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ProtocolPayloads\ProtocolPayloads.csproj">
+      <Project>{DE2E0581-3B35-44BC-A408-F3F480D70F18}</Project>
+      <Name>ProtocolPayloads</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Protocol\Protocol.csproj">
       <Project>{b7175444-75c9-4579-87fc-706de922c89f}</Project>
       <Name>Protocol</Name>

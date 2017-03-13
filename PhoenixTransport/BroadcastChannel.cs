@@ -1,10 +1,11 @@
 ﻿using PhoenixSocket;
+using Protocol.Payloads;
 using System;
 
 namespace Protocol.Transport.Phoenix {
   class BroadcastChannel : IBroadcastChannel {
     #region private data
-    private Channel _channel;
+    protected Channel _channel;
     #endregion
 
     #region ctor
@@ -18,16 +19,35 @@ namespace Protocol.Transport.Phoenix {
     #endregion
 
     #region methods
-    public IBroadcastResponse Join() {
-      return new BroadcastResponse(_channel.Join());
+    public IBroadcastChannelResult Join() {
+      return new BroadcastChannelAction(_channel.Join());
     }
 
-    public IBroadcastResponse Leave() {
-      return new BroadcastResponse(_channel.Leave());
+    public IBroadcastChannelResult Leave() {
+      return new BroadcastChannelAction(_channel.Leave());
     }
 
     public IBroadcastResponse Send(string @event, dynamic payload) {
       return new BroadcastResponse(_channel.Push(@event, payload));
+    }
+
+    public IBroadcastChannel On(string evt, Action callback) {
+      _channel.On(evt, () => {
+        callback?.Invoke();
+      });
+      return this;
+    }
+
+    public IBroadcastChannel On<T>(string evt, Action<T> callback) where T: class {
+      _channel.On(evt, (dynamic data) => {
+        callback?.Invoke(data as T);
+      });
+      return this;
+    }
+
+    public IBroadcastChannel Off(string evt) {
+      _channel.Off(evt);
+      return this;
     }
     #endregion
   }

@@ -1,10 +1,7 @@
 ﻿using Protocol.Transport;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace TestUtilities.Protocol {
@@ -66,6 +63,13 @@ namespace TestUtilities.Protocol {
     #endregion
 
     #region test methods
+    public void SimulateMessage(string topic, string evt, dynamic payload = null) {
+      MockedBroadcastChannel chan;
+      if (_channels.TryGetValue(topic, out chan)) {
+        chan.SimulateMessage(evt, payload);
+      }
+    }
+
     public void SimulateDisconnection() {
       _disconnectCallback?.Invoke();
       _disconnectCallback = null;

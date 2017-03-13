@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 namespace Storage {
   public interface IFontStorage {
     List<Family> Families { get; }
-    DateTime? LastCatalogUpdate { get; }
-    DateTime? LastFontStatusUpdate { get; }
+    DateTime? LastCatalogUpdate { get; set; }
+    DateTime? LastFontStatusUpdate { get; set; }
     bool Loaded { get; }
     bool HasChanged { get; }
 

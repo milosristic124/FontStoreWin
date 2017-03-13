@@ -25,7 +25,7 @@ namespace TestUtilities {
       }
     };
 
-    public static FontDescription FontDescription1 = new FontDescription {
+    public static FontDescription Font1_Description = new FontDescription {
       UID = "test_font_uid",
       FamilyName = "TestFamilyName",
       Name = "TestFontName",
@@ -33,7 +33,7 @@ namespace TestUtilities {
       IsNew = true
     };
 
-    public static FontDescription FontDescription1_2 = new FontDescription {
+    public static FontDescription Font1_Description2 = new FontDescription {
       UID = "test_font_uid",
       FamilyName = "TestFamilyName",
       Name = "TestFontName2",
@@ -41,12 +41,21 @@ namespace TestUtilities {
       IsNew = false
     };
 
-    public static FontDescription FontDescription2 = new FontDescription {
+    public static FontId Font1_Id = new FontId {
+      UID = Font1_Description.UID
+    };
+
+
+    public static FontDescription Font2_Description = new FontDescription {
       UID = "test_font_uid_2",
       FamilyName = "TestFamilyName_2",
       Name = "TestFontName_2",
       DownloadUrl = "http://localhost/font/test_font_uid_2/download",
       IsNew = true
+    };
+
+    public static FontId Font2_Id = new FontId {
+      UID = Font2_Description.UID
     };
   }
 }

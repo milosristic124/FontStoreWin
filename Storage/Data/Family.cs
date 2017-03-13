@@ -32,7 +32,7 @@ namespace Storage.Data {
       }
     }
 
-    public Font FindFond(string uid) {
+    public Font FindFont(string uid) {
       return Fonts.Find(font => {
         return font.UID == uid;
       });

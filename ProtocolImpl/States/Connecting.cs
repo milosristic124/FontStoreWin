@@ -1,53 +1,51 @@
-﻿using Protocol.Payloads;
-using Protocol.Transport;
+﻿using Protocol.Transport;
 using System;
 
 namespace Protocol.Impl.States {
   class Connecting : ConnectionState {
     #region private data
-    private UserData _userData;
+    private Payloads.UserData _userData;
     #endregion
 
     #region ctor
-    public Connecting(Connection connection, IConnectionTransport transport, UserData userData) : this(connection, transport) {
+    public Connecting(Connection connection, Payloads.UserData userData) : this(connection) {
       _userData = userData;
-      _context.EndPoint = string.Format("wss://app.fontstore.com/connect?token={0}", _userData.AuthToken);
+      _context.Transport.EndPoint = string.Format("wss://app.fontstore.com/connect?token={0}", _userData.AuthToken);
     }
 
-    private Connecting(Connection connection, IConnectionTransport transport) : base(connection, transport) {
-      _context.Opened += _transport_Opened;
-      _context.Error += _transport_Error;
+    private Connecting(Connection connection) : base("Connecting", connection) {
+      _context.Transport.Opened += _transport_Opened;
+      _context.Transport.Error += _transport_Error;
       _userData = null;
     }
     #endregion
 
     #region methods
     public override void Stop() {
-      _context.Opened -= _transport_Opened;
-      _context.Error -= _transport_Error;
+      _context.Transport.Opened -= _transport_Opened;
+      _context.Transport.Error -= _transport_Error;
     }
 
     public override void Abort() {
-      _context.Opened -= _transport_Opened;
-      _context.Error -= _transport_Error;
-      _context.Disconnect();
+      _context.Transport.Opened -= _transport_Opened;
+      _context.Transport.Error -= _transport_Error;
+      _context.Transport.Disconnect();
     }
 
     protected override void Start() {
-      _context.Connect();
+      _context.Transport.Connect();
     }
     #endregion
 
     #region event handling
     private void _transport_Opened() {
-      _connection.TriggerConnectionEstablished(_userData);
       WillTransition = true;
-      //FSM.State = new Setup(_connection, _context);
+      FSM.State = new Connected(_context, _userData);
     }
 
     private void _transport_Error(Exception exception) {
       WillTransition = true;
-      FSM.State = new RetryConnecting(_connection, _context, _userData);
+      FSM.State = new RetryConnecting(_context, _userData);
     }
     #endregion
   }

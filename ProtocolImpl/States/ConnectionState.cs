@@ -2,14 +2,14 @@
 using Utilities.FSM;
 
 namespace Protocol.Impl.States {
-  abstract class ConnectionState : AState<ConnectionState, IConnectionTransport> {
-    #region private data
-    protected Connection _connection;
+  abstract class ConnectionState : AState<ConnectionState, Connection> {
+    #region property
+    public string Name { get; private set; }
     #endregion
 
     #region ctor
-    public ConnectionState(Connection connection, IConnectionTransport transport) : base(transport) {
-      _connection = connection;
+    public ConnectionState(string name, Connection connection) : base(connection) {
+      Name = name;
     }
     #endregion
 
@@ -17,6 +17,19 @@ namespace Protocol.Impl.States {
     public override void Start(FiniteStateMachine<ConnectionState> fsm) {
       FSM = fsm;
       Start();
+    }
+
+    // Test if an external actor can modify the FSM state
+    // An FSM state can change the next state independetly of this function
+    // Usage:
+    //   - to allow transition to a specific state
+    // public override bool CanTransitionTo<MyCustomState>()
+    //   - to allow transition to any state
+    // public override bool CanTransitionTo<T>()
+    // Default:
+    // no transition allowed
+    public virtual bool CanTransitionTo<T>() where T: ConnectionState {
+      return false;
     }
     #endregion
 
@@ -26,7 +39,12 @@ namespace Protocol.Impl.States {
   }
 
   sealed class Idle : ConnectionState {
-    public Idle(Connection connection, IConnectionTransport transport) : base(connection, transport) {
+    public Idle(Connection connection) : base("Idle", connection) {
+      WillTransition = true;
+    }
+
+    public override bool CanTransitionTo<T>() {
+      return true;
     }
 
     public override void Stop() {

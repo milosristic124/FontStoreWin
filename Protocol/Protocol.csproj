@@ -45,6 +45,7 @@
     <Compile Include="Transport\AConnectionTransport.cs" />
     <Compile Include="IConnectionObservable.cs" />
     <Compile Include="Transport\IBroadcastChannel.cs" />
+    <Compile Include="Transport\IBroadcastChannelResult.cs" />
     <Compile Include="Transport\IBroadcastResponse.cs" />
     <Compile Include="Transport\IConnectionTransport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

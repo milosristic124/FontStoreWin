@@ -26,6 +26,7 @@ namespace TestUtilities.Protocol {
       _status = status;
       _payload = payload;
 
+
       List<Action<dynamic>> callbacks = null;
       if (_callbacks.TryGetValue(status, out callbacks)) {
         callbacks.ForEach(callback => {

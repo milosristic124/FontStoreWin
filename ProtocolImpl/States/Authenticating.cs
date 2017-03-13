@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Protocol.Payloads;
 using Protocol.Transport;
 using System;
 using System.IO;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 namespace Protocol.Impl.States {
   class Authenticating : ConnectionState {
     #region private data
-    private Authentication _authPayload;
+    private Payloads.Authentication _authPayload;
     private IHttpRequest _authRequest;
 
     private static readonly string AuthenticationEndpoint = "https://app.fontstore.com/authenticate";
@@ -17,8 +16,8 @@ namespace Protocol.Impl.States {
     #endregion
 
     #region ctor
-    public Authenticating(Connection connection, IConnectionTransport transport, string email, string password): this(connection, transport) {
-      _authPayload = new Authentication {
+    public Authenticating(Connection connection, string email, string password): this(connection) {
+      _authPayload = new Payloads.Authentication {
         Login = email,
         Password = password,
         ProtocolVersion = "0.0.3",
@@ -28,7 +27,7 @@ namespace Protocol.Impl.States {
       };
     }
 
-    private Authenticating(Connection connection, IConnectionTransport transport) : base(connection, transport) {
+    private Authenticating(Connection connection) : base("Authenticating", connection) {
       _authPayload = null;
       _authRequest = null;
     }
@@ -45,7 +44,7 @@ namespace Protocol.Impl.States {
     }
 
     protected override void Start() {
-      _authRequest = _context.CreateHttpRequest(AuthenticationEndpoint);
+      _authRequest = _context.Transport.CreateHttpRequest(AuthenticationEndpoint);
 
       _authRequest.Method = WebRequestMethods.Http.Post;
       _authRequest.ContentType = "application/json";
@@ -65,17 +64,17 @@ namespace Protocol.Impl.States {
 
             if (response.StatusCode != HttpStatusCode.OK) {
               WillTransition = true;
-              FSM.State = new Idle(_connection, _context);
-              _connection.TriggerValidationFailure(data);
+              FSM.State = new Idle(_context);
+              _context.TriggerValidationFailure(data);
             } else {
-              UserData userData = JsonConvert.DeserializeObject<UserData>(data);
+              Payloads.UserData userData = JsonConvert.DeserializeObject<Payloads.UserData>(data);
               WillTransition = true;
-              FSM.State = new Connecting(_connection, _context, userData);
+              FSM.State = new Connecting(_context, userData);
             }
           }
         } else {
           WillTransition = true;
-          FSM.State = new RetryAuthenticating(_connection, _context, _authPayload.Login, _authPayload.Password);
+          FSM.State = new RetryAuthenticating(_context, _authPayload.Login, _authPayload.Password);
         }
       });
     }

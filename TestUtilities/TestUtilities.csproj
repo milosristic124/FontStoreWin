@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="CallTracer.cs" />
     <Compile Include="Protocol\MockedBroadcastChannel.cs" />
+    <Compile Include="Protocol\MockedBroadcastChannelResult.cs" />
     <Compile Include="Protocol\MockedBroadcastResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocol\MockedHttpRequest.cs" />
