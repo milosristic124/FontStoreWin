@@ -12,9 +12,6 @@ namespace Protocol.Transport.Phoenix {
     #region ctor
     public ConnectionTransport(): base() {
       _socket = null;
-      _socket.Opened += _socket_Opened;
-      _socket.Closed += _socket_Closed;
-      _socket.Error += _socket_Error;
     }
     #endregion
 
@@ -24,12 +21,18 @@ namespace Protocol.Transport.Phoenix {
         throw new Exception("An EndPoint must be defined in order to connect the connection's transport");
       }
       _socket = new Socket(EndPoint);
+      _socket.Opened += _socket_Opened;
+      _socket.Closed += _socket_Closed;
+      _socket.Error += _socket_Error;
       _socket.Connect();
     }
 
     public override void Disconnect(Action callback = null) {
       if (_socket != null) {
         _socket.Disconnect(() => {
+          _socket.Opened -= _socket_Opened;
+          _socket.Closed -= _socket_Closed;
+          _socket.Error -= _socket_Error;
           _socket = null;
           callback?.Invoke();
         });

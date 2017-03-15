@@ -4,19 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9467AB27-02F2-4ECD-A621-38FE3F7B0A55}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{604E1FFD-628C-48C1-B8F1-8C9D53E3CEB5}</ProjectGuid>
+    <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UI</RootNamespace>
-    <AssemblyName>UI</AssemblyName>
+    <RootNamespace>UILib</RootNamespace>
+    <AssemblyName>UILib</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,10 +22,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\UI.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -52,10 +48,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </ApplicationDefinition>
-    <Page Include="Controls\RadioCheckbox.xaml">
+    <Page Include="CustomTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -63,19 +56,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Login.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
+    <Compile Include="CustomTextBox.xaml.cs">
+      <DependentUpon>CustomTextBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PlaceholderTextBox.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Controls\RadioCheckbox.xaml.cs">
-      <DependentUpon>RadioCheckbox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Login.xaml.cs">
-      <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -96,37 +81,11 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Resource Include="Fonts\Litmus-Bold.ttf" />
-    <Resource Include="Fonts\Litmus-Light.ttf" />
-    <Resource Include="Fonts\Litmus-Medium.ttf" />
-    <Resource Include="Fonts\Litmus-Regular.ttf" />
-    <Resource Include="Fonts\Litmus-Semibold.ttf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CoreFactory\CoreFactory.csproj">
-      <Project>{f6cb73fa-ac0f-4e4c-9f10-b2230a249dc8}</Project>
-      <Name>CoreFactory</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ProtocolPayloads\ProtocolPayloads.csproj">
-      <Project>{de2e0581-3b35-44bc-a408-f3f480d70f18}</Project>
-      <Name>ProtocolPayloads</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Protocol\Protocol.csproj">
-      <Project>{b7175444-75c9-4579-87fc-706de922c89f}</Project>
-      <Name>Protocol</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Storage\Storage.csproj">
-      <Project>{115a3a3e-95cd-45ae-be11-7ecc218fb91e}</Project>
-      <Name>Storage</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

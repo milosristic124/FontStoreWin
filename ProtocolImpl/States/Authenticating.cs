@@ -50,9 +50,21 @@ namespace Protocol.Impl.States {
       _authRequest.ContentType = "application/json";
       _authRequest.Timeout = AuthenticationTimeout;
 
-      using (StreamWriter body = new StreamWriter(_authRequest.RequestStream)) {
-        string json = JsonConvert.SerializeObject(_authPayload);
-        body.Write(json);
+      try {
+        using (StreamWriter body = new StreamWriter(_authRequest.RequestStream)) {
+          string json = JsonConvert.SerializeObject(_authPayload);
+          body.Write(json);
+        }
+      } catch (WebException) {
+        WillTransition = true;
+        FSM.State = new Idle(_context);
+        _context.TriggerValidationFailure("The application failed to connect to the Fontstore servers.\nPlease check your Internet access is working properly.");
+        return;
+      } catch (Exception) {
+        WillTransition = true;
+        FSM.State = new Idle(_context);
+        _context.TriggerValidationFailure("Unknown internal error");
+        return;
       }
 
       _authRequest.Response.ContinueWith(requestTask => {

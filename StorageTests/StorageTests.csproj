@@ -63,6 +63,10 @@
       <Project>{b7175444-75c9-4579-87fc-706de922c89f}</Project>
       <Name>Protocol</Name>
     </ProjectReference>
+    <ProjectReference Include="..\StorageImpl\StorageImpl.csproj">
+      <Project>{26aec3e4-35ae-41ee-afa6-3abe08b296d1}</Project>
+      <Name>StorageImpl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Storage\Storage.csproj">
       <Project>{115A3A3E-95CD-45AE-BE11-7ECC218FB91E}</Project>
       <Name>Storage</Name>

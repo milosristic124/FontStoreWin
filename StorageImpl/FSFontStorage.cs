@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Protocol;
 using Protocol.Payloads;
 using Storage.Data;
 using System;
@@ -7,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Utilities.Extensions;
 
@@ -51,10 +49,6 @@ namespace Storage.Impl {
 
       _fontFile = string.Format("{0}{1}", _storageRoot, "fnt.db");
       _metaFile = string.Format("{0}{1}", _storageRoot, "mta.db");
-
-      //_updateFinishedEvent = new AutoResetEvent(false);
-
-      //_connection = connection;
     }
     #endregion
 

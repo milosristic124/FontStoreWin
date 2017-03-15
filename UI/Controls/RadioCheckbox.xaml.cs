@@ -13,13 +13,24 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Test_UI {
+namespace UI.Controls {
   /// <summary>
-  /// Interaction logic for MainWindow.xaml
+  /// Interaction logic for RadioCheckbox.xaml
   /// </summary>
-  public partial class MainWindow : Window {
-    public MainWindow() {
+  public partial class RadioCheckbox : UserControl {
+    public RadioCheckbox() {
       InitializeComponent();
+    }
+
+    public bool Checked { get; set; }
+
+    private void UserControl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+      Checked = !Checked;
+      if (Checked) {
+        Tick.Visibility = Visibility.Visible;
+      } else {
+        Tick.Visibility = Visibility.Hidden;
+      }
     }
   }
 }

@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{115A3A3E-95CD-45AE-BE11-7ECC218FB91E}</ProjectGuid>
+    <ProjectGuid>{26AEC3E4-35AE-41EE-AFA6-3ABE08B296D1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Storage</RootNamespace>
-    <AssemblyName>Storage</AssemblyName>
+    <RootNamespace>Storage.Impl</RootNamespace>
+    <AssemblyName>StorageImpl</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,9 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Family.cs" />
-    <Compile Include="Data\Font.cs" />
-    <Compile Include="IFontStorage.cs" />
+    <Compile Include="FSFontStorage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -50,14 +52,17 @@
       <Project>{de2e0581-3b35-44bc-a408-f3f480d70f18}</Project>
       <Name>ProtocolPayloads</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Protocol\Protocol.csproj">
-      <Project>{B7175444-75C9-4579-87FC-706DE922C89F}</Project>
-      <Name>Protocol</Name>
+    <ProjectReference Include="..\Storage\Storage.csproj">
+      <Project>{115a3a3e-95cd-45ae-be11-7ecc218fb91e}</Project>
+      <Name>Storage</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utilities\Utilities.csproj">
-      <Project>{B7896312-0281-4255-B8F3-1056E053FA3C}</Project>
+      <Project>{b7896312-0281-4255-b8f3-1056e053fa3c}</Project>
       <Name>Utilities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
