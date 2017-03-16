@@ -11,12 +11,16 @@ namespace Protocol.Impl.States {
     private Payloads.Authentication _authPayload;
     private IHttpRequest _authRequest;
 
+#if DEBUG
+    private static readonly string AuthenticationEndpoint = "http://localhost:3000/api/desktop/session";
+#else
     private static readonly string AuthenticationEndpoint = "https://app.fontstore.com/session/desktop";
+#endif
     private static readonly int AuthenticationTimeout = 60000;
     #endregion
 
     #region ctor
-    public Authenticating(Connection connection, string email, string password): this(connection) {
+    public Authenticating(Connection connection, string email, string password) : this(connection) {
       _authPayload = new Payloads.Authentication {
         Login = email,
         Password = password,
@@ -55,12 +59,14 @@ namespace Protocol.Impl.States {
           string json = JsonConvert.SerializeObject(_authPayload);
           body.Write(json);
         }
-      } catch (WebException) {
+      }
+      catch (WebException) {
         WillTransition = true;
         FSM.State = new Idle(_context);
         _context.TriggerValidationFailure("The application failed to connect to the Fontstore servers.\nPlease check your Internet access is working properly.");
         return;
-      } catch (Exception) {
+      }
+      catch (Exception) {
         WillTransition = true;
         FSM.State = new Idle(_context);
         _context.TriggerValidationFailure("Unknown internal error");
@@ -78,13 +84,15 @@ namespace Protocol.Impl.States {
               WillTransition = true;
               FSM.State = new Idle(_context);
               _context.TriggerValidationFailure(data);
-            } else {
+            }
+            else {
               Payloads.UserData userData = JsonConvert.DeserializeObject<Payloads.UserData>(data);
               WillTransition = true;
               FSM.State = new Connecting(_context, userData);
             }
           }
-        } else {
+        }
+        else {
           WillTransition = true;
           FSM.State = new RetryAuthenticating(_context, _authPayload.Login, _authPayload.Password);
         }

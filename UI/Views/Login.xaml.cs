@@ -152,6 +152,7 @@ namespace UI.Views {
       _connecting = false;
       bool saveCredentials = RememberCheck.Checked;
       // no need to enable user inputs, he won't need it were he is going (main screen)
+      MessageBox.Show(string.Format("Welcome {0} {1}", userData.FirstName, userData.LastName), "Connection succeed", MessageBoxButton.OK);
     }
 
     private void Connection_OnValidationFailure(string reason) {
