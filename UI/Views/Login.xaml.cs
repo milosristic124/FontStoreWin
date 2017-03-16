@@ -23,6 +23,7 @@ namespace UI.Views {
 
     private App _application;
     private bool _connecting;
+    private Point _dragStartPos;
 
     private bool LoginEnabled {
       get {
@@ -54,7 +55,6 @@ namespace UI.Views {
     #endregion
 
     #region ctor
-    //public Login(App application) : base(application) {
     public Login() {
       InitializeComponent();
 
@@ -64,6 +64,7 @@ namespace UI.Views {
       // Set the login input placeholder
       LoginInput.Text = EmailPlaceholder;
 
+      _application.SetDragHandle(HeaderGrid);
       _application.Connection.OnValidationFailure += Connection_OnValidationFailure;
       _application.Connection.OnEstablished += Connection_OnEstablished;
     }

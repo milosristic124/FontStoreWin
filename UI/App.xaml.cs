@@ -4,6 +4,7 @@ using System.Windows;
 using Utilities.FSM;
 using System;
 using Microsoft.Win32;
+using System.Windows.Input;
 
 namespace UI {
   /// <summary>
@@ -39,13 +40,44 @@ namespace UI {
     }
     #endregion
 
+    #region drag & drop
+    public void SetDragHandle(UIElement dragHandle) {
+      dragHandle.PreviewMouseLeftButtonDown += DragClickHandler;
+      dragHandle.PreviewMouseMove += DragHandler;
+    }
+
+    private Point _dragStart;
+    private void DragClickHandler(object sender, MouseButtonEventArgs e) {
+      _dragStart = e.GetPosition(null);
+    }
+
+    private bool _wasDragged = false;
+    private void DragHandler(object sender, MouseEventArgs e) {
+      if (e.LeftButton == MouseButtonState.Pressed) {
+        Point mousePos = e.GetPosition(null);
+        Vector diff = _dragStart - mousePos;
+
+        if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance
+            || Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance) {
+          _wasDragged = true;
+          MainWindow.DragMove();
+        }
+      }
+    }
+    #endregion
+
     #region event handling
     private void App_Deactivated(object sender, EventArgs e) {
-      _ui.State.Hide();
+      if (!_wasDragged) { // don't close the window when clicking outside if it was dragged elsewhere
+        _ui.State.Hide();
+      }
     }
 
     private void NotifyIcon_Click(object sender, EventArgs e) {
-      if (!_ui.State.IsShown) {
+      if (_wasDragged && _ui.State.IsShown) {
+        _ui.State.Hide();
+        _wasDragged = false;
+      } else if (!_ui.State.IsShown) {
         _ui.State.Show();
         MainWindow.Activate();
       }
