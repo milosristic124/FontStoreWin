@@ -3,6 +3,7 @@ using Storage;
 using System.Windows;
 using Utilities.FSM;
 using System;
+using Microsoft.Win32;
 
 namespace UI {
   /// <summary>
@@ -11,6 +12,9 @@ namespace UI {
   public partial class App : Application {
     #region private data
     private FiniteStateMachine<States.UIState> _ui;
+
+    private static readonly string RegistryKey = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+    private static readonly string RegistryValue = "Fontstore";
     #endregion
 
     #region properies
@@ -56,6 +60,16 @@ namespace UI {
       NotifyIcon.Visible = true;
 
       NotifyIcon.Click += NotifyIcon_Click;
+    }
+    #endregion
+
+    #region private static methods
+    private static void SetAsStartupItem() {
+      RegistryKey rk = Registry.CurrentUser.OpenSubKey(RegistryKey, true);
+
+      if (rk.GetValue(RegistryValue) == null) {
+        rk.SetValue(RegistryValue, System.Reflection.Assembly.GetExecutingAssembly().Location);
+      }
     }
     #endregion
   }
