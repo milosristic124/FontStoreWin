@@ -130,6 +130,7 @@ namespace UI.Views {
       if (LoginEnabled && !_connecting) {
         _connecting = true;
         DisableUserInputs();
+        ConnectingBar.Visibility = Visibility.Visible;
         _application.Connection.Connect(Email, Password);
       }
     }
@@ -161,8 +162,9 @@ namespace UI.Views {
     }
 
     private void Connection_OnValidationFailure(string reason) {
-      _connecting = false;
       Dispatcher.Invoke(() => {
+        _connecting = false;
+        ConnectingBar.Visibility = Visibility.Hidden;
         MessageBox.Show(reason, "Fontstore - Connection failed", MessageBoxButton.OK);
         EnableUserInputs();
       });
