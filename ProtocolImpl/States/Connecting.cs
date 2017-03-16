@@ -10,7 +10,7 @@ namespace Protocol.Impl.States {
     #region ctor
     public Connecting(Connection connection, Payloads.UserData userData) : this(connection) {
       _userData = userData;
-      _context.Transport.EndPoint = string.Format("wss://app.fontstore.com/connect?token={0}", _userData.AuthToken);
+      _context.Transport.EndPoint = string.Format("wss://app.fontstore.com/socket/websocket?reuse_token={0}", _userData.AuthToken);
     }
 
     private Connecting(Connection connection) : base("Connecting", connection) {

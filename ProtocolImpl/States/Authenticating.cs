@@ -11,7 +11,7 @@ namespace Protocol.Impl.States {
     private Payloads.Authentication _authPayload;
     private IHttpRequest _authRequest;
 
-    private static readonly string AuthenticationEndpoint = "https://app.fontstore.com/authenticate";
+    private static readonly string AuthenticationEndpoint = "https://app.fontstore.com/session/desktop";
     private static readonly int AuthenticationTimeout = 60000;
     #endregion
 
