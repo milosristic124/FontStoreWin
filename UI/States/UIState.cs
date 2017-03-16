@@ -1,4 +1,6 @@
-﻿using Utilities.FSM;
+﻿using System.Windows;
+using UI.Utilities;
+using Utilities.FSM;
 
 namespace UI.States {
   abstract class UIState : IState<UIState> {
@@ -34,6 +36,15 @@ namespace UI.States {
     #region UIState methods
     public abstract void Hide();
     public abstract void Show();
+    #endregion
+
+    #region internal methods
+    protected void SetWindowPosition(Window window, double bottomMargin = 10, double rightMargin = 10) {
+      double left, top;
+      TaskBarLocationProvider.CalculateWindowPositionByTaskbar(window.Width, window.Height, out left, out top);
+      window.Top = top - bottomMargin;
+      window.Left = left - rightMargin;
+    }
     #endregion
   }
 

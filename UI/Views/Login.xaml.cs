@@ -64,45 +64,12 @@ namespace UI.Views {
       // Set the login input placeholder
       LoginInput.Text = EmailPlaceholder;
 
-      // Set window position
-      double left, top;
-      TaskBarLocationProvider.CalculateWindowPositionByTaskbar(Width, Height, out left, out top);
-      Top = top;
-      Left = left;
-
       _application.Connection.OnValidationFailure += Connection_OnValidationFailure;
       _application.Connection.OnEstablished += Connection_OnEstablished;
-      //_application.NotifyIcon.Click += NotifyIcon_Click;
-      //Deactivated += Login_Deactivated;
-
-      //Activated += Login_Activated;
     }
     #endregion
 
     #region UI event handling
-    //private void Login_Deactivated(object sender, EventArgs e) {
-    //  Visibility = Visibility.Hidden;
-    //}
-
-    //private void Login_Activated(object sender, EventArgs e) {
-    //  Mouse.Capture(this, CaptureMode.SubTree);
-    //  MouseUp += Login_MouseUp;
-    //}
-
-    //private void Login_MouseUp(object sender, MouseButtonEventArgs e) {
-    //  if (Visibility == Visibility.Visible) {
-    //    Point mousePos = e.GetPosition(this);
-    //    if (mousePos.X < 0 || mousePos.X > ActualWidth || mousePos.Y < 0 || mousePos.Y > ActualHeight) {
-    //      //Visibility = Visibility.Hidden;
-    //      Close();
-    //    }
-    //  }
-    //}
-
-    //private void NotifyIcon_Click(object sender, EventArgs e) {
-    //  Visibility = Visibility.Visible;
-    //}
-
     private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e) {
       Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
       e.Handled = true;
@@ -124,15 +91,18 @@ namespace UI.Views {
 
     private void PasswordInput_LostFocus(object sender, RoutedEventArgs e) {
       if (string.IsNullOrWhiteSpace(PasswordInput.Password)) {
-        PasswordInput.Visibility = Visibility.Collapsed;
         PasswordLabel.Visibility = Visibility.Visible;
+        PasswordInput.Opacity = 0;
       }
     }
 
     private void PasswordLabel_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-      PasswordLabel.Visibility = Visibility.Collapsed;
-      PasswordInput.Visibility = Visibility.Visible;
       PasswordInput.Focus();
+    }
+
+    private void PasswordInput_GotFocus(object sender, RoutedEventArgs e) {
+      PasswordLabel.Visibility = Visibility.Hidden;
+      PasswordInput.Opacity = 1;
     }
 
     private void PasswordInput_PasswordChanged(object sender, RoutedEventArgs e) {

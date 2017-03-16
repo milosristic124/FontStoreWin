@@ -63,6 +63,16 @@ namespace UI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] FontstoreFinal_Regular {
+            get {
+                object obj = ResourceManager.GetObject("FontstoreFinal_Regular", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] Litmus_Bold {
             get {
                 object obj = ResourceManager.GetObject("Litmus_Bold", resourceCulture);

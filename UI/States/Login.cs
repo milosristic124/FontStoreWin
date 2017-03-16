@@ -14,6 +14,7 @@
     public override void Show() {
       if (_view == null) {
         _view = new Views.Login();
+        SetWindowPosition(_view);
       }
     }
 
