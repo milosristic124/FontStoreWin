@@ -7,7 +7,7 @@
         xmlns:Controls="clr-namespace:UI.Controls"
         x:Class="UI.Views.Login"
         mc:Ignorable="d"
-        Title="Fontstore" Height="480" Width="330" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="Manual" MaxWidth="330" SizeToContent="WidthAndHeight" MinWidth="330" MinHeight="480" MaxHeight="480" ScrollViewer.VerticalScrollBarVisibility="Disabled" AllowsTransparency="True" Background="{x:Null}" Foreground="{x:Null}">
+        Title="Fontstore" Height="480" Width="330" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="Manual" MaxWidth="330" SizeToContent="WidthAndHeight" MinWidth="330" MinHeight="480" MaxHeight="480" ScrollViewer.VerticalScrollBarVisibility="Disabled" AllowsTransparency="True" Background="{x:Null}" Foreground="{x:Null}" ShowInTaskbar="False" Visibility="Visible">
 
   <Grid x:Name="WindowGrid" ScrollViewer.VerticalScrollBarVisibility="Auto">
     <Grid.OpacityMask>

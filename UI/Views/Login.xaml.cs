@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Diagnostics;
 using System.Windows.Navigation;
+using UI.Utilities;
 
 namespace UI.Views {
   /// <summary>
@@ -53,6 +54,7 @@ namespace UI.Views {
     #endregion
 
     #region ctor
+    //public Login(App application) : base(application) {
     public Login() {
       InitializeComponent();
 
@@ -62,12 +64,45 @@ namespace UI.Views {
       // Set the login input placeholder
       LoginInput.Text = EmailPlaceholder;
 
+      // Set window position
+      double left, top;
+      TaskBarLocationProvider.CalculateWindowPositionByTaskbar(Width, Height, out left, out top);
+      Top = top;
+      Left = left;
+
       _application.Connection.OnValidationFailure += Connection_OnValidationFailure;
       _application.Connection.OnEstablished += Connection_OnEstablished;
+      //_application.NotifyIcon.Click += NotifyIcon_Click;
+      //Deactivated += Login_Deactivated;
+
+      //Activated += Login_Activated;
     }
     #endregion
 
     #region UI event handling
+    //private void Login_Deactivated(object sender, EventArgs e) {
+    //  Visibility = Visibility.Hidden;
+    //}
+
+    //private void Login_Activated(object sender, EventArgs e) {
+    //  Mouse.Capture(this, CaptureMode.SubTree);
+    //  MouseUp += Login_MouseUp;
+    //}
+
+    //private void Login_MouseUp(object sender, MouseButtonEventArgs e) {
+    //  if (Visibility == Visibility.Visible) {
+    //    Point mousePos = e.GetPosition(this);
+    //    if (mousePos.X < 0 || mousePos.X > ActualWidth || mousePos.Y < 0 || mousePos.Y > ActualHeight) {
+    //      //Visibility = Visibility.Hidden;
+    //      Close();
+    //    }
+    //  }
+    //}
+
+    //private void NotifyIcon_Click(object sender, EventArgs e) {
+    //  Visibility = Visibility.Visible;
+    //}
+
     private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e) {
       Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
       e.Handled = true;
@@ -158,7 +193,7 @@ namespace UI.Views {
     private void Connection_OnValidationFailure(string reason) {
       _connecting = false;
       Dispatcher.Invoke(() => {
-        MessageBox.Show(reason, "Connection failed", MessageBoxButton.OK);
+        MessageBox.Show(reason, "Fontstore - Connection failed", MessageBoxButton.OK);
         EnableUserInputs();
       });
     }
