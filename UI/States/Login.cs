@@ -20,7 +20,7 @@
     }
 
     public override void Hide() {
-      _view?.Hide();
+      _view?.Close();
       _view = null;
     }
   }

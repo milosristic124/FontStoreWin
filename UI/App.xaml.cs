@@ -33,8 +33,12 @@ namespace UI {
       Connection = Core.Factory.InitializeServerConnection(Storage);
 
       InitializeNotificationIcon();
+      _wasDragged = false;
+      _dragStart = new Point(0, 0);
 
       Deactivated += App_Deactivated;
+      Activated += App_Activated;
+
 
       _ui.State = new States.Login(this);
     }
@@ -68,9 +72,14 @@ namespace UI {
 
     #region event handling
     private void App_Deactivated(object sender, EventArgs e) {
+      Console.WriteLine("App deactivated");
       if (!_wasDragged) { // don't close the window when clicking outside if it was dragged elsewhere
         _ui.State.Hide();
       }
+    }
+
+    private void App_Activated(object sender, EventArgs e) {
+      Console.WriteLine("App activated");
     }
 
     private void NotifyIcon_Click(object sender, EventArgs e) {

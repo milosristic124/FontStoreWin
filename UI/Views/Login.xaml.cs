@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Diagnostics;
 using System.Windows.Navigation;
-using UI.Utilities;
 
 namespace UI.Views {
   /// <summary>
@@ -72,7 +65,7 @@ namespace UI.Views {
 
     #region UI event handling
     private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e) {
-      Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+      URINavigate(e.Uri);
       e.Handled = true;
     }
 
@@ -117,6 +110,31 @@ namespace UI.Views {
     private void LoginButton_Click(object sender, RoutedEventArgs e) {
       Connect();
     }
+
+    private void MenuButton_Click(object sender, RoutedEventArgs e) {
+      MenuButton.ContextMenu.IsEnabled = true;
+      MenuButton.ContextMenu.PlacementTarget = MenuButton;
+      MenuButton.ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+      MenuButton.ContextMenu.IsOpen = true;
+    }
+
+    private void Visit_Click(object sender, RoutedEventArgs e) {
+      URINavigate(new Uri("http://fontstore.com"));
+      e.Handled = true;
+    }
+
+    private void Help_Click(object sender, RoutedEventArgs e) {
+      URINavigate(new Uri("http://fontstore.com/faq"));
+      e.Handled = true;
+    }
+
+    private void Quit_Click(object sender, RoutedEventArgs e) {
+      _application.Connection.Disconnect();
+      _application.Shutdown();
+    }
+
+    private void About_Click(object sender, RoutedEventArgs e) {
+    }
     #endregion
 
     #region private methods
@@ -151,6 +169,10 @@ namespace UI.Views {
       LoginInput.IsEnabled = true;
       PasswordInput.IsEnabled = true;
       RememberCheck.IsEnabled = true;
+    }
+
+    private void URINavigate(Uri uri) {
+      Process.Start(new ProcessStartInfo(uri.AbsoluteUri));
     }
     #endregion
 
