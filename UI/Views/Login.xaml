@@ -13,7 +13,7 @@
     <Grid.OpacityMask>
       <VisualBrush Visual="{Binding ElementName=border}"/>
     </Grid.OpacityMask>
-    <Border x:Name="border" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" CornerRadius="12" Background="White" d:IsLocked="True" />
+    <Border x:Name="border" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" CornerRadius="12" Background="White" />
     <Grid x:Name="HeaderGrid" Margin="0" VerticalAlignment="Top" Cursor="" Height="70">
       <Grid.Background>
         <SolidColorBrush Color="{DynamicResource FSBlue}"/>

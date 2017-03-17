@@ -5,6 +5,7 @@ using Utilities.FSM;
 using System;
 using Microsoft.Win32;
 using System.Windows.Input;
+using UI.Views;
 
 namespace UI {
   /// <summary>
@@ -26,7 +27,7 @@ namespace UI {
 
     #region ctor
     public App() {
-      _ui = new FiniteStateMachine<States.UIState>(new States.NoUI(this));
+      _ui = new FiniteStateMachine<States.UIState>(new States.NoUI(this), true);
       _ui.Start();
 
       Storage = Core.Factory.InitializeStorage();
@@ -37,8 +38,9 @@ namespace UI {
       _dragStart = new Point(0, 0);
 
       Deactivated += App_Deactivated;
-      Activated += App_Activated;
-
+      Activated += delegate {
+        Console.WriteLine("App activated");
+      };
 
       _ui.State = new States.Login(this);
     }
@@ -78,15 +80,12 @@ namespace UI {
       }
     }
 
-    private void App_Activated(object sender, EventArgs e) {
-      Console.WriteLine("App activated");
-    }
-
     private void NotifyIcon_Click(object sender, EventArgs e) {
       if (_wasDragged && _ui.State.IsShown) {
         _ui.State.Hide();
         _wasDragged = false;
-      } else if (!_ui.State.IsShown) {
+      }
+      else if (!_ui.State.IsShown) {
         _ui.State.Show();
         MainWindow.Activate();
       }

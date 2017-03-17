@@ -5,18 +5,18 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Navigation;
+using UI.Utilities;
 
 namespace UI.Views {
   /// <summary>
   /// Interaction logic for Login.xaml
   /// </summary>
-  public partial class Login : Window {
+  public partial class Login : Window, IView {
     #region private data
     private static readonly string EmailPlaceholder = "Email Address";
 
-    private App _application;
+    //private App _application;
     private bool _connecting;
-    private Point _dragStartPos;
 
     private bool LoginEnabled {
       get {
@@ -47,25 +47,58 @@ namespace UI.Views {
     }
     #endregion
 
+    #region delegates
+    public delegate void OnConnectHandler(string email, string password, bool saveCredentials);
+    #endregion
+
+    #region events
+    public event OnExitHandler OnExit;
+    public event OnConnectHandler OnConnect;
+    #endregion
+
+    #region properties
+    public UIElement DragHandle {
+      get {
+        if (IsInitialized) {
+          return HeaderGrid;
+        }
+        return null;
+      }
+    }
+    #endregion
+
     #region ctor
     public Login() {
       InitializeComponent();
-
-      _application = Application.Current as App;
       _connecting = false;
 
       // Set the login input placeholder
       LoginInput.Text = EmailPlaceholder;
+    }
+    #endregion
 
-      _application.SetDragHandle(HeaderGrid);
-      _application.Connection.OnValidationFailure += Connection_OnValidationFailure;
-      _application.Connection.OnEstablished += Connection_OnEstablished;
+    #region methods
+    public void ConnectionRequestStarted() {
+      _connecting = true;
+      DisableUserInputs();
+      ConnectingBar.Visibility = Visibility.Visible;
+    }
+
+    public void ConnectionRequestFailed(string error) {
+      _connecting = false;
+      ConnectingBar.Visibility = Visibility.Hidden;
+      MessageBox.Show(error, "Fontstore - Connection failed", MessageBoxButton.OK);
+      EnableUserInputs();
+    }
+
+    public void InvokeOnUIThread(Action action) {
+      Dispatcher.Invoke(action);
     }
     #endregion
 
     #region UI event handling
     private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e) {
-      URINavigate(e.Uri);
+      ViewsUtility.NavigateToUri(e.Uri);
       e.Handled = true;
     }
 
@@ -119,18 +152,17 @@ namespace UI.Views {
     }
 
     private void Visit_Click(object sender, RoutedEventArgs e) {
-      URINavigate(new Uri("http://fontstore.com"));
+      ViewsUtility.NavigateToUri(new Uri("http://fontstore.com"));
       e.Handled = true;
     }
 
     private void Help_Click(object sender, RoutedEventArgs e) {
-      URINavigate(new Uri("http://fontstore.com/faq"));
+      ViewsUtility.NavigateToUri(new Uri("http://fontstore.com/faq"));
       e.Handled = true;
     }
 
     private void Quit_Click(object sender, RoutedEventArgs e) {
-      _application.Connection.Disconnect();
-      _application.Shutdown();
+      OnExit?.Invoke();
     }
 
     private void About_Click(object sender, RoutedEventArgs e) {
@@ -147,14 +179,8 @@ namespace UI.Views {
 
     private void Connect() {
       if (LoginEnabled && !_connecting) {
-        _connecting = true;
-        DisableUserInputs();
-        ConnectingBar.Visibility = Visibility.Visible;
-        _application.Connection.Connect(Email, Password);
+        OnConnect?.Invoke(Email, Password, RememberCheck.Checked);
       }
-    }
-
-    private void ShowConnectingUI() {
     }
 
     private void DisableUserInputs() {
@@ -169,28 +195,6 @@ namespace UI.Views {
       LoginInput.IsEnabled = true;
       PasswordInput.IsEnabled = true;
       RememberCheck.IsEnabled = true;
-    }
-
-    private void URINavigate(Uri uri) {
-      Process.Start(new ProcessStartInfo(uri.AbsoluteUri));
-    }
-    #endregion
-
-    #region connection event handling
-    private void Connection_OnEstablished(Protocol.Payloads.UserData userData) {
-      _connecting = false;
-      bool saveCredentials = RememberCheck.Checked;
-      // no need to enable user inputs, he won't need it were he is going (main screen)
-      MessageBox.Show(string.Format("Welcome {0} {1}", userData.FirstName, userData.LastName), "Connection succeed", MessageBoxButton.OK);
-    }
-
-    private void Connection_OnValidationFailure(string reason) {
-      Dispatcher.Invoke(() => {
-        _connecting = false;
-        ConnectingBar.Visibility = Visibility.Hidden;
-        MessageBox.Show(reason, "Fontstore - Connection failed", MessageBoxButton.OK);
-        EnableUserInputs();
-      });
     }
     #endregion
   }

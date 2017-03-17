@@ -2,37 +2,51 @@
 
 namespace Utilities.FSM {
   public class FiniteStateMachine<T> where T : class, IState<T> {
+    #region data
     private T _defaultState;
     private bool _started;
     private T _state;
+    private bool _startBeforeStop;
+    #endregion
 
+    #region properties
     public T State {
       get {
         return _state;
       }
       set {
         if (_started) {
-          if (_state.WillTransition)
-            _state.Stop();
-          else // the state is not ready for transition
-            _state.Abort();
+          T oldState = _state;
+          T newState = value;
 
-          _state = value;
-          if (_state == null) {
+          if (newState == null) {
             _state = _defaultState;
+          } else {
+            _state = newState;
           }
 
-          _state.Start(this);
+          if (_startBeforeStop) {
+            StartState(newState, this);
+            StopState(oldState);
+          } else {
+            StopState(oldState);
+            StartState(newState, this);
+          }
         }
       }
     }
+    #endregion
 
-    public FiniteStateMachine(T defaultState) {
+    #region ctor
+    public FiniteStateMachine(T defaultState, bool startBeforeStop = false) {
       _defaultState = defaultState;
       _state = _defaultState;
       _started = false;
+      _startBeforeStop = startBeforeStop;
     }
+    #endregion
 
+    #region methods
     public void Start() {
       if (!_started) {
         State.Start(this);
@@ -49,20 +63,19 @@ namespace Utilities.FSM {
         _started = false;
       }
     }
+    #endregion
 
-    public void Reset() {
-      if (_started) {
-        if (State.WillTransition)
-          _state.Stop();
-        else
-          _state.Abort();
-      }
-
-      _state = _defaultState;
-
-      if (_started) {
-        _state.Start(this);
-      }
+    #region private methods
+    private static void StopState(T state) {
+      if (state.WillTransition)
+        state.Stop();
+      else // the state is not ready for transition
+        state.Abort();
     }
+
+    private static void StartState(T state, FiniteStateMachine<T> context) {
+      state.Start(context);
+    }
+    #endregion
   }
 }

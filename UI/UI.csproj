@@ -63,6 +63,8 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Utilities\ViewsUtility.cs" />
+    <Compile Include="Views\IView.cs" />
     <Page Include="Controls\RadioCheckbox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -70,6 +72,10 @@
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\FontList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Login.xaml">
       <SubType>Designer</SubType>
@@ -82,9 +88,13 @@
     <Compile Include="Controls\RadioCheckbox.xaml.cs">
       <DependentUpon>RadioCheckbox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="States\FontList.cs" />
     <Compile Include="States\Login.cs" />
     <Compile Include="States\UIState.cs" />
     <Compile Include="Utilities\TaskBarLocationProvider.cs" />
+    <Compile Include="Views\FontList.xaml.cs">
+      <DependentUpon>FontList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
@@ -152,6 +162,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\WhiteTriangle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\BlackTriangle.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
