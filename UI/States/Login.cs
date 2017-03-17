@@ -16,6 +16,7 @@
         _view = new Views.Login();
         Application.MainWindow = _view;
         SetWindowPosition(_view);
+        _view.Show();
       }
     }
 
