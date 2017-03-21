@@ -1,4 +1,4 @@
-﻿using Protocol.Transport;
+﻿using Utilities.Extensions;
 
 namespace Protocol.Impl.States {
   class UpdatingFonts : ConnectionState {
@@ -31,8 +31,11 @@ namespace Protocol.Impl.States {
 
     #region event handling
     private void UserChannel_OnUpdateComplete() {
-      WillTransition = true;
-      //FSM.State = new Running(_context);
+      // local catalog is up-to-date, let's save it
+      _context.Storage.Save().Then(delegate {
+        WillTransition = true;
+        FSM.State = new Installing(_context);
+      });
     }
 
     private void UserChannel_OnFontDeactivation(string uid) {

@@ -4,6 +4,8 @@ using System;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using Utilities;
+using Utilities.Extensions;
 
 namespace Protocol.Impl.States {
   class Authenticating : ConnectionState {
@@ -11,11 +13,6 @@ namespace Protocol.Impl.States {
     private Payloads.Authentication _authPayload;
     private IHttpRequest _authRequest;
 
-#if DEBUG
-    private static readonly string AuthenticationEndpoint = "http://localhost:3000/api/desktop/session";
-#else
-    private static readonly string AuthenticationEndpoint = "https://app.fontstore.com/session/desktop";
-#endif
     private static readonly int AuthenticationTimeout = 60000;
     #endregion
 
@@ -24,7 +21,7 @@ namespace Protocol.Impl.States {
       _authPayload = new Payloads.Authentication {
         Login = email,
         Password = password,
-        ProtocolVersion = "0.0.3",
+        ProtocolVersion = "0.2.8",
         ApplicationVersion = "0.2",
         Os = "Win",
         OsVersion = Environment.OSVersion.VersionString
@@ -47,8 +44,8 @@ namespace Protocol.Impl.States {
       _authRequest = null;
     }
 
-    protected override void Start() {
-      _authRequest = _context.Transport.CreateHttpRequest(AuthenticationEndpoint);
+    protected override async void Start() {
+      _authRequest = _context.Transport.CreateHttpRequest(Urls.Authentication);
 
       _authRequest.Method = WebRequestMethods.Http.Post;
       _authRequest.ContentType = "application/json";
@@ -73,10 +70,8 @@ namespace Protocol.Impl.States {
         return;
       }
 
-      _authRequest.Response.ContinueWith(requestTask => {
-        if (requestTask.Status == TaskStatus.RanToCompletion) {
-          IHttpResponse response = requestTask.Result;
-
+      await _authRequest.Response
+        .Then(response => {
           using (StreamReader body = new StreamReader(response.ResponseStream)) {
             string data = body.ReadToEnd();
 
@@ -91,12 +86,11 @@ namespace Protocol.Impl.States {
               FSM.State = new Connecting(_context, userData);
             }
           }
-        }
-        else {
+        })
+        .Recover(e => {
           WillTransition = true;
           FSM.State = new RetryAuthenticating(_context, _authPayload.Login, _authPayload.Password);
-        }
-      });
+        });
     }
     #endregion
   }

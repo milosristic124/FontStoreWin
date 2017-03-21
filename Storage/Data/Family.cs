@@ -4,6 +4,20 @@ namespace Storage.Data {
   public class Family {
     public string Name { get; private set; }
     public List<Font> Fonts { get; private set; }
+    public bool HasNewFont {
+      get {
+        return Fonts.Exists((font) => {
+          return font.IsNew;
+        });
+      }
+    }
+    public bool HasActivatedFont {
+      get {
+        return Fonts.Exists((font) => {
+          return font.Activated;
+        });
+      }
+    }
 
     public Family(string name, List<Font> fonts = null) {
       Name = name;

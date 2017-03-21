@@ -10,7 +10,7 @@ namespace Protocol.Payloads {
     public string FamilyName { get; set; }
     [JsonProperty("download_url")]
     public string DownloadUrl { get; set; }
-    [JsonProperty("is_new")]
-    public bool IsNew { get; set; }
+    [JsonProperty("created_at")]
+    public int CreatedAt { get; set; }
   }
 }

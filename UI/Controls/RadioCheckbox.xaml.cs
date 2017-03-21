@@ -27,9 +27,11 @@ namespace UI.Controls {
     private void UserControl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
       Checked = !Checked;
       if (Checked) {
-        Tick.Visibility = Visibility.Visible;
+        //Tick.Visibility = Visibility.Visible;
+        (Tick.Fill as SolidColorBrush).Color = (Color)FindResource("FSBlack");
       } else {
-        Tick.Visibility = Visibility.Hidden;
+        //Tick.Visibility = Visibility.Hidden;
+        (Tick.Fill as SolidColorBrush).Color = (Color)FindResource("FSGrey");
       }
     }
   }

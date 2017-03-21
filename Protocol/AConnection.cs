@@ -1,6 +1,8 @@
 ﻿using Protocol.Payloads;
 using Protocol.Transport;
 using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Protocol {
   public abstract class AConnection: IConnection {
@@ -10,6 +12,9 @@ namespace Protocol {
 
     public TimeSpan AuthenticationRetryInterval { get; protected set; }
     public TimeSpan ConnectionRetryInterval { get; protected set; }
+
+    public int DownloadParallelism { get; protected set; }
+    public TimeSpan DownloadTimeout { get; protected set; }
     #endregion
 
     #region ctor

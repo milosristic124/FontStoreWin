@@ -53,7 +53,9 @@
     <Compile Include="States\Connected.cs" />
     <Compile Include="States\Connecting.cs" />
     <Compile Include="States\ConnectionState.cs" />
+    <Compile Include="States\Installing.cs" />
     <Compile Include="States\RetryStates.cs" />
+    <Compile Include="States\Running.cs" />
     <Compile Include="States\UpdatingCatalog.cs" />
     <Compile Include="States\UpdatingFonts.cs" />
   </ItemGroup>

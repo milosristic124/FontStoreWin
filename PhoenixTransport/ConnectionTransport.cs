@@ -1,6 +1,7 @@
 ﻿using PhoenixSocket;
 using SuperSocket.ClientEngine;
 using System;
+using System.Collections.Generic;
 using System.Net;
 
 namespace Protocol.Transport.Phoenix {
@@ -20,7 +21,13 @@ namespace Protocol.Transport.Phoenix {
       if (EndPoint == null) {
         throw new Exception("An EndPoint must be defined in order to connect the connection's transport");
       }
-      _socket = new Socket(EndPoint);
+#if DEBUG
+      _socket = new Socket(EndPoint, logger: (string s1, string s2, object _) => {
+        Console.WriteLine(string.Format("Socket log: [{0}] [{1}]", s1, s2));
+      }, urlparams: UrlParams);
+#else
+      _socket = new Socket(EndPoint, urlparams: UrlParams);
+#endif
       _socket.Opened += _socket_Opened;
       _socket.Closed += _socket_Closed;
       _socket.Error += _socket_Error;

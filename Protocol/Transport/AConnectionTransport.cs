@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Protocol.Transport {
   public abstract class AConnectionTransport : IConnectionTransport {
     #region properties
     public string EndPoint { get; set; }
     public string AuthToken { get; set; }
+    public Dictionary<string, string> UrlParams { get; set; }
     #endregion
 
     #region ctor
     public AConnectionTransport() {
       EndPoint = null;
       AuthToken = null;
+      UrlParams = new Dictionary<string, string>();
     }
     #endregion
 

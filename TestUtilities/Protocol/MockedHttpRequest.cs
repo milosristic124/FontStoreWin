@@ -8,13 +8,12 @@ using System.Threading.Tasks;
 namespace TestUtilities.Protocol {
   public class MockedHttpRequest : IHttpRequest {
     #region private data
-    private string _endpoint;
     private MemoryStream _bodyStream;
     #endregion
 
     #region properties
     public string ContentType { get; set; }
-
+    public string Endpoint { get; private set; }
     public string Method { get; set; }
 
     public Stream RequestStream {
@@ -32,7 +31,7 @@ namespace TestUtilities.Protocol {
             return response;
           }
 
-          throw new WebException(string.Format("No response provided for http request - {0}:{1}", Method, _endpoint));
+          throw new WebException(string.Format("No response provided for http request - {0}:{1}", Method, Endpoint));
         });
       }
     }
@@ -42,7 +41,7 @@ namespace TestUtilities.Protocol {
 
     #region ctor
     internal MockedHttpRequest(string endpoint) {
-      _endpoint = endpoint;
+      Endpoint = endpoint;
       _bodyStream = new MemoryStream();
     }
     #endregion

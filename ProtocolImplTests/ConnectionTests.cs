@@ -5,6 +5,8 @@ using Storage;
 using Storage.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -204,10 +206,104 @@ namespace Protocol.Impl.Tests {
         transport.SimulateMessage("catalog", "update:complete");
         autoResetEvent.WaitOne(); // wait for the fonts update request
         transport.SimulateMessage(UserTopicEvent(connection), "font:activation", TestData.Font1_Id);
+        transport.SimulateMessage(UserTopicEvent(connection), "update:complete");
 
         Assert.IsTrue(fontUpdateRequested, "Updating the catalog should request an update of the catalog fonts status");
         bool? isActivated = storage.FindFont(TestData.Font1_Description.UID)?.Activated;
         Assert.IsTrue(isActivated.HasValue && isActivated.Value, "Font activation message should activate fonts in the font storage");
+      });
+    }
+
+    [TestMethod]
+    public void UpdateCatalog_shouldTriggerEvent_whenUpdateIsFinished() {
+      MockedTransport transport = new MockedTransport();
+      MockedStorage storage = new MockedStorage();
+      Connection connection = new TestConnection(transport, storage);
+
+      connected(transport, connection, delegate {
+        AutoResetEvent autoResetEvent = new AutoResetEvent(false);
+        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+          if (evt == "catalog.update:request") {
+            autoResetEvent.Set();
+          }
+          else if (evt == UserTopicEvent(connection, "update:request")) {
+            autoResetEvent.Set();
+          }
+        };
+
+        transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
+          if (request.Endpoint.Contains("downloads")) {
+            return request.CreateResponse(HttpStatusCode.OK, "BODYBODYBODY");
+          }
+          return null;
+        };
+
+        connection.OnCatalogUpdateFinished += delegate {
+          autoResetEvent.Set();
+        };
+
+        connection.UpdateCatalog();
+
+        autoResetEvent.WaitOne(); // wait for the catalog update request
+        transport.SimulateMessage("catalog", "font:description", TestData.Font1_Description);
+        transport.SimulateMessage("catalog", "update:complete");
+        autoResetEvent.WaitOne(); // wait for the fonts update request
+        transport.SimulateMessage(UserTopicEvent(connection), "font:activation", TestData.Font1_Id);
+        transport.SimulateMessage(UserTopicEvent(connection), "update:complete");
+
+        int timeout = 500;
+        bool eventRaised = autoResetEvent.WaitOne(timeout);
+
+        Assert.IsTrue(eventRaised, "Updating the catalog should trigger an update finished event when terminated");
+      });
+    }
+
+    [TestMethod]
+    public void UpdateCatalog_shouldDownloadNewFonts() {
+      MockedTransport transport = new MockedTransport();
+      MockedStorage storage = new MockedStorage();
+      Connection connection = new TestConnection(transport, storage);
+
+      connected(transport, connection, delegate {
+        AutoResetEvent catalogUpdateRequested = new AutoResetEvent(false);
+        AutoResetEvent fontUpdateRequested = new AutoResetEvent(false);
+        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+          if (evt == "catalog.update:request") {
+            catalogUpdateRequested.Set();
+          }
+          else if (evt == UserTopicEvent(connection, "update:request")) {
+            fontUpdateRequested.Set();
+          }
+        };
+
+        bool downloadRequested = false;
+        transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
+          if (request.Endpoint.Contains("downloads")) {
+            downloadRequested = true;
+            return request.CreateResponse(HttpStatusCode.OK, "BODYBODYBODY");
+          }
+          return null;
+        };
+
+        AutoResetEvent updateFinished = new AutoResetEvent(false);
+        connection.OnCatalogUpdateFinished += delegate {
+          updateFinished.Set();
+        };
+
+        connection.UpdateCatalog();
+
+        catalogUpdateRequested.WaitOne(); // wait for the catalog update request
+        transport.SimulateMessage("catalog", "font:description", TestData.Font1_Description);
+        transport.SimulateMessage("catalog", "update:complete");
+
+        fontUpdateRequested.WaitOne(); // wait for the fonts update request
+        transport.SimulateMessage(UserTopicEvent(connection), "font:activation", TestData.Font1_Id);
+        transport.SimulateMessage(UserTopicEvent(connection), "update:complete");
+
+        updateFinished.WaitOne(); // wait for the update to complete
+
+        Assert.IsTrue(downloadRequested, "Updating the catalog should download fonts");
+        storage.Verify("SaveFontFile", 1); // one font was saved
       });
     }
 
@@ -225,7 +321,10 @@ namespace Protocol.Impl.Tests {
                            int timeout = 1000)
     {
       MockedTransport.HttpRequestSentHandler httpRequestCallback = (MockedHttpRequest request, string body) => {
-        return request.CreateResponse(HttpStatusCode.OK, TestData.Serialize(TestData.UserData));
+        if (request.Endpoint.Contains("session")) {
+          return request.CreateResponse(HttpStatusCode.OK, TestData.Serialize(TestData.UserData));
+        }
+        return null;
       };
       MockedTransport.ConnectionAttemptHandler connectionAttemptCallback = () => {
         return true;
@@ -253,19 +352,55 @@ namespace Protocol.Impl.Tests {
       Assert.IsTrue(signaled, "Test should execute in less than {0}ms", timeout);
 
       if (error != null) {
-        throw error;
+        throw new Exception("Test failed", error);
       }
     }
     #endregion
   }
 
   public class MockedStorage : CallTracer, IFontStorage {
+    #region private data
+    private Dictionary<string, byte[]> _files;
+    #endregion
+
     #region properties
     public List<Family> Families { get; private set; }
+    public List<Family> ActivatedFamilies {
+      get {
+        return Families.Where((family) => {
+          return family.HasActivatedFont;
+        }).ToList();
+      }
+    }
+    public List<Family> NewFamilies {
+      get {
+        return Families.Where((family) => {
+          return family.HasNewFont;
+        }).ToList();
+      }
+    }
     public bool HasChanged { get; private set; }
     public bool Loaded { get; private set; }
     public DateTime? LastCatalogUpdate { get; set; }
     public DateTime? LastFontStatusUpdate { get; set; }
+    public int ActivatedCount {
+      get {
+        return ActivatedFamilies.SelectMany((family) => {
+          return family.Fonts.Where((font) => {
+            return font.Activated;
+          });
+        }).Count();
+      }
+    }
+    public int NewCount {
+      get {
+        return NewFamilies.SelectMany((family) => {
+          return family.Fonts.Where((font) => {
+            return font.IsNew;
+          });
+        }).Count();
+      }
+    }
     #endregion
 
     #region ctor
@@ -273,6 +408,7 @@ namespace Protocol.Impl.Tests {
       LastCatalogUpdate = DateTime.Now;
       LastFontStatusUpdate = DateTime.Now;
       Families = new List<Family>();
+      _files = new Dictionary<string, byte[]>();
     }
     #endregion
 
@@ -343,6 +479,21 @@ namespace Protocol.Impl.Tests {
       RegisterCall("Save");
       return Task.Factory.StartNew(() => {
         HasChanged = false;
+      });
+    }
+
+    public bool IsFontDownloaded(string uid) {
+      RegisterCall("IsFontDownloaded");
+      return _files.ContainsKey(uid);
+    }
+
+    public Task SaveFontFile(string uid, Stream data) {
+      RegisterCall("SaveFontFile");
+      return Task.Factory.StartNew(delegate {
+        using (MemoryStream mem = new MemoryStream()) {
+          data.CopyTo(mem);
+          _files[uid] = mem.ToArray();
+        }
       });
     }
     #endregion

@@ -58,6 +58,7 @@ namespace Protocol.Transport.Phoenix {
     #region ctor
     internal HttpRequest(HttpWebRequest request) {
       _impl = request;
+      Timeout = 60000;
     }
     #endregion
 

@@ -27,7 +27,7 @@ namespace Protocol.Impl.Channels {
       _underlying.On("font:deactivation", (Payloads.FontId fid) => {
         OnFontDeactivation?.Invoke(fid.UID);
       });
-      _underlying.On("udpate:complete", () => {
+      _underlying.On("update:complete", () => {
         OnUpdateComplete?.Invoke();
       });
 

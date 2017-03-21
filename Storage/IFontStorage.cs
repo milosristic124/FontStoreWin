@@ -2,11 +2,15 @@
 using Storage.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Storage {
   public interface IFontStorage {
     List<Family> Families { get; }
+    List<Family> ActivatedFamilies { get; }
+    List<Family> NewFamilies { get; }
+
     DateTime? LastCatalogUpdate { get; set; }
     DateTime? LastFontStatusUpdate { get; set; }
     bool Loaded { get; }
@@ -21,5 +25,8 @@ namespace Storage {
     void DeactivateFont(string uid);
 
     Font FindFont(string uid);
+
+    bool IsFontDownloaded(string uid);
+    Task SaveFontFile(string uid, Stream data);
   }
 }

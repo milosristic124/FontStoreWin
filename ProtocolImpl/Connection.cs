@@ -2,7 +2,10 @@
 using Protocol.Transport;
 using Storage;
 using System;
+using System.IO;
+using System.Net;
 using System.Threading.Tasks;
+using Utilities.Extensions;
 using Utilities.FSM;
 
 namespace Protocol.Impl {
@@ -24,6 +27,8 @@ namespace Protocol.Impl {
     public Connection(IConnectionTransport transport, IFontStorage storage): base(transport) {
       AuthenticationRetryInterval = TimeSpan.FromSeconds(10);
       ConnectionRetryInterval = TimeSpan.FromSeconds(10);
+      DownloadParallelism = 3;
+      DownloadTimeout = TimeSpan.FromSeconds(60);
 
       Storage = storage;
 
@@ -44,6 +49,10 @@ namespace Protocol.Impl {
     }
 
     public override void Disconnect() {
+      // we don't care about the current connection state
+      //Task.Factory.StartNew(() => {
+      //  _fsm.State = new Disconnecting(this);
+      //});
     }
 
     public override void UpdateCatalog() {
@@ -68,6 +77,10 @@ namespace Protocol.Impl {
 
     internal void TriggerValidationFailure(string error) {
       OnValidationFailure?.Invoke(error);
+    }
+
+    internal void TriggerUpdateFinished() {
+      OnCatalogUpdateFinished?.Invoke();
     }
     #endregion
 

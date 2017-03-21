@@ -15,10 +15,26 @@ namespace Storage.Impl {
     private string _storageRoot;
     private string _fontFile;
     private string _metaFile;
+    private string _fontRoot;
     #endregion
 
     #region properties
     public List<Family> Families { get; }
+    public List<Family> ActivatedFamilies {
+      get {
+        return Families.Where((family) => {
+          return family.HasActivatedFont;
+        }).ToList();
+      }
+    }
+    public List<Family> NewFamilies {
+      get {
+        return Families.Where((family) => {
+          return family.HasNewFont;
+        }).ToList();
+      }
+    }
+
     public DateTime? LastCatalogUpdate { get; set; }
     public DateTime? LastFontStatusUpdate { get; set; }
 
@@ -35,16 +51,21 @@ namespace Storage.Impl {
       Loaded = false;
       HasChanged = false;
 
+      LastCatalogUpdate = null;
+      LastFontStatusUpdate = null;
+
       _storageRoot = rootPath.Trim();
       if (!_storageRoot.EndsWith("\\")) {
         _storageRoot += "\\";
       }
 
-      LastCatalogUpdate = null;
-      LastFontStatusUpdate = null;
-
       if (!Directory.Exists(_storageRoot)) {
         Directory.CreateDirectory(_storageRoot);
+      }
+
+      _fontRoot = string.Format("{0}{1}", _storageRoot, "fnts\\");
+      if (!Directory.Exists(_fontRoot)) {
+        Directory.CreateDirectory(_fontRoot);
       }
 
       _fontFile = string.Format("{0}{1}", _storageRoot, "fnt.db");
@@ -91,12 +112,8 @@ namespace Storage.Impl {
         return Task.Factory.StartNew(() => { });
       }
 
-      if (!LastCatalogUpdate.HasValue) {
-        LastCatalogUpdate = DateTime.Now;
-      }
-      if (!LastFontStatusUpdate.HasValue) {
-        LastFontStatusUpdate = DateTime.Now;
-      }
+      LastCatalogUpdate = DateTime.Now;
+      LastFontStatusUpdate = DateTime.Now;
 
 
       Task metadataSaving = Task.Factory.StartNew(() => {
@@ -115,7 +132,7 @@ namespace Storage.Impl {
               UID = font.UID,
               FamilyName = font.FamilyName,
               Name = font.Name,
-              IsNew = font.IsNew,
+              CreatedAt = font.Description.CreatedAt,
               DownloadUrl = font.DownloadUrl.AbsoluteUri,
               Activated = font.Activated
             };
@@ -177,6 +194,14 @@ namespace Storage.Impl {
     public Font FindFont(string uid) {
       return FindFamilyByFontUID(uid)?.FindFont(uid);
     }
+
+    public bool IsFontDownloaded(string uid) {
+      return File.Exists(FontFilePath(uid));
+    }
+
+    public Task SaveFontFile(string uid, Stream data) {
+      return WriteData(FontFilePath(uid), data);
+    }
     #endregion
 
     #region private db management
@@ -201,6 +226,18 @@ namespace Storage.Impl {
         }
         else {
           return null;
+        }
+      });
+    }
+
+    private string FontFilePath(string uid) {
+      return string.Format("{0}{1}", _fontRoot, uid);
+    }
+
+    private Task WriteData(string path, Stream data) {
+      return Task.Factory.StartNew(delegate {
+        using (FileStream fileStream = File.Create(path)) {
+          data.CopyTo(fileStream);
         }
       });
     }

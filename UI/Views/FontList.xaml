@@ -1,9 +1,10 @@
-﻿<Window x:Class="UI.Views.FontList"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UI.Views"
+        xmlns:Controls="clr-namespace:UI.Controls" x:Class="UI.Views.FontList"
         mc:Ignorable="d"
         Title="FontList" Height="480" Foreground="{x:Null}" AllowsTransparency="True" WindowStyle="None" Background="{x:Null}" Width="330">
   <Grid>
@@ -11,8 +12,8 @@
       <VisualBrush Visual="{Binding ElementName=border}"/>
     </Grid.OpacityMask>
     <Border x:Name="border" BorderThickness="0" CornerRadius="12" Margin="0" Background="White"/>
-    <StackPanel Margin="0">
-      <Grid x:Name="HeaderGrid" Height="70" VerticalAlignment="Top">
+    <StackPanel Margin="0,0,0,40">
+      <Grid x:Name="HeaderGrid" Height="70" VerticalAlignment="Top" d:IsLocked="True">
         <Grid.Background>
           <SolidColorBrush Color="{DynamicResource FSBlue}"/>
         </Grid.Background>
@@ -21,13 +22,10 @@
           <Label x:Name="NameLabel" Content="Firstname Lastname" Background="{x:Null}" Foreground="White" Padding="0" VerticalContentAlignment="Center" Margin="0,0,7,0" FontFamily="/UI;component/Fonts/#Litmus" MaxWidth="150" HorizontalAlignment="Right"/>
           <Button x:Name="MenuButton" Content="" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Focusable="False" HorizontalAlignment="Right" Padding="0" Height="5" Foreground="{x:Null}" Width="10" VerticalAlignment="Center" Style="{DynamicResource FSButton}" Click="MenuButton_Click">
             <Button.ContextMenu>
-              <ContextMenu BorderThickness="0" FontFamily="/UI;component/Fonts/#Litmus" Padding="7,7,7,6">
+              <ContextMenu BorderThickness="0" FontFamily="/UI;component/Fonts/#Litmus" Padding="7,7,7,6" Background="#FFD2D2D2">
                 <ContextMenu.Foreground>
                   <SolidColorBrush Color="{DynamicResource FSBlack}"/>
                 </ContextMenu.Foreground>
-                <ContextMenu.Background>
-                  <SolidColorBrush Color="#FFD2D2D2"/>
-                </ContextMenu.Background>
                 <Button BorderBrush="{x:Null}" BorderThickness="0" Background="{x:Null}" Content="Account" Padding="0" Style="{DynamicResource FSMenuButton}" Click="Account_Click">
                   <Button.Foreground>
                     <SolidColorBrush Color="{DynamicResource FSBlack}"/>
@@ -72,6 +70,50 @@
           </Button>
         </StackPanel>
       </Grid>
+      <StackPanel Margin="0,0,0,40" Height="370">
+        <StackPanel x:Name="NavigationPanel" Height="40" Orientation="Horizontal" VerticalAlignment="Top" Margin="14,0">
+          <RadioButton x:Name="InstalledButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/UI;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Left">
+            <StackPanel Orientation="Horizontal">
+              <Label Background="{x:Null}" Padding="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Installed" Margin="0,0,4,0"/>
+              <Label Name="InstalledCountLabel" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(0)">
+                <Label.Foreground>
+                  <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                </Label.Foreground>
+              </Label>
+            </StackPanel>
+          </RadioButton>
+          <RadioButton x:Name="NewButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/UI;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Left" Margin="40,0,0,0">
+            <StackPanel Orientation="Horizontal">
+              <Label Background="{x:Null}" Padding="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Content="New" Margin="0,0,4,0"/>
+              <Label x:Name="NewCountLabel" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(0)">
+                <Label.Foreground>
+                  <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                </Label.Foreground>
+              </Label>
+            </StackPanel>
+          </RadioButton>
+          <RadioButton x:Name="AllButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/UI;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Left" Margin="40,0,0,0">
+            <StackPanel Orientation="Horizontal">
+              <Label Background="{x:Null}" Padding="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Content="All Fonts" Margin="0,0,4,0"/>
+              <Label x:Name="AllCountLabel" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(0)">
+                <Label.Foreground>
+                  <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                </Label.Foreground>
+              </Label>
+            </StackPanel>
+          </RadioButton>
+        </StackPanel>
+        <Separator Height="1" Margin="0" VerticalAlignment="Top" d:IsLocked="True">
+          <Separator.Background>
+            <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+          </Separator.Background>
+        </Separator>
+        <ProgressBar x:Name="LoadingBar" Height="3" IsIndeterminate="True" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Visibility="Collapsed" d:IsLocked="True">
+          <ProgressBar.Foreground>
+            <SolidColorBrush Color="{DynamicResource FSBlue}"/>
+          </ProgressBar.Foreground>
+        </ProgressBar>
+      </StackPanel>
     </StackPanel>
   </Grid>
 </Window>

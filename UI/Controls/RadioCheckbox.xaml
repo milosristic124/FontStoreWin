@@ -11,7 +11,7 @@
       <Border.BorderBrush>
         <SolidColorBrush Color="{DynamicResource FSBlack}"/>
       </Border.BorderBrush>
-      <Ellipse x:Name="Tick" Visibility="Hidden">
+      <Ellipse x:Name="Tick">
         <Ellipse.Fill>
           <SolidColorBrush Color="{DynamicResource FSGrey}"/>
         </Ellipse.Fill>

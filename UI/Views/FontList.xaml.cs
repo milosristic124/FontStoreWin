@@ -20,6 +20,9 @@ namespace UI.Views {
   public partial class FontList : Window, IView {
     #region data
     private Protocol.Payloads.UserData _userData;
+    private int _installedCount;
+    private int _newCount;
+    private int _allCount;
     #endregion
 
     #region properties
@@ -29,6 +32,33 @@ namespace UI.Views {
           return HeaderGrid;
         }
         return null;
+      }
+    }
+    public int InstalledCount {
+      get {
+        return _installedCount;
+      }
+      set {
+        _installedCount = value;
+        InstalledCountLabel.Content = string.Format("({0})", _installedCount);
+      }
+    }
+    public int NewCount {
+      get {
+        return _newCount;
+      }
+      set {
+        _newCount = value;
+        NewCountLabel.Content = string.Format("({0})", _newCount);
+      }
+    }
+    public int AllCount {
+      get {
+        return _allCount;
+      }
+      set {
+        _allCount = value;
+        AllCountLabel.Content = string.Format("({0})", _allCount);
       }
     }
     #endregion
@@ -54,6 +84,20 @@ namespace UI.Views {
     #region methods
     public void InvokeOnUIThread(Action action) {
       Dispatcher.Invoke(action);
+    }
+
+    public void LoadingState(bool isLoading) {
+      if (isLoading) {
+        LoadingBar.Visibility = Visibility.Visible;
+        InstalledCountLabel.Visibility = Visibility.Collapsed;
+        NewCountLabel.Visibility = Visibility.Collapsed;
+        AllCountLabel.Visibility = Visibility.Collapsed;
+      } else {
+        LoadingBar.Visibility = Visibility.Collapsed;
+        InstalledCountLabel.Visibility = Visibility.Visible;
+        NewCountLabel.Visibility = Visibility.Visible;
+        AllCountLabel.Visibility = Visibility.Visible;
+      }
     }
     #endregion
 
@@ -81,7 +125,7 @@ namespace UI.Views {
     }
 
     private void Help_Click(object sender, RoutedEventArgs e) {
-      ViewsUtility.NavigateToUri(new Uri("http://fontstore.com/faq"));
+      ViewsUtility.NavigateToUri(new Uri("http://fontstore.com/faqs"));
       e.Handled = true;
     }
 

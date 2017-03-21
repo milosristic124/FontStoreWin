@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 namespace Utilities.Extensions {
   public static class TaskExtensions {
+    #region Then extension
     public static async Task Then(this Task antecedent, Action continuation) {
       await antecedent;
       continuation();
@@ -38,5 +39,33 @@ namespace Utilities.Extensions {
     public static async Task<TNewResult> Then<TResult, TNewResult>(this Task<TResult> antecedent, Func<TResult, Task<TNewResult>> continuation) {
       return await continuation(await antecedent);
     }
+    #endregion
+
+    #region Recover extension
+    public static async Task Recover(this Task antecedent, Action<Exception> recover) {
+      await antecedent.ContinueWith(t => {
+        if (t.IsFaulted) {
+          recover(t.Exception);
+        }
+      });
+    }
+
+    public static async Task Recover<TResult>(this Task<TResult> antecedent, Action<Exception> recover) {
+      await antecedent.ContinueWith(t => {
+        if (t.IsFaulted) {
+          recover(t.Exception);
+        }
+      });
+    }
+
+    public static async Task<TResult> Recover<TResult>(this Task<TResult> antecedent, Func<Exception, TResult> recover) {
+      return await antecedent.ContinueWith(t => {
+        if (t.IsFaulted) {
+          return recover(t.Exception);
+        }
+        return t.Result;
+      });
+    }
+    #endregion
   }
 }

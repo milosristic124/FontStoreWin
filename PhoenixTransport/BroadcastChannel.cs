@@ -1,5 +1,5 @@
-﻿using PhoenixSocket;
-using Protocol.Payloads;
+﻿using Newtonsoft.Json;
+using PhoenixSocket;
 using System;
 
 namespace Protocol.Transport.Phoenix {
@@ -40,7 +40,7 @@ namespace Protocol.Transport.Phoenix {
 
     public IBroadcastChannel On<T>(string evt, Action<T> callback) where T: class {
       _channel.On(evt, (dynamic data) => {
-        callback?.Invoke(data as T);
+        callback?.Invoke(JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(data)));
       });
       return this;
     }

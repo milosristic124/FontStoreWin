@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Protocol.Payloads;
+using System;
 
 namespace TestUtilities {
   public class TestData {
@@ -29,16 +30,16 @@ namespace TestUtilities {
       UID = "test_font_uid",
       FamilyName = "TestFamilyName",
       Name = "TestFontName",
-      DownloadUrl = "http://localhost/font/test_font_uid/download",
-      IsNew = true
+      DownloadUrl = "http://localhost/downloads/font/test_font_uid",
+      CreatedAt = TimeStamp_Now()
     };
 
     public static FontDescription Font1_Description2 = new FontDescription {
       UID = "test_font_uid",
       FamilyName = "TestFamilyName",
       Name = "TestFontName2",
-      DownloadUrl = "http://localhost/font/test_font_uid/download",
-      IsNew = false
+      DownloadUrl = "http://localhost/downloads/font/test_font_uid",
+      CreatedAt = TimeStamp_MinusDays(10)
     };
 
     public static FontId Font1_Id = new FontId {
@@ -50,12 +51,20 @@ namespace TestUtilities {
       UID = "test_font_uid_2",
       FamilyName = "TestFamilyName_2",
       Name = "TestFontName_2",
-      DownloadUrl = "http://localhost/font/test_font_uid_2/download",
-      IsNew = true
+      DownloadUrl = "http://localhost/downloads/font/test_font_uid_2",
+      CreatedAt = TimeStamp_Now()
     };
 
     public static FontId Font2_Id = new FontId {
       UID = Font2_Description.UID
     };
+
+    private static int TimeStamp_Now() {
+      return (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+    }
+
+    private static int TimeStamp_MinusDays(int days) {
+      return TimeStamp_Now() - (int)(new TimeSpan(days, 0, 0, 0).TotalSeconds);
+    }
   }
 }

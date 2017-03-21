@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Protocol.Transport {
   public delegate void TransportClosedHandler();
@@ -8,6 +9,7 @@ namespace Protocol.Transport {
   public interface IConnectionTransport {
     #region properties
     string EndPoint { get; set; }
+    Dictionary<string, string> UrlParams { get; set; }
     string AuthToken { get; set; }
     #endregion
 

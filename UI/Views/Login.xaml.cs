@@ -157,7 +157,7 @@ namespace UI.Views {
     }
 
     private void Help_Click(object sender, RoutedEventArgs e) {
-      ViewsUtility.NavigateToUri(new Uri("http://fontstore.com/faq"));
+      ViewsUtility.NavigateToUri(new Uri("http://fontstore.com/faqs"));
       e.Handled = true;
     }
 
