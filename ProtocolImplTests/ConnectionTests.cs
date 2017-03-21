@@ -307,6 +307,30 @@ namespace Protocol.Impl.Tests {
       });
     }
 
+    [TestMethod]
+    public void Disconnect_shouldDisconnectTheTransport() {
+      MockedTransport transport = new MockedTransport();
+      MockedStorage storage = new MockedStorage();
+      Connection connection = new TestConnection(transport, storage);
+
+      connected(transport, connection, delegate {
+        AutoResetEvent disconnected = new AutoResetEvent(false);
+        connection.OnDisconnected += () => {
+          disconnected.Set();
+        };
+
+        transport.OnDisconnectAttempt += () => true;
+
+        connection.Disconnect(DisconnectReason.Quit);
+
+        int timeout = 500;
+        bool signaled = disconnected.WaitOne(timeout);
+        Assert.IsTrue(signaled, "Disconnect should trigger a disconnected event");
+
+        transport.Verify("Disconnect", 1);
+      });
+    }
+
     #region supporting DSL
     private string UserTopicEvent(Connection connection, string evt = null) {
       if (evt == null)

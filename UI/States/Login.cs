@@ -15,6 +15,8 @@
 
     #region ctor
     public Login(App application) : base(application) {
+      Application.InitializeCore();
+
       _view = new Views.Login();
       Application.SetDragHandle(_view.DragHandle);
       Application.MainWindow = _view;
@@ -61,7 +63,7 @@
     }
 
     private void _view_OnExit() {
-      Application.Connection.Disconnect();
+      Application.Connection.Disconnect(Protocol.DisconnectReason.Quit);
       Application.Shutdown();
     }
     #endregion

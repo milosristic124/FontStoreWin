@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authentication.cs" />
+    <Compile Include="Disconnect.cs" />
     <Compile Include="FontId.cs" />
     <Compile Include="FontDescription.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,4 +1,5 @@
-﻿using Protocol.Transport;
+﻿using Newtonsoft.Json;
+using Protocol.Transport;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +40,12 @@ namespace Protocol.Impl.Channels {
       _underlying.Off("font:deactivation");
       _underlying.Off("udpate:complete");
       return _underlying.Leave();
+    }
+
+    public void SendDisconnect(string reason) {
+      _underlying.Send("disconnect", JsonConvert.SerializeObject(new Payloads.Disconnect {
+        Reason = reason
+      }));
     }
 
     public void SendUpdateRequest() {

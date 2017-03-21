@@ -4,9 +4,9 @@ namespace Protocol.Payloads {
   public class FontDescription {
     [JsonProperty("uid")]
     public string UID { get; set; }
-    [JsonProperty("name")]
+    [JsonProperty("font_style")]
     public string Name { get; set; }
-    [JsonProperty("family_name")]
+    [JsonProperty("font_family")]
     public string FamilyName { get; set; }
     [JsonProperty("download_url")]
     public string DownloadUrl { get; set; }

@@ -66,14 +66,12 @@ namespace UI.States {
     #region private methods
     private void ShowLoadingState() {
       _view.InvokeOnUIThread(() => {
-        Console.WriteLine("Loading catalog");
         _view.LoadingState(true);
       });
     }
 
     private void ShowLoadedState() {
       _view.InvokeOnUIThread(() => {
-        Console.WriteLine("Catalog loaded");
         _view.AllCount = Application.Storage.Families.Count;
         _view.NewCount = Application.Storage.NewFamilies.Count;
         _view.InstalledCount = Application.Storage.ActivatedFamilies.Count;
@@ -84,7 +82,7 @@ namespace UI.States {
 
     #region action handling
     private void _view_OnLogout() {
-      Application.Connection.Disconnect();
+      Application.Connection.Disconnect(Protocol.DisconnectReason.Logout);
       _view.InvokeOnUIThread(() => {
         WillTransition = true;
         FSM.State = new Login(Application);
@@ -94,14 +92,13 @@ namespace UI.States {
     }
 
     private void _view_OnExit() {
-      Application.Connection.Disconnect();
+      Application.Connection.Disconnect(Protocol.DisconnectReason.Quit);
       Application.Shutdown();
     }
     #endregion
 
     #region event handling
     private async void Connection_OnCatalogUpdateFinished() {
-      Console.WriteLine("Catalog update finished");
       await Application.Storage.Save();
       ShowLoadedState();
     }

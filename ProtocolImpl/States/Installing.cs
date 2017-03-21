@@ -53,12 +53,12 @@ namespace Protocol.Impl.States {
       Task download = downloadSteps.Aggregate(seed, (previousStep, step) => {
         return previousStep.Then(async delegate {
           // we start this download step only when the previous step has successfully finished
-          IEnumerable<Task> downloadTasks = step.Select(font => { // for each fonts in this step:
+          IEnumerable<Task> downloadTasks = step.Select(async font => { // for each fonts in this step:
             if (_cancelSource.IsCancellationRequested) { // do NOT start downloading the file if cancellation is requested
-              return new Task(delegate { });
+              await new Task(delegate { });
+            } else {
+              await DownloadFont(font);
             }
-
-            return DownloadFont(font);
           });
 
           // synchronize download tasks so that this step finishes only when all downloads are finished and saved to storage
@@ -71,17 +71,17 @@ namespace Protocol.Impl.States {
     #endregion
 
     #region private methods
-    private Task DownloadFont(Font font) {
+    private async Task DownloadFont(Font font) {
       IHttpRequest request = _context.Transport.CreateHttpRequest(font.DownloadUrl.AbsoluteUri);
       request.Method = WebRequestMethods.Http.Get;
 
-      return request.Response.Then(response => {
+      await request.Response.Then(async response => {
         using(response.ResponseStream) {
           if (!_cancelSource.IsCancellationRequested) {
-            return _context.Storage.SaveFontFile(font.UID, response.ResponseStream);
+            await _context.Storage.SaveFontFile(font.UID, response.ResponseStream);
           }
           else { // do NOT save the file if cancellation was requested
-            return Task.Factory.StartNew(() => { });
+            await Task.Factory.StartNew(() => { });
           }
         }
       });
@@ -97,7 +97,7 @@ namespace Protocol.Impl.States {
         foreach(Font font in family.Fonts) {
           if (font.Activated) {
             // TODO: Activate font
-            Console.WriteLine($"Activating font {font.Name}");
+            Console.WriteLine("Activating font");
           }
         }
       }

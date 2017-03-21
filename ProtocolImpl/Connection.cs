@@ -23,6 +23,13 @@ namespace Protocol.Impl {
     internal Channels.User UserChannel { get; private set; }
     #endregion
 
+    #region public events
+    public override event ConnectionEstablishedHandler OnEstablished;
+    public override event ConnectionValidationFailedHandler OnValidationFailure;
+    public override event CatalogUpdateFinishedHandler OnCatalogUpdateFinished;
+    public override event ConnectionClosedHandler OnDisconnected;
+    #endregion
+
     #region ctor
     public Connection(IConnectionTransport transport, IFontStorage storage): base(transport) {
       AuthenticationRetryInterval = TimeSpan.FromSeconds(10);
@@ -48,11 +55,10 @@ namespace Protocol.Impl {
       }
     }
 
-    public override void Disconnect() {
-      // we don't care about the current connection state
-      //Task.Factory.StartNew(() => {
-      //  _fsm.State = new Disconnecting(this);
-      //});
+    public override void Disconnect(DisconnectReason reason, string error = null) {
+      Task.Factory.StartNew(() => {
+        _fsm.State = new Disconnecting(this, reason, error);
+      });
     }
 
     public override void UpdateCatalog() {
@@ -82,6 +88,14 @@ namespace Protocol.Impl {
     internal void TriggerUpdateFinished() {
       OnCatalogUpdateFinished?.Invoke();
     }
+
+    internal void TriggerDisconnection() {
+      CatalogChannel = null;
+      UserChannel = null;
+      _fsm.State = new Idle(this);
+
+      OnDisconnected?.Invoke();
+    }
     #endregion
 
     #region private methods
@@ -94,12 +108,6 @@ namespace Protocol.Impl {
     private bool CanTransition<T>() where T: ConnectionState {
       return _fsm.State.CanTransitionTo<T>();
     }
-    #endregion
-
-    #region public events
-    public override event ConnectionEstablishedHandler OnEstablished;
-    public override event ConnectionValidationFailedHandler OnValidationFailure;
-    public override event CatalogUpdateFinished OnCatalogUpdateFinished;
     #endregion
   }
 }

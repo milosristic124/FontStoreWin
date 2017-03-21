@@ -1,8 +1,6 @@
 ﻿using Protocol.Payloads;
 using Protocol.Transport;
 using System;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace Protocol {
   public abstract class AConnection: IConnection {
@@ -25,14 +23,15 @@ namespace Protocol {
 
     #region methods
     public abstract void Connect(string email, string password);
-    public abstract void Disconnect();
+    public abstract void Disconnect(DisconnectReason reason, string error = null);
     public abstract void UpdateCatalog();
     #endregion
 
     #region IConnectionObservable
     public abstract event ConnectionEstablishedHandler OnEstablished;
     public abstract event ConnectionValidationFailedHandler OnValidationFailure;
-    public abstract event CatalogUpdateFinished OnCatalogUpdateFinished;
+    public abstract event CatalogUpdateFinishedHandler OnCatalogUpdateFinished;
+    public abstract event ConnectionClosedHandler OnDisconnected;
     #endregion
   }
 }

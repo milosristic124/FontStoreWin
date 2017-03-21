@@ -10,12 +10,14 @@ namespace TestUtilities.Protocol {
     private CallTracer _tracer;
     private Action _disconnectCallback;
     private bool _connecting;
+    private bool _disconnecting;
     private Dictionary<string, MockedBroadcastChannel> _channels;
     #endregion
 
     #region ctor
     public MockedTransport() : base() {
       _connecting = false;
+      _disconnecting = false;
       _tracer = new CallTracer();
       _disconnectCallback = null;
       _channels = new Dictionary<string, MockedBroadcastChannel>();
@@ -52,6 +54,9 @@ namespace TestUtilities.Protocol {
       _tracer.RegisterCall("Disconnect");
       _channels.Clear();
       _disconnectCallback = callback;
+      _disconnecting = true;
+
+      TriggerDisconnectionAttempt();
     }
 
     public override IHttpRequest CreateHttpRequest(string endpoint) {
@@ -68,11 +73,6 @@ namespace TestUtilities.Protocol {
       if (_channels.TryGetValue(topic, out chan)) {
         chan.SimulateMessage(evt, payload);
       }
-    }
-
-    public void SimulateDisconnection() {
-      _disconnectCallback?.Invoke();
-      _disconnectCallback = null;
     }
 
     public delegate void MessageSentHandler(MockedBroadcastResponse resp, string evt, dynamic payload);
@@ -93,6 +93,19 @@ namespace TestUtilities.Protocol {
         _onConnectionAttempt -= value;
       }
     }
+
+    public delegate bool DisconnectionAttemptHandler();
+    public event DisconnectionAttemptHandler OnDisconnectAttempt {
+      add {
+        _onDisconnectionAttempt += value;
+        if (_disconnecting) {
+          TriggerDisconnectionAttempt();
+        }
+      }
+      remove {
+        _onDisconnectionAttempt -= value;
+      }
+    }
     #endregion
 
     #region ICallTracer
@@ -107,6 +120,7 @@ namespace TestUtilities.Protocol {
 
     #region private events
     private event ConnectionAttemptHandler _onConnectionAttempt;
+    private event DisconnectionAttemptHandler _onDisconnectionAttempt;
     #endregion
 
     #region private methods
@@ -118,8 +132,8 @@ namespace TestUtilities.Protocol {
       return OnHttpRequestSent?.Invoke(request, body);
     }
 
-    private void TriggerConnectionAttempt() {
-      Task.Factory.StartNew(() => {
+    private async void TriggerConnectionAttempt() {
+      await Task.Factory.StartNew(() => {
         bool? shouldConnect = _onConnectionAttempt?.Invoke();
         if (shouldConnect.HasValue) {
           _connecting = false;
@@ -128,6 +142,19 @@ namespace TestUtilities.Protocol {
             Opened?.Invoke();
           } else {
             Error?.Invoke(new WebException("Connection fail simulation"));
+          }
+        }
+      });
+    }
+
+    private async void TriggerDisconnectionAttempt() {
+      await Task.Factory.StartNew(() => {
+        bool? shouldDisconnect = _onDisconnectionAttempt?.Invoke();
+        if (shouldDisconnect.HasValue) {
+          _disconnecting = false;
+
+          if (shouldDisconnect.Value) {
+            _disconnectCallback?.Invoke();
           }
         }
       });

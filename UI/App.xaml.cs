@@ -30,19 +30,26 @@ namespace UI {
       _ui = new FiniteStateMachine<States.UIState>(new States.NoUI(this), true);
       _ui.Start();
 
-      Storage = Core.Factory.InitializeStorage();
-      Connection = Core.Factory.InitializeServerConnection(Storage);
-
       InitializeNotificationIcon();
+
       _wasDragged = false;
       _dragStart = new Point(0, 0);
 
       Deactivated += App_Deactivated;
+#if DEBUG
       Activated += delegate {
         Console.WriteLine("App activated");
       };
+#endif
 
       _ui.State = new States.Login(this);
+    }
+    #endregion
+
+    #region method
+    public void InitializeCore() {
+      Storage = Core.Factory.InitializeStorage();
+      Connection = Core.Factory.InitializeServerConnection(Storage);
     }
     #endregion
 

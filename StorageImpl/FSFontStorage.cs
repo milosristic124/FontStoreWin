@@ -43,7 +43,7 @@ namespace Storage.Impl {
     #endregion
 
     #region ctor
-    public FSFontStorage() : this(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)) {
+    public FSFontStorage() : this(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/Fontstore") {
     }
 
     public FSFontStorage(string rootPath) {
