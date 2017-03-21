@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Storage;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +25,7 @@ namespace UI.Views {
     private int _installedCount;
     private int _newCount;
     private int _allCount;
+    private IFontStorage _storage;
     #endregion
 
     #region properties
@@ -34,31 +37,14 @@ namespace UI.Views {
         return null;
       }
     }
-    public int InstalledCount {
+
+    public IFontStorage Storage {
       get {
-        return _installedCount;
+        return _storage;
       }
       set {
-        _installedCount = value;
-        InstalledCountLabel.Content = string.Format("({0})", _installedCount);
-      }
-    }
-    public int NewCount {
-      get {
-        return _newCount;
-      }
-      set {
-        _newCount = value;
-        NewCountLabel.Content = string.Format("({0})", _newCount);
-      }
-    }
-    public int AllCount {
-      get {
-        return _allCount;
-      }
-      set {
-        _allCount = value;
-        AllCountLabel.Content = string.Format("({0})", _allCount);
+        _storage = value;
+        UpdateCounters();
       }
     }
     #endregion
@@ -92,12 +78,45 @@ namespace UI.Views {
         InstalledCountLabel.Visibility = Visibility.Collapsed;
         NewCountLabel.Visibility = Visibility.Collapsed;
         AllCountLabel.Visibility = Visibility.Collapsed;
+
+        FamilyTree.Visibility = Visibility.Hidden;
+        FamilyTree.ItemsSource = null;
       } else {
         LoadingBar.Visibility = Visibility.Collapsed;
         InstalledCountLabel.Visibility = Visibility.Visible;
         NewCountLabel.Visibility = Visibility.Visible;
         AllCountLabel.Visibility = Visibility.Visible;
+
+        //List<Family> families = new List<Family>();
+
+        //Family f = new Family() {
+        //  Name = "Family1"
+        //};
+        //f.Fonts.Add(new Font() { Name = "Font1.1", Activated = false });
+        //f.Fonts.Add(new Font() { Name = "Font1.2", Activated = true });
+
+        //families.Add(f);
+        //f = new Family() {
+        //  Name = "Family2"
+        //};
+        //f.Fonts.Add(new Font() { Name = "Font2.1", Activated = false });
+        //f.Fonts.Add(new Font() { Name = "Font2.2", Activated = false });
+        //f.Fonts.Add(new Font() { Name = "Font2.3", Activated = false });
+        //families.Add(f);
+
+        //FamilyTree.ItemsSource = families;
+
+        FamilyTree.ItemsSource = Storage.Families;
+        FamilyTree.Visibility = Visibility.Visible;
       }
+    }
+    #endregion
+
+    #region private methods
+    private void UpdateCounters() {
+      AllCountLabel.Content = string.Format("({0})", Storage.Families.Count);
+      NewCountLabel.Content = string.Format("({0})", Storage.NewFamilies.Count);
+      InstalledCountLabel.Content = string.Format("({0})", Storage.ActivatedFamilies.Count);
     }
     #endregion
 
@@ -140,5 +159,19 @@ namespace UI.Views {
       OnExit?.Invoke();
     }
     #endregion
+  }
+
+  public class Family {
+    public string Name { get; set; }
+    public List<Font> Fonts { get; set; }
+
+    public Family() {
+      Fonts = new List<Font>();
+    }
+  }
+
+  public class Font {
+    public string Name { get; set; }
+    public bool Activated { get; set; }
   }
 }

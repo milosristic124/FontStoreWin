@@ -72,9 +72,7 @@ namespace UI.States {
 
     private void ShowLoadedState() {
       _view.InvokeOnUIThread(() => {
-        _view.AllCount = Application.Storage.Families.Count;
-        _view.NewCount = Application.Storage.NewFamilies.Count;
-        _view.InstalledCount = Application.Storage.ActivatedFamilies.Count;
+        _view.Storage = Application.Storage;
         _view.LoadingState(false);
       });
     }

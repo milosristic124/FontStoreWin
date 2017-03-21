@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UI.Views"
         xmlns:Controls="clr-namespace:UI.Controls" x:Class="UI.Views.FontList"
+        xmlns:Data="clr-namespace:Storage.Data;assembly=Storage"
         mc:Ignorable="d"
         Title="FontList" Height="480" Foreground="{x:Null}" AllowsTransparency="True" WindowStyle="None" Background="{x:Null}" Width="330">
   <Grid>
@@ -113,6 +114,31 @@
             <SolidColorBrush Color="{DynamicResource FSBlue}"/>
           </ProgressBar.Foreground>
         </ProgressBar>
+        <TreeView x:Name="FamilyTree" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" BorderThickness="0" Padding="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VerticalContentAlignment="Top" Height="329">
+          <TreeView.Resources>
+            <HierarchicalDataTemplate DataType="{x:Type Data:Family}" ItemsSource="{Binding Fonts}">
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Name}" Foreground="{StaticResource FSBlackBrush}" />
+                <TextBlock Text=" (" Foreground="{StaticResource FSGreyBrush}" />
+                <TextBlock Text="{Binding Fonts.Count}" Foreground="{StaticResource FSGreyBrush}" />
+                <TextBlock Text=" fonts)" Foreground="{StaticResource FSGreyBrush}" />
+              </StackPanel>
+            </HierarchicalDataTemplate>
+            <DataTemplate DataType="{x:Type Data:Font}">
+              <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Name}" Foreground="{StaticResource FSBlackBrush}" />
+                <Button BorderThickness="0" BorderBrush="{x:Null}" Background="{x:Null}" Foreground="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Top" Width="80" Height="30" Margin="0" FontFamily="/UI;component/Fonts/#Litmus" FontSize="12" FontWeight="Regular" Padding="0" Style="{DynamicResource FSButton}">
+                  <Border BorderThickness="0" CornerRadius="15" Width="80" Height="30">
+                    <Border.Background>
+                      <SolidColorBrush Color="{DynamicResource FSButtonGrey}"/>
+                    </Border.Background>
+                    <Label Content="Install" Foreground="White" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                  </Border>
+                </Button>
+              </StackPanel>
+            </DataTemplate>
+          </TreeView.Resources>
+        </TreeView>
       </StackPanel>
     </StackPanel>
   </Grid>

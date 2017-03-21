@@ -9,11 +9,15 @@
     <Color x:Key="FSBlack">#FF1B1B1B</Color>
     <Color x:Key="FSGrey">#FFCDCDCD</Color>
     <Color x:Key="FSBlue">#FF0078FF</Color>
+    <Color x:Key="FSButtonGrey">#FFB4B4B4</Color>
+    <Color x:Key="FSBackgroundGrey">#FFF4F4F4</Color>
 
     <!--Theme brush definitions-->
     <SolidColorBrush Color="{StaticResource FSBlack}" x:Key="FSBlackBrush"/>
     <SolidColorBrush Color="{StaticResource FSGrey}" x:Key="FSGreyBrush"/>
     <SolidColorBrush Color="{StaticResource FSBlue}" x:Key="FSBlueBrush"/>
+    <SolidColorBrush Color="{StaticResource FSButtonGrey}" x:Key="FSButtonGreyBrush"/>
+    <SolidColorBrush Color="{StaticResource FSBackgroundGrey}" x:Key="FSBackgroundGreyBrush"/>
 
     <!--Controls styling-->
     <Style TargetType="{x:Type Hyperlink}" x:Key="HyperlinkBlack">
