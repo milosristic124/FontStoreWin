@@ -3,6 +3,7 @@ using Protocol.Payloads;
 using Storage.Data;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -19,27 +20,27 @@ namespace Storage.Impl {
     #endregion
 
     #region properties
-    public List<Family> Families { get; }
-    public List<Family> ActivatedFamilies {
+    public DateTime? LastCatalogUpdate { get; set; }
+    public DateTime? LastFontStatusUpdate { get; set; }
+
+    public bool Loaded { get; private set; }
+    public bool HasChanged { get; private set; }
+
+    public IList<Family> ActivatedFamilies {
       get {
         return Families.Where((family) => {
           return family.HasActivatedFont;
         }).ToList();
       }
     }
-    public List<Family> NewFamilies {
+    public IList<Family> NewFamilies {
       get {
         return Families.Where((family) => {
           return family.HasNewFont;
         }).ToList();
       }
     }
-
-    public DateTime? LastCatalogUpdate { get; set; }
-    public DateTime? LastFontStatusUpdate { get; set; }
-
-    public bool Loaded { get; private set; }
-    public bool HasChanged { get; private set; }
+    public IList<Family> Families { get; private set; }
     #endregion
 
     #region ctor
@@ -206,21 +207,17 @@ namespace Storage.Impl {
 
     #region private db management
     private Family FindFamilyByName(string familyName) {
-      return Families.Find(family => {
-        return family.Name == familyName;
-      });
+      return Families.FirstOrDefault(family => family.Name == familyName);
     }
 
     private Family FindFamilyByFontUID(string uid) {
-      return Families.Find(family => {
-        return family.FindFont(uid) != null;
-      });
+      return Families.FirstOrDefault(family => family.FindFont(uid) != null);
     }
     #endregion
 
     #region FS
     private Task<string> ReadData(string path) {
-      return Task.Factory.StartNew<string>(() => {
+      return Task.Factory.StartNew(() => {
         if (File.Exists(path)) {
           return File.ReadAllText(path, Encoding.UTF8);
         }

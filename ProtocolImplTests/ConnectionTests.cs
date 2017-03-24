@@ -5,6 +5,7 @@ using Storage;
 using Storage.Data;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -388,15 +389,15 @@ namespace Protocol.Impl.Tests {
     #endregion
 
     #region properties
-    public List<Family> Families { get; private set; }
-    public List<Family> ActivatedFamilies {
+    public IList<Family> Families { get; private set; }
+    public IList<Family> ActivatedFamilies {
       get {
         return Families.Where((family) => {
           return family.HasActivatedFont;
         }).ToList();
       }
     }
-    public List<Family> NewFamilies {
+    public IList<Family> NewFamilies {
       get {
         return Families.Where((family) => {
           return family.HasNewFont;
@@ -524,15 +525,11 @@ namespace Protocol.Impl.Tests {
 
     #region private methods
     private Family FindFamilyByName(string name) {
-      return Families.Find((family) => {
-        return family.Name == name;
-      });
+      return Families.FirstOrDefault(family => family.Name == name);
     }
 
     private Family FindFamilyByFontUID(string uid) {
-      return Families.Find((family) => {
-        return family.FindFont(uid) != null;
-      });
+      return Families.FirstOrDefault(family => family.FindFont(uid) != null);
     }
     #endregion
   }

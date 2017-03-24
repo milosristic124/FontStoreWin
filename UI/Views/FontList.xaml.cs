@@ -1,6 +1,8 @@
 ﻿using Storage;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using UI.Utilities;
 
@@ -77,7 +79,11 @@ namespace UI.Views {
         NewCountLabel.Visibility = Visibility.Visible;
         AllCountLabel.Visibility = Visibility.Visible;
 
-        FamilyTree.ItemsSource = Storage.Families;
+        FamilyTree.ItemsSource = new ObservableCollection<ViewModels.FamilyVM>(Storage.Families.Select(familyModel => {
+          return new ViewModels.FamilyVM(familyModel);
+        }));
+
+        //FamilyTree.ItemsSource = Storage.Families;
         FamilyTree.Visibility = Visibility.Visible;
       }
     }

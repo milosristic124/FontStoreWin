@@ -1,7 +1,6 @@
 ﻿<m:DesignFamily xmlns:m="clr-namespace:UI.Dev">
   <m:DesignFamily.Fonts>
     <m:DesignFont Name="Family Regular"/>
-    <m:DesignFont IsNew="True" Name="Family Bold"/>
     <m:DesignFont Activated="True" Name="Family Thin"/>
   </m:DesignFamily.Fonts>
   <m:DesignFamily.Name>Family</m:DesignFamily.Name>

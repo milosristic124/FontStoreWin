@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Storage.Data {
-  public class Font: INotifyPropertyChanged {
+  public class Font {
     #region private data
     private bool _activated;
     #endregion
@@ -42,30 +42,31 @@ namespace Storage.Data {
         return new Uri(Description.DownloadUrl);
       }
     }
-    #endregion
-
-    #region obeservable properties
     public bool Activated {
       get {
         return _activated;
       }
       set {
-        if (value != _activated) {
+        if (_activated != value) {
           _activated = value;
-          NotifyPropertyChanged();
+          OnActivationChanged?.Invoke(this);
         }
       }
     }
     #endregion
 
+    #region delegates
+    public delegate void FontActivationEventHandler(Font sender);
+    #endregion
+
     #region events
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event FontActivationEventHandler OnActivationChanged;
     #endregion
 
     #region ctor
     public Font(FontDescription desc) {
       Description = desc;
-      Activated = false;
+      _activated = false;
     }
 
     public Font(string uid, string familyName, string name, Uri downloadUrl, int createdAt) : this(new FontDescription {
@@ -75,13 +76,6 @@ namespace Storage.Data {
       DownloadUrl = downloadUrl.AbsoluteUri,
       CreatedAt = createdAt
     }) { }
-    #endregion
-
-    #region private methods
-    private void NotifyPropertyChanged([CallerMemberName] string propertyName = "") {
-      Console.WriteLine("[{0}] Property changed: {1}", Name, propertyName);
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
     #endregion
   }
 }

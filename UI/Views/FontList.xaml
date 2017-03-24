@@ -6,8 +6,8 @@
         xmlns:pf="clr-namespace:System.ComponentModel;assembly=PresentationFramework"
         xmlns:local="clr-namespace:UI.Views"
         xmlns:dev="clr-namespace:UI.Dev"
+        xmlns:vm="clr-namespace:UI.ViewModels"
         xmlns:Controls="clr-namespace:UI.Controls" x:Class="UI.Views.FontList"
-        xmlns:Data="clr-namespace:Storage.Data;assembly=Storage"
         mc:Ignorable="d"
         Title="FontList" Height="480" Foreground="{x:Null}" AllowsTransparency="True" WindowStyle="None" Background="{x:Null}" Width="330">
   <Grid>
@@ -127,7 +127,7 @@
                  d:DataContext="{d:DesignData Source=../Dev/SampleFamilyTree.xaml}"
                  ItemsSource="{Binding}" Padding="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Focusable="False" IsTextSearchEnabled="False">
           <ListBox.ItemTemplate>
-            <DataTemplate DataType="{x:Type Data:Family}">
+            <DataTemplate DataType="{x:Type vm:FamilyVM}">
               <Expander Background="{x:Null}"
                       BorderBrush="{x:Null}"
                       Foreground="{x:Null}"
@@ -181,7 +181,7 @@
                 
                 <ListBox Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" BorderThickness="0" ItemsSource="{Binding Fonts}" VerticalContentAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" Padding="0" Margin="0" Focusable="False" IsTextSearchEnabled="False">
                   <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type Data:Font}">
+                    <DataTemplate DataType="{x:Type vm:FontVM}">
                       <ListBoxItem BorderBrush="{x:Null}" BorderThickness="0" Padding="22,0,5,0" Margin="0,0,0,1" VerticalContentAlignment="Center" VerticalAlignment="Top">
                         <ListBoxItem.Background>
                           <SolidColorBrush Color="{DynamicResource FSBackgroundGrey}"/>

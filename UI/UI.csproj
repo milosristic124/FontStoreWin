@@ -63,24 +63,12 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
-    <Compile Include="Controls\FamilyTree.xaml.cs">
-      <DependentUpon>FamilyTree.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\FamilyTreeNode.xaml.cs">
-      <DependentUpon>FamilyTreeNode.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Dev\DesignFamily.cs" />
     <Compile Include="Dev\TriggerTracing.cs" />
     <Compile Include="Utilities\ViewsUtility.cs" />
+    <Compile Include="ViewModels\FamilyVM.cs" />
+    <Compile Include="ViewModels\FontVM.cs" />
     <Compile Include="Views\IView.cs" />
-    <Page Include="Controls\FamilyTree.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\FamilyTreeNode.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\RadioCheckbox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

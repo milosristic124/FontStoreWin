@@ -30,10 +30,6 @@
 
       _context.TriggerUpdateFinished();
     }
-
-    //public override bool CanTransitionTo<Disconnecting>() {
-    //  return true;
-    //}
     #endregion
 
     #region event handling

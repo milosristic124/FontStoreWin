@@ -5,20 +5,19 @@ namespace UI.Dev {
   class DesignFamilyCollection : List<DesignFamily> {
   }
 
-  class DesignFamily : Storage.Data.Family {
+  class DesignFamily : ViewModels.FamilyVM {
     public new string Name { get; set; }
     public new List<DesignFont> Fonts { get; set; }
 
-    public DesignFamily(): base(null, null) {
+    public DesignFamily(): base(new Storage.Data.Family(null, null)) {
     }
   }
 
-  class DesignFont : Storage.Data.Font {
+  class DesignFont : ViewModels.FontVM {
     public new string Name { get; set; }
-    public new bool IsNew { get; set; }
     public new bool Activated { get; set; }
 
-    public DesignFont(): base("uid", "familyname", "fontname", new Uri("http://test.com"), 0) {
+    public DesignFont(): base(new Storage.Data.Font("uid", "familyname", "fontname", new Uri("http://test.com"), 0)) {
     }
   }
 }

@@ -2,20 +2,25 @@
 using Storage.Data;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace Storage {
   public interface IFontStorage {
-    List<Family> Families { get; }
-    List<Family> ActivatedFamilies { get; }
-    List<Family> NewFamilies { get; }
-
+    #region properties
     DateTime? LastCatalogUpdate { get; set; }
     DateTime? LastFontStatusUpdate { get; set; }
+
     bool Loaded { get; }
     bool HasChanged { get; }
 
+    IList<Family> ActivatedFamilies { get; }
+    IList<Family> NewFamilies { get; }
+    IList<Family> Families { get; }
+    #endregion
+
+    #region methods
     Task Load();
     Task Save();
 
@@ -28,5 +33,6 @@ namespace Storage {
 
     bool IsFontDownloaded(string uid);
     Task SaveFontFile(string uid, Stream data);
+    #endregion
   }
 }
