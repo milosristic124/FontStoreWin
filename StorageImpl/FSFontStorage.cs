@@ -3,7 +3,6 @@ using Protocol.Payloads;
 using Storage.Data;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -28,19 +27,19 @@ namespace Storage.Impl {
 
     public IList<Family> ActivatedFamilies {
       get {
-        return Families.Where((family) => {
+        return FamilyCollection.Filtered(family => {
           return family.HasActivatedFont;
         }).ToList();
       }
     }
     public IList<Family> NewFamilies {
       get {
-        return Families.Where((family) => {
+        return FamilyCollection.Filtered((family) => {
           return family.HasNewFont;
         }).ToList();
       }
     }
-    public IList<Family> Families { get; private set; }
+    public FamilyCollection FamilyCollection { get; private set; }
     #endregion
 
     #region ctor
@@ -48,7 +47,7 @@ namespace Storage.Impl {
     }
 
     public FSFontStorage(string rootPath) {
-      Families = new List<Family>();
+      FamilyCollection = new FamilyCollection();
       Loaded = false;
       HasChanged = false;
 
@@ -82,7 +81,7 @@ namespace Storage.Impl {
 
       LastCatalogUpdate = null;
       LastFontStatusUpdate = null;
-      Families.Clear();
+      FamilyCollection.Clear();
 
       // pop a thread to read metadata
       Task metadataLoading = ReadData(_metaFile).Then(json => {
@@ -126,7 +125,7 @@ namespace Storage.Impl {
         File.WriteAllText(_metaFile, serialization);
       });
 
-      Task fontSaving = Task.WhenAll(Families.SelectMany(family => {
+      Task fontSaving = Task.WhenAll(FamilyCollection.Families.SelectMany(family => {
         return family.Fonts.Select(font => {
           return Task.Factory.StartNew(() => {
             return new FontData() {
@@ -150,50 +149,29 @@ namespace Storage.Impl {
 
     public Font AddFont(FontDescription description) {
       Font newFont = new Font(description);
-      Family family = FindFamilyByName(newFont.FamilyName);
-
-      if (family != null) {
-        family.Add(newFont);
-      }
-      else {
-        family = new Family(newFont.FamilyName, new List<Font> { newFont });
-        Families.Add(family);
-      }
+      FamilyCollection.AddFont(newFont);
 
       HasChanged = true;
       return newFont;
     }
 
     public void RemoveFont(string uid) {
-      Family family = FindFamilyByFontUID(uid);
-
-      if (family != null) {
-        family.Remove(uid);
-        if (family.Fonts.Count == 0) {
-          Families.Remove(family);
-        }
-      }
+      FamilyCollection.RemoveFont(uid);
       HasChanged = true;
     }
 
     public void ActivateFont(string uid) {
-      Font font = FindFont(uid);
-      if (font != null) {
-        font.Activated = true;
-      }
+      FamilyCollection.ActivateFont(uid);
       HasChanged = true;
     }
 
     public void DeactivateFont(string uid) {
-      Font font = FindFont(uid);
-      if (font != null) {
-        font.Activated = false;
-      }
+      FamilyCollection.DeactivateFont(uid);
       HasChanged = true;
     }
 
     public Font FindFont(string uid) {
-      return FindFamilyByFontUID(uid)?.FindFont(uid);
+      return FamilyCollection.FindFont(uid);
     }
 
     public bool IsFontDownloaded(string uid) {
@@ -202,16 +180,6 @@ namespace Storage.Impl {
 
     public Task SaveFontFile(string uid, Stream data) {
       return WriteData(FontFilePath(uid), data);
-    }
-    #endregion
-
-    #region private db management
-    private Family FindFamilyByName(string familyName) {
-      return Families.FirstOrDefault(family => family.Name == familyName);
-    }
-
-    private Family FindFamilyByFontUID(string uid) {
-      return Families.FirstOrDefault(family => family.FindFont(uid) != null);
     }
     #endregion
 

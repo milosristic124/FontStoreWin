@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Family.cs" />
+    <Compile Include="Data\FamilyCollection.cs" />
     <Compile Include="Data\Font.cs" />
     <Compile Include="IFontStorage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

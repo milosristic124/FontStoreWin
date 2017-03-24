@@ -2,7 +2,6 @@
 using Storage.Data;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -17,7 +16,7 @@ namespace Storage {
 
     IList<Family> ActivatedFamilies { get; }
     IList<Family> NewFamilies { get; }
-    IList<Family> Families { get; }
+    FamilyCollection FamilyCollection { get; }
     #endregion
 
     #region methods

@@ -9,7 +9,7 @@ namespace Storage.Impl.Tests {
     [TestMethod()]
     public void FontStorage_shouldBeEmpty_whenCreated() {
       FSFontStorage storage = new FSFontStorage(TestPath);
-      Assert.IsTrue(storage.Families.Count == 0, "FontStorage has no data when created");
+      Assert.IsTrue(storage.FamilyCollection.Families.Count == 0, "FontStorage has no data when created");
     }
 
     [TestMethod()]
@@ -35,7 +35,7 @@ namespace Storage.Impl.Tests {
 
       storage.AddFont(TestData.Font1_Description);
 
-      Assert.IsTrue(storage.Families.Count == 1, "AddFont should add a font to the FontStorage");
+      Assert.IsTrue(storage.FamilyCollection.Families.Count == 1, "AddFont should add a font to the FontStorage");
     }
 
     [TestMethod()]
@@ -46,7 +46,7 @@ namespace Storage.Impl.Tests {
       storage.AddFont(TestData.Font1_Description);
       storage.AddFont(TestData.Font1_Description2);
 
-      Assert.AreSame(TestData.Font1_Description2, storage.Families[0].Fonts[0].Description,
+      Assert.AreSame(TestData.Font1_Description2, storage.FamilyCollection.Families[0].Fonts[0].Description,
         "AddFont should replace obsolete font in the FontStorage");
     }
 
@@ -58,7 +58,7 @@ namespace Storage.Impl.Tests {
       storage.AddFont(TestData.Font1_Description);
       storage.RemoveFont(TestData.Font1_Description.UID);
 
-      Assert.IsTrue(storage.Families.Count == 0, "RemoveFont should remove font from the FontStorage");
+      Assert.IsTrue(storage.FamilyCollection.Families.Count == 0, "RemoveFont should remove font from the FontStorage");
     }
 
     [TestMethod()]
@@ -100,7 +100,7 @@ namespace Storage.Impl.Tests {
       bool signaled = storage.Load().Wait(timeout);
 
       Assert.IsTrue(signaled, "Load should not timeout during tests...");
-      Assert.IsTrue(storage.Families.Count == 1, "Load should load saved catalog data from file system");
+      Assert.IsTrue(storage.FamilyCollection.Families.Count == 1, "Load should load saved catalog data from file system");
       Assert.IsTrue(storage.FindFont(TestData.Font1_Description.UID).Activated, "Load should load saved fonts data from file system");
     }
 

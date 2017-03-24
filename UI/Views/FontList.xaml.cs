@@ -17,6 +17,8 @@ namespace UI.Views {
     private int _newCount;
     private int _allCount;
     private IFontStorage _storage;
+
+    private ViewModels.FamilyCollectionVM _collectionVM;
     #endregion
 
     #region properties
@@ -79,11 +81,8 @@ namespace UI.Views {
         NewCountLabel.Visibility = Visibility.Visible;
         AllCountLabel.Visibility = Visibility.Visible;
 
-        FamilyTree.ItemsSource = new ObservableCollection<ViewModels.FamilyVM>(Storage.Families.Select(familyModel => {
-          return new ViewModels.FamilyVM(familyModel);
-        }));
-
-        //FamilyTree.ItemsSource = Storage.Families;
+        _collectionVM = new ViewModels.FamilyCollectionVM(Storage.FamilyCollection);
+        FamilyTree.ItemsSource = _collectionVM.Families;
         FamilyTree.Visibility = Visibility.Visible;
       }
     }
@@ -91,7 +90,7 @@ namespace UI.Views {
 
     #region private methods
     private void UpdateCounters() {
-      AllCountLabel.Content = string.Format("({0})", Storage.Families.Count);
+      AllCountLabel.Content = string.Format("({0})", Storage.FamilyCollection.Families.Count);
       NewCountLabel.Content = string.Format("({0})", Storage.NewFamilies.Count);
       InstalledCountLabel.Content = string.Format("({0})", Storage.ActivatedFamilies.Count);
     }

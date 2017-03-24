@@ -176,7 +176,7 @@ namespace Protocol.Impl.Tests {
         transport.SimulateMessage("catalog", "font:deletion", TestData.Font1_Id);
 
         Assert.IsTrue(catalogUpdateRequested, "Updating the catalog should request an update of the catalog fonts data");
-        Assert.AreEqual(1, storage.Families.Count, "Font description messages should add fonts to the font storage");
+        Assert.AreEqual(1, storage.FamilyCollection.Families.Count, "Font description messages should add fonts to the font storage");
         Assert.IsNull(storage.FindFont(TestData.Font1_Description.UID), "Font deletion message should remove fonts from the font storage");
       });
     }
@@ -389,17 +389,17 @@ namespace Protocol.Impl.Tests {
     #endregion
 
     #region properties
-    public IList<Family> Families { get; private set; }
+    public FamilyCollection FamilyCollection { get; private set; }
     public IList<Family> ActivatedFamilies {
       get {
-        return Families.Where((family) => {
+        return FamilyCollection.Filtered(family => {
           return family.HasActivatedFont;
         }).ToList();
       }
     }
     public IList<Family> NewFamilies {
       get {
-        return Families.Where((family) => {
+        return FamilyCollection.Filtered((family) => {
           return family.HasNewFont;
         }).ToList();
       }
@@ -408,31 +408,13 @@ namespace Protocol.Impl.Tests {
     public bool Loaded { get; private set; }
     public DateTime? LastCatalogUpdate { get; set; }
     public DateTime? LastFontStatusUpdate { get; set; }
-    public int ActivatedCount {
-      get {
-        return ActivatedFamilies.SelectMany((family) => {
-          return family.Fonts.Where((font) => {
-            return font.Activated;
-          });
-        }).Count();
-      }
-    }
-    public int NewCount {
-      get {
-        return NewFamilies.SelectMany((family) => {
-          return family.Fonts.Where((font) => {
-            return font.IsNew;
-          });
-        }).Count();
-      }
-    }
     #endregion
 
     #region ctor
     public MockedStorage() {
       LastCatalogUpdate = DateTime.Now;
       LastFontStatusUpdate = DateTime.Now;
-      Families = new List<Family>();
+      FamilyCollection = new FamilyCollection();
       _files = new Dictionary<string, byte[]>();
     }
     #endregion
@@ -440,14 +422,8 @@ namespace Protocol.Impl.Tests {
     #region methods
     public Font AddFont(FontDescription description) {
       RegisterCall("AddFont");
-      Family family = FindFamilyByName(description.FamilyName);
       Font newFont = new Font(description);
-
-      if (family == null) {
-        family = new Family(description.FamilyName);
-        Families.Add(family);
-      }
-      family.Add(newFont);
+      FamilyCollection.AddFont(newFont);
 
       HasChanged = true;
       return newFont;
@@ -455,42 +431,25 @@ namespace Protocol.Impl.Tests {
 
     public void RemoveFont(string uid) {
       RegisterCall("RemoveFont");
-      Family family = FindFamilyByFontUID(uid);
-      if (family != null) {
-        family.Remove(uid);
-        if (family.Fonts.Count == 0) {
-          Families.Remove(family);
-        }
-        HasChanged = true;
-      }
+      FamilyCollection.RemoveFont(uid);
+      HasChanged = true;
     }
 
     public void ActivateFont(string uid) {
       RegisterCall("ActivateFont");
-      Font font = FindFont(uid);
-      if (font != null) {
-        font.Activated = true;
-        HasChanged = true;
-      }
+      FamilyCollection.ActivateFont(uid);
+      HasChanged = true;
     }
 
     public void DeactivateFont(string uid) {
       RegisterCall("DeactivateFont");
-      Font font = FindFont(uid);
-      if (font != null) {
-        font.Activated = false;
-        HasChanged = true;
-      }
+      FamilyCollection.DeactivateFont(uid);
+      HasChanged = true;
     }
 
     public Font FindFont(string uid) {
       RegisterCall("FindFont");
-      Family family = FindFamilyByFontUID(uid);
-      if (family != null) {
-        return family.FindFont(uid);
-      }
-
-      return null;
+      return FamilyCollection.FindFont(uid);
     }
 
     public Task Load() {
@@ -525,11 +484,11 @@ namespace Protocol.Impl.Tests {
 
     #region private methods
     private Family FindFamilyByName(string name) {
-      return Families.FirstOrDefault(family => family.Name == name);
+      return FamilyCollection.Families.FirstOrDefault(family => family.Name == name);
     }
 
     private Family FindFamilyByFontUID(string uid) {
-      return Families.FirstOrDefault(family => family.FindFont(uid) != null);
+      return FamilyCollection.Families.FirstOrDefault(family => family.FindFont(uid) != null);
     }
     #endregion
   }

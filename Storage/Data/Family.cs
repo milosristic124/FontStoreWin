@@ -52,6 +52,9 @@ namespace Storage.Data {
     #endregion
 
     #region ctor
+    public Family(string name, params Font[] fonts): this(name, new List<Font>(fonts)) {
+    }
+
     public Family(string name, IList<Font> fonts = null) {
       Name = name;
       _batchActivation = false;

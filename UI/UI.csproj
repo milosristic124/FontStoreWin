@@ -66,6 +66,7 @@
     <Compile Include="Dev\DesignFamily.cs" />
     <Compile Include="Dev\TriggerTracing.cs" />
     <Compile Include="Utilities\ViewsUtility.cs" />
+    <Compile Include="ViewModels\FamilyCollectionVM.cs" />
     <Compile Include="ViewModels\FamilyVM.cs" />
     <Compile Include="ViewModels\FontVM.cs" />
     <Compile Include="Views\IView.cs" />

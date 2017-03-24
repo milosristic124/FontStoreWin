@@ -36,7 +36,7 @@ namespace Protocol.Impl.States {
 
     protected override void Start() {
       // find all fonts not already downloaded
-      IEnumerable<Font> fontsToDownload = _context.Storage.Families.SelectMany(family => {
+      IEnumerable<Font> fontsToDownload = _context.Storage.FamilyCollection.Families.SelectMany(family => {
         return family.Fonts.Where(font => {
           return !_context.Storage.IsFontDownloaded(font.UID);
         });
