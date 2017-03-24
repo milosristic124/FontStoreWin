@@ -1,10 +1,16 @@
 ﻿using Protocol.Payloads;
 using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Storage.Data {
-  public class Font {
-    public FontDescription Description { get; private set; }
+  public class Font: INotifyPropertyChanged {
+    #region private data
+    private bool _activated;
+    #endregion
 
+    #region properties
+    public FontDescription Description { get; private set; }
     public string UID {
       get {
         return Description.UID;
@@ -36,20 +42,46 @@ namespace Storage.Data {
         return new Uri(Description.DownloadUrl);
       }
     }
+    #endregion
 
-    public bool Activated { get; set; }
+    #region obeservable properties
+    public bool Activated {
+      get {
+        return _activated;
+      }
+      set {
+        if (value != _activated) {
+          _activated = value;
+          NotifyPropertyChanged();
+        }
+      }
+    }
+    #endregion
 
+    #region events
+    public event PropertyChangedEventHandler PropertyChanged;
+    #endregion
+
+    #region ctor
     public Font(FontDescription desc) {
       Description = desc;
       Activated = false;
     }
 
-    public Font(string uid, string familyName, string name, Uri downloadUrl, int createdAt): this(new FontDescription {
+    public Font(string uid, string familyName, string name, Uri downloadUrl, int createdAt) : this(new FontDescription {
       UID = uid,
       FamilyName = familyName,
       Name = name,
       DownloadUrl = downloadUrl.AbsoluteUri,
       CreatedAt = createdAt
-    }) {}
+    }) { }
+    #endregion
+
+    #region private methods
+    private void NotifyPropertyChanged([CallerMemberName] string propertyName = "") {
+      Console.WriteLine("[{0}] Property changed: {1}", Name, propertyName);
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+    #endregion
   }
 }

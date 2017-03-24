@@ -1,18 +1,7 @@
 ﻿using Storage;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using UI.Utilities;
 
 namespace UI.Views {
@@ -81,30 +70,12 @@ namespace UI.Views {
 
         FamilyTree.Visibility = Visibility.Hidden;
         FamilyTree.ItemsSource = null;
-      } else {
+      }
+      else {
         LoadingBar.Visibility = Visibility.Collapsed;
         InstalledCountLabel.Visibility = Visibility.Visible;
         NewCountLabel.Visibility = Visibility.Visible;
         AllCountLabel.Visibility = Visibility.Visible;
-
-        //List<Family> families = new List<Family>();
-
-        //Family f = new Family() {
-        //  Name = "Family1"
-        //};
-        //f.Fonts.Add(new Font() { Name = "Font1.1", Activated = false });
-        //f.Fonts.Add(new Font() { Name = "Font1.2", Activated = true });
-
-        //families.Add(f);
-        //f = new Family() {
-        //  Name = "Family2"
-        //};
-        //f.Fonts.Add(new Font() { Name = "Font2.1", Activated = false });
-        //f.Fonts.Add(new Font() { Name = "Font2.2", Activated = false });
-        //f.Fonts.Add(new Font() { Name = "Font2.3", Activated = false });
-        //families.Add(f);
-
-        //FamilyTree.ItemsSource = families;
 
         FamilyTree.ItemsSource = Storage.Families;
         FamilyTree.Visibility = Visibility.Visible;
@@ -159,19 +130,5 @@ namespace UI.Views {
       OnExit?.Invoke();
     }
     #endregion
-  }
-
-  public class Family {
-    public string Name { get; set; }
-    public List<Font> Fonts { get; set; }
-
-    public Family() {
-      Fonts = new List<Font>();
-    }
-  }
-
-  public class Font {
-    public string Name { get; set; }
-    public bool Activated { get; set; }
   }
 }
