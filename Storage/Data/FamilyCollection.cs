@@ -29,12 +29,13 @@ namespace Storage.Data {
     #endregion
 
     #region methods
-    public void Clear() {
+    public FamilyCollection Clear() {
       Families.Clear();
       OnCollectionCleared?.Invoke(this);
+      return this;
     }
 
-    public void AddFont(Font newFont) {
+    public FamilyCollection AddFont(Font newFont) {
       Family family = FindFamilyByName(newFont.FamilyName);
       if (family != null) {
         family.Add(newFont);
@@ -46,9 +47,10 @@ namespace Storage.Data {
         Families.Add(family);
         OnFamilyAdded?.Invoke(this, family);
       }
+      return this;
     }
 
-    public void RemoveFont(string uid) {
+    public FamilyCollection RemoveFont(string uid) {
       Family family = FindFamilyByFontUID(uid);
       if (family != null) {
         family.Remove(uid);
@@ -58,20 +60,7 @@ namespace Storage.Data {
           OnFamilyRemoved?.Invoke(this, family);
         }
       }
-    }
-
-    public void ActivateFont(string uid) {
-      Font font = FindFont(uid);
-      if (font != null) {
-        font.Activated = true;
-      }
-    }
-
-    public void DeactivateFont(string uid) {
-      Font font = FindFont(uid);
-      if (font != null) {
-        font.Activated = false;
-      }
+      return this;
     }
 
     public IEnumerable<Family> Filtered(Func<Family, bool> predicate) {

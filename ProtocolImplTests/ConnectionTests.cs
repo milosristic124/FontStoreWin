@@ -437,14 +437,20 @@ namespace Protocol.Impl.Tests {
 
     public void ActivateFont(string uid) {
       RegisterCall("ActivateFont");
-      FamilyCollection.ActivateFont(uid);
-      HasChanged = true;
+      Font font = FamilyCollection.FindFont(uid);
+      if (font != null) {
+        font.Activated = true;
+        HasChanged = true;
+      }
     }
 
     public void DeactivateFont(string uid) {
       RegisterCall("DeactivateFont");
-      FamilyCollection.DeactivateFont(uid);
-      HasChanged = true;
+      Font font = FamilyCollection.FindFont(uid);
+      if (font != null) {
+        font.Activated = false;
+        HasChanged = true;
+      }
     }
 
     public Font FindFont(string uid) {

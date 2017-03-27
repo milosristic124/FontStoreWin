@@ -74,7 +74,7 @@ namespace Storage.Data {
     #endregion
 
     #region methods
-    public void Add(Font font) {
+    public Family Add(Font font) {
       Font removedFont = RemoveAndReturnFont(font.UID);
       if (removedFont != null) {
         OnFontRemoved?.Invoke(this, removedFont);
@@ -85,14 +85,16 @@ namespace Storage.Data {
       OnFontAdded?.Invoke(this, font);
 
       UpdateFamilyActivationStatus();
+      return this;
     }
 
-    public void Remove(string uid) {
+    public Family Remove(string uid) {
       Font removedFont = RemoveAndReturnFont(uid);
       if (removedFont != null) {
         OnFontRemoved?.Invoke(this, removedFont);
         UpdateFamilyActivationStatus();
       }
+      return this;
     }
 
     public Font FindFont(string uid) {
