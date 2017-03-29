@@ -1,11 +1,13 @@
 ﻿using Protocol.Payloads;
 using Protocol.Transport;
+using Storage;
 using System;
 
 namespace Protocol {
   public abstract class AConnection: IConnection {
     #region properties
     public IConnectionTransport Transport { get; private set; }
+    public IFontStorage Storage { get; private set; }
     public UserData UserData { get; protected set; }
 
     public TimeSpan AuthenticationRetryInterval { get; protected set; }
@@ -16,8 +18,9 @@ namespace Protocol {
     #endregion
 
     #region ctor
-    public AConnection(IConnectionTransport transport) {
+    public AConnection(IConnectionTransport transport, IFontStorage storage) {
       Transport = transport;
+      Storage = storage;
     }
     #endregion
 

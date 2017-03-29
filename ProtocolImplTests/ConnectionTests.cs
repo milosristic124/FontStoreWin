@@ -1,18 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Protocol.Payloads;
 using Protocol.Transport;
 using Storage;
-using Storage.Data;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
 using TestUtilities;
 using TestUtilities.Protocol;
+using TestUtilities.Storage;
 
 namespace Protocol.Impl.Tests {
   class TestConnection : Connection {
@@ -28,6 +22,7 @@ namespace Protocol.Impl.Tests {
   [TestClass]
   public class ConnectionTests {
     [TestMethod]
+    [TestCategory("Protocol.Authentication")]
     public void Connect_shouldTriggerOnEstablished_whenTheConnectionIsEstablished() {
       MockedTransport transport = new MockedTransport();
       Connection connection = new TestConnection(transport);
@@ -60,6 +55,7 @@ namespace Protocol.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Protocol.Authentication")]
     public void Connect_shouldTriggerValidationFailure_whenAuthenticationFails() {
       MockedTransport transport = new MockedTransport();
       Connection connection = new TestConnection(transport);
@@ -84,6 +80,7 @@ namespace Protocol.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Protocol.Authentication")]
     public void Connect_shouldRetryAuthentication_whenAuthenticationRequestFails() {
       MockedTransport transport = new MockedTransport();
       Connection connection = new TestConnection(transport, authInterval: 50);
@@ -93,7 +90,8 @@ namespace Protocol.Impl.Tests {
         if (failAuth) {
           failAuth = false;
           return null;
-        } else {
+        }
+        else {
           return request.CreateResponse(HttpStatusCode.OK, TestData.Serialize(TestData.UserData));
         }
       };
@@ -121,6 +119,7 @@ namespace Protocol.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Protocol.Authentication")]
     public void Connect_shouldRetryConnecting_whenSocketConnectionFails() {
       MockedTransport transport = new MockedTransport();
       Connection connection = new TestConnection(transport, connInterval: 50);
@@ -148,6 +147,7 @@ namespace Protocol.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Protocol.Update")]
     public void UpdateCatalog_shouldUpdateTheFontCatalog() {
       MockedTransport transport = new MockedTransport();
       MockedStorage storage = new MockedStorage();
@@ -158,7 +158,7 @@ namespace Protocol.Impl.Tests {
 
         AutoResetEvent autoResetEvent = new AutoResetEvent(false);
         transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
-          switch(evt) {
+          switch (evt) {
             case "catalog.update:request":
               catalogUpdateRequested = true;
               autoResetEvent.Set();
@@ -182,6 +182,7 @@ namespace Protocol.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Protocol.Update")]
     public void UpdateCatalog_shouldUpdateTheFontsStatus() {
       MockedTransport transport = new MockedTransport();
       MockedStorage storage = new MockedStorage();
@@ -194,7 +195,8 @@ namespace Protocol.Impl.Tests {
         transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
           if (evt == "catalog.update:request") {
             autoResetEvent.Set();
-          } else if (evt == UserTopicEvent(connection, "update:request")) {
+          }
+          else if (evt == UserTopicEvent(connection, "update:request")) {
             fontUpdateRequested = true;
             autoResetEvent.Set();
           }
@@ -216,6 +218,7 @@ namespace Protocol.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Protocol.Update")]
     public void UpdateCatalog_shouldTriggerEvent_whenUpdateIsFinished() {
       MockedTransport transport = new MockedTransport();
       MockedStorage storage = new MockedStorage();
@@ -260,7 +263,8 @@ namespace Protocol.Impl.Tests {
     }
 
     [TestMethod]
-    public void UpdateCatalog_shouldDownloadNewFonts() {
+    [TestCategory("Protocol.Update")]
+    public void UpdateCatalog_shouldDownloadNewFonts_andInstallThem() {
       MockedTransport transport = new MockedTransport();
       MockedStorage storage = new MockedStorage();
       Connection connection = new TestConnection(transport, storage);
@@ -309,6 +313,60 @@ namespace Protocol.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Protocol.Running")]
+    public void FontActivationMessage_shouldActivateFont() {
+      MockedTransport transport = new MockedTransport();
+      MockedStorage storage = new MockedStorage();
+      Connection connection = new TestConnection(transport, storage);
+
+      updated(transport, connection, delegate {
+        transport.SimulateMessage(UserTopicEvent(connection), "font:activation", TestData.Font1_Id);
+        storage.Verify("ActivateFont", 1);
+      });
+    }
+
+    [TestMethod]
+    [TestCategory("Protocol.Running")]
+    public void FontDeactivationMessage_shouldDeactivateFont() {
+      MockedTransport transport = new MockedTransport();
+      MockedStorage storage = new MockedStorage();
+      Connection connection = new TestConnection(transport, storage);
+
+      updated(transport, connection, delegate {
+        transport.SimulateMessage(UserTopicEvent(connection), "font:activation", TestData.Font1_Id);
+        transport.SimulateMessage(UserTopicEvent(connection), "font:deactivation", TestData.Font1_Id);
+        storage.Verify("DeactivateFont", 1);
+      });
+    }
+
+    [TestMethod]
+    [TestCategory("Protocol.Running")]
+    public void FontRemovedMessage_shouldRemoveFontFromCatalog() {
+      MockedTransport transport = new MockedTransport();
+      MockedStorage storage = new MockedStorage();
+      Connection connection = new TestConnection(transport, storage);
+
+      updated(transport, connection, delegate {
+        transport.SimulateMessage("catalog", "font:description", TestData.Font2_Description);
+        storage.Verify("AddFont", 1);
+      });
+    }
+
+    [TestMethod]
+    [TestCategory("Protocol.Running")]
+    public void FontDescriptionMessage_shouldAddFontToTheCatalog() {
+      MockedTransport transport = new MockedTransport();
+      MockedStorage storage = new MockedStorage();
+      Connection connection = new TestConnection(transport, storage);
+
+      updated(transport, connection, delegate {
+        transport.SimulateMessage("catalog", "font:deletion", TestData.Font1_Id);
+        storage.Verify("RemoveFont", 1);
+      });
+    }
+
+    [TestMethod]
+    [TestCategory("Protocol.Disconnect")]
     public void Disconnect_shouldDisconnectTheTransport() {
       MockedTransport transport = new MockedTransport();
       MockedStorage storage = new MockedStorage();
@@ -343,8 +401,7 @@ namespace Protocol.Impl.Tests {
     private void connected(MockedTransport transport,
                            Connection connection,
                            Action test,
-                           int timeout = 1000)
-    {
+                           int timeout = 1000) {
       MockedTransport.HttpRequestSentHandler httpRequestCallback = (MockedHttpRequest request, string body) => {
         if (request.Endpoint.Contains("session")) {
           return request.CreateResponse(HttpStatusCode.OK, TestData.Serialize(TestData.UserData));
@@ -363,7 +420,8 @@ namespace Protocol.Impl.Tests {
       connection.OnEstablished += delegate {
         try {
           test?.Invoke();
-        } catch(Exception e) {
+        }
+        catch (Exception e) {
           error = e;
         }
         testDoneEvent.Set();
@@ -373,128 +431,68 @@ namespace Protocol.Impl.Tests {
 
       // DEBUG unit tests
       //testDoneEvent.WaitOne();
-      bool signaled = testDoneEvent.WaitOne(timeout);
-      Assert.IsTrue(signaled, "Test should execute in less than {0}ms", timeout);
+      if (!testDoneEvent.WaitOne(timeout)) {
+        Assert.Fail("Test should execute in less than {0}ms", timeout);
+      }
 
       if (error != null) {
         throw new Exception("Test failed", error);
       }
     }
-    #endregion
-  }
 
-  public class MockedStorage : CallTracer, IFontStorage {
-    #region private data
-    private Dictionary<string, byte[]> _files;
-    #endregion
+    private void updated(MockedTransport transport,
+                         Connection connection,
+                         Action test,
+                         int timeout = 1000) {
+      connected(transport, connection, delegate {
+        AutoResetEvent catalogUpdateRequest = new AutoResetEvent(false);
+        AutoResetEvent fontUpdateRequest = new AutoResetEvent(false);
+        AutoResetEvent updateFinished = new AutoResetEvent(false);
 
-    #region properties
-    public FamilyCollection FamilyCollection { get; private set; }
-    public IList<Family> ActivatedFamilies {
-      get {
-        return FamilyCollection.Filtered(family => {
-          return family.HasActivatedFont;
-        }).ToList();
-      }
-    }
-    public IList<Family> NewFamilies {
-      get {
-        return FamilyCollection.Filtered((family) => {
-          return family.HasNewFont;
-        }).ToList();
-      }
-    }
-    public bool HasChanged { get; private set; }
-    public bool Loaded { get; private set; }
-    public DateTime? LastCatalogUpdate { get; set; }
-    public DateTime? LastFontStatusUpdate { get; set; }
-    #endregion
+        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+          if (evt == "catalog.update:request") {
+            catalogUpdateRequest.Set();
+          }
+          else if (evt == UserTopicEvent(connection, "update:request")) {
+            fontUpdateRequest.Set();
+          }
+        };
 
-    #region ctor
-    public MockedStorage() {
-      LastCatalogUpdate = DateTime.Now;
-      LastFontStatusUpdate = DateTime.Now;
-      FamilyCollection = new FamilyCollection();
-      _files = new Dictionary<string, byte[]>();
-    }
-    #endregion
+        transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
+          if (request.Endpoint.Contains("downloads")) {
+            return request.CreateResponse(HttpStatusCode.OK, "BODYBODYBODY");
+          }
+          return null;
+        };
 
-    #region methods
-    public Font AddFont(FontDescription description) {
-      RegisterCall("AddFont");
-      Font newFont = new Font(description);
-      FamilyCollection.AddFont(newFont);
+        connection.OnCatalogUpdateFinished += delegate {
+          updateFinished.Set();
+        };
 
-      HasChanged = true;
-      return newFont;
-    }
+        connection.UpdateCatalog();
 
-    public void RemoveFont(string uid) {
-      RegisterCall("RemoveFont");
-      FamilyCollection.RemoveFont(uid);
-      HasChanged = true;
-    }
-
-    public void ActivateFont(string uid) {
-      RegisterCall("ActivateFont");
-      Font font = FamilyCollection.FindFont(uid);
-      if (font != null) {
-        font.Activated = true;
-        HasChanged = true;
-      }
-    }
-
-    public void DeactivateFont(string uid) {
-      RegisterCall("DeactivateFont");
-      Font font = FamilyCollection.FindFont(uid);
-      if (font != null) {
-        font.Activated = false;
-        HasChanged = true;
-      }
-    }
-
-    public Font FindFont(string uid) {
-      RegisterCall("FindFont");
-      return FamilyCollection.FindFont(uid);
-    }
-
-    public Task Load() {
-      RegisterCall("Load");
-      return Task.Factory.StartNew(() => {
-        Loaded = true;
-      });
-    }
-
-    public Task Save() {
-      RegisterCall("Save");
-      return Task.Factory.StartNew(() => {
-        HasChanged = false;
-      });
-    }
-
-    public bool IsFontDownloaded(string uid) {
-      RegisterCall("IsFontDownloaded");
-      return _files.ContainsKey(uid);
-    }
-
-    public Task SaveFontFile(string uid, Stream data) {
-      RegisterCall("SaveFontFile");
-      return Task.Factory.StartNew(delegate {
-        using (MemoryStream mem = new MemoryStream()) {
-          data.CopyTo(mem);
-          _files[uid] = mem.ToArray();
+        // wait for the catalog update request
+        if (!catalogUpdateRequest.WaitOne(timeout)) {
+          Assert.Fail("Catalog update request should be send in less than {0}ms", timeout);
         }
-      });
-    }
-    #endregion
+        transport.SimulateMessage("catalog", "font:description", TestData.Font1_Description);
+        transport.SimulateMessage("catalog", "update:complete");
+        // wait for the fonts update request
+        if (!fontUpdateRequest.WaitOne(timeout)) {
+          Assert.Fail("Font update request should be send in less than {0}ms", timeout);
+        }
+        transport.SimulateMessage(UserTopicEvent(connection), "update:complete");
 
-    #region private methods
-    private Family FindFamilyByName(string name) {
-      return FamilyCollection.Families.FirstOrDefault(family => family.Name == name);
-    }
+        if (!updateFinished.WaitOne(timeout)) {
+          Assert.Fail("Update should finish in less than {0}ms", timeout);
+        }
 
-    private Family FindFamilyByFontUID(string uid) {
-      return FamilyCollection.Families.FirstOrDefault(family => family.FindFont(uid) != null);
+        try {
+          test?.Invoke();
+        }
+        catch (Exception) { }
+
+      }, timeout);
     }
     #endregion
   }

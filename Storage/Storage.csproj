@@ -51,10 +51,6 @@
       <Project>{de2e0581-3b35-44bc-a408-f3f480d70f18}</Project>
       <Name>ProtocolPayloads</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Protocol\Protocol.csproj">
-      <Project>{B7175444-75C9-4579-87FC-706DE922C89F}</Project>
-      <Name>Protocol</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Utilities\Utilities.csproj">
       <Project>{B7896312-0281-4255-B8F3-1056E053FA3C}</Project>
       <Name>Utilities</Name>

@@ -6,6 +6,7 @@ namespace Storage.Impl.Tests {
   [TestClass]
   public class FontTests {
     [TestMethod]
+    [TestCategory("Font.Events")]
     public void FontActivation_shouldTriggerActivationEvent() {
       Font font = new Font(TestData.Font1_Description);
 

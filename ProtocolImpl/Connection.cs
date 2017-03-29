@@ -2,20 +2,13 @@
 using Protocol.Transport;
 using Storage;
 using System;
-using System.IO;
-using System.Net;
 using System.Threading.Tasks;
-using Utilities.Extensions;
 using Utilities.FSM;
 
 namespace Protocol.Impl {
   public class Connection : AConnection {
     #region private data
     private FiniteStateMachine<ConnectionState> _fsm;
-    #endregion
-
-    #region properties
-    public IFontStorage Storage { get; private set; }
     #endregion
 
     #region internal properties
@@ -31,13 +24,11 @@ namespace Protocol.Impl {
     #endregion
 
     #region ctor
-    public Connection(IConnectionTransport transport, IFontStorage storage): base(transport) {
+    public Connection(IConnectionTransport transport, IFontStorage storage): base(transport, storage) {
       AuthenticationRetryInterval = TimeSpan.FromSeconds(10);
       ConnectionRetryInterval = TimeSpan.FromSeconds(10);
       DownloadParallelism = 3;
       DownloadTimeout = TimeSpan.FromSeconds(60);
-
-      Storage = storage;
 
       _fsm = new FiniteStateMachine<ConnectionState>(new Idle(this));
       _fsm.Start();

@@ -6,7 +6,11 @@ namespace Protocol.Transport {
   public delegate void TransportOpenedHandler();
   public delegate void TransportErrorHandler(Exception exception);
 
-  public interface IConnectionTransport {
+  public interface IHttpTransport {
+    IHttpRequest CreateHttpRequest(string endpoint);
+  }
+
+  public interface IConnectionTransport: IHttpTransport {
     #region properties
     string EndPoint { get; set; }
     Dictionary<string, string> UrlParams { get; set; }
@@ -17,8 +21,6 @@ namespace Protocol.Transport {
     void Connect();
     void Disconnect(Action callback = null);
     IBroadcastChannel Channel(string name);
-
-    IHttpRequest CreateHttpRequest(string endpoint);
     #endregion
 
     #region events

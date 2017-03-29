@@ -1,13 +1,10 @@
 ﻿using Protocol.Transport;
 using Storage.Data;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Utilities;
 using Utilities.Extensions;
 
 namespace Protocol.Impl.States {
@@ -90,18 +87,6 @@ namespace Protocol.Impl.States {
 
     #region event handling
     private void DownloadFinished() {
-      // this is executed in an async task so I don't really care for the double foreach
-
-      // activate all fonts
-      foreach(Family family in _context.Storage.ActivatedFamilies) {
-        foreach(Font font in family.Fonts) {
-          if (font.Activated) {
-            // TODO: Activate font
-            Console.WriteLine("Activating font");
-          }
-        }
-      }
-
       WillTransition = true;
       FSM.State = new Running(_context);
     }

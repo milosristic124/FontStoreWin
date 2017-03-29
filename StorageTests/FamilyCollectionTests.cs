@@ -6,6 +6,7 @@ namespace Storage.Impl.Tests {
   [TestClass]
   public class FamilyCollectionTests {
     [TestMethod]
+    [TestCategory("FamilyCollection.Behavior")]
     public void FamilyCollectionClear_shouldClearAllFamilies() {
       FamilyCollection collection = NewCollection();
 
@@ -15,6 +16,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("FamilyCollection.Events")]
     public void FamilyCollectionClear_shouldTriggerClearEvent() {
       FamilyCollection collection = NewCollection();
 
@@ -28,6 +30,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("FamilyCollection.Behavior")]
     public void FamilyCollectionFindFont_shouldReturnSearchedFont() {
       FamilyCollection collection = NewCollection();
       Font font = collection.Families[0].Fonts[0];
@@ -36,6 +39,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("FamilyCollection.Behavior")]
     public void FamilyCollectionFindFont_shouldReturnNull_whenFontDoesNotExist() {
       FamilyCollection collection = new FamilyCollection();
 
@@ -43,6 +47,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("FamilyCollection.Behavior")]
     public void FamilyCollectionAddFont_shouldCreateNewFamily() {
       FamilyCollection collection = new FamilyCollection();
       Font font = new Font(TestData.Font1_Description);
@@ -52,6 +57,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("FamilyCollection.Behavior")]
     public void FamilyCollectionAddFont_shouldNotCreateNewFamily_whenFamilyAlreadyExists() {
       FamilyCollection collection = new FamilyCollection();
       Font font1 = new Font(TestData.Font1_Description);
@@ -62,6 +68,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("FamilyCollection.Events")]
     public void FamilyCollectionAddFont_shouldTriggerFamilyAddedEvent_whenFamilyIsCreated() {
       FamilyCollection collection = new FamilyCollection();
       Font font = new Font(TestData.Font1_Description);
@@ -76,6 +83,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("FamilyCollection.Behavior")]
     public void FamilyCollectionRemoveFont_shouldRemoveFamily_whenFamilyIsEmpty() {
       FamilyCollection collection = new FamilyCollection();
       Font font = new Font(TestData.Font1_Description);
@@ -86,6 +94,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("FamilyCollection.Behavior")]
     public void FamilyCollectionRemoveFont_shouldNotRemoveFamily_whenFamilyIsNotEmpty() {
       FamilyCollection collection = new FamilyCollection();
       Font font = new Font(TestData.Font1_Description);
@@ -97,6 +106,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("FamilyCollection.Events")]
     public void FamilyCollectionRemoveFont_shouldTriggerFamilyRemovedEvent_whenFamilyIsRemoved() {
       FamilyCollection collection = new FamilyCollection();
       Font font = new Font(TestData.Font1_Description);
@@ -112,19 +122,51 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("FamilyCollection.Events")]
     public void FamilyCollection_shouldTriggerFontActivatedEvent_whenFontActivationStatusChange() {
       FamilyCollection collection = new FamilyCollection();
       Font font = new Font(TestData.Font1_Description);
       collection.AddFont(font);
 
       bool eventTriggered = false;
-      collection.OnFontActivationChanged += delegate {
+      collection.OnActivationChanged += delegate {
         eventTriggered = true;
       };
 
       font.Activated = true;
 
       Assert.IsTrue(eventTriggered, "FamilyCollection should trigger font activation event when a font activation status change");
+    }
+
+    [TestMethod]
+    [TestCategory("FamilyCollection.Events")]
+    public void FamilyCollection_shouldTriggerAddFontEvent_whenFontIsAddedToFamily() {
+      FamilyCollection collection = new FamilyCollection();
+      Font font = new Font(TestData.Font1_Description);
+
+      bool eventTriggered = false;
+      collection.OnFontAdded += delegate {
+        eventTriggered = true;
+      };
+      collection.AddFont(font);
+
+      Assert.IsTrue(eventTriggered, "FamilyCollection should trigger font added event when fonts are added to the collection");
+    }
+
+    [TestMethod]
+    [TestCategory("FamilyCollection.Events")]
+    public void FamilyCollection_shouldTriggerRemovedFontEvent_whenFontIsRemovedFromFamily() {
+      FamilyCollection collection = new FamilyCollection();
+      Font font = new Font(TestData.Font1_Description);
+      collection.AddFont(font);
+
+      bool eventTriggered = false;
+      collection.OnFontRemoved += delegate {
+        eventTriggered = true;
+      };
+      collection.RemoveFont(font.UID);
+
+      Assert.IsTrue(eventTriggered, "FamilyCollection should trigger font removed event when fonts are removed from the collection");
     }
 
     #region setup methods

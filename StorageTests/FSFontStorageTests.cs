@@ -4,21 +4,24 @@ using System.IO;
 using TestUtilities;
 
 namespace Storage.Impl.Tests {
-  [TestClass()]
+  [TestClass]
   public class FSFontStorageTests {
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Storage.Behavior")]
     public void FontStorage_shouldBeEmpty_whenCreated() {
       FSFontStorage storage = new FSFontStorage(TestPath);
       Assert.IsTrue(storage.FamilyCollection.Families.Count == 0, "FontStorage has no data when created");
     }
 
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Storage.Behavior")]
     public void FindFont_shouldReturnNull_whenTheFontDoesNotExist() {
       FSFontStorage storage = new FSFontStorage(TestPath);
       Assert.IsNull(storage.FindFont(TestData.Font1_Description.UID), "FindFont return null for unexisting fonts");
     }
 
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Storage.Behavior")]
     public void FindFont_shouldReturnTheSearchedFont() {
       FSFontStorage storage = new FSFontStorage(TestPath);
       storage.Load().Wait();
@@ -28,7 +31,8 @@ namespace Storage.Impl.Tests {
       Assert.IsNotNull(storage.FindFont(TestData.Font1_Description.UID), "FindFont should find an existing font");
     }
 
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Storage.Behavior")]
     public void AddFont_shouldUpdateFontStorage() {
       FSFontStorage storage = new FSFontStorage(TestPath);
       storage.Load().Wait();
@@ -38,7 +42,8 @@ namespace Storage.Impl.Tests {
       Assert.IsTrue(storage.FamilyCollection.Families.Count == 1, "AddFont should add a font to the FontStorage");
     }
 
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Storage.Behavior")]
     public void AddFont_shouldReplaceObsoleteData() {
       FSFontStorage storage = new FSFontStorage(TestPath);
       storage.Load().Wait();
@@ -50,7 +55,8 @@ namespace Storage.Impl.Tests {
         "AddFont should replace obsolete font in the FontStorage");
     }
 
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Storage.Behavior")]
     public void RemoveFont_shouldUpdateFontStorage() {
       FSFontStorage storage = new FSFontStorage(TestPath);
       storage.Load().Wait();
@@ -61,7 +67,8 @@ namespace Storage.Impl.Tests {
       Assert.IsTrue(storage.FamilyCollection.Families.Count == 0, "RemoveFont should remove font from the FontStorage");
     }
 
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Storage.Behavior")]
     public void ActivateFont_shouldActivateFont() {
       FSFontStorage storage = new FSFontStorage(TestPath);
       storage.Load().Wait();
@@ -72,7 +79,8 @@ namespace Storage.Impl.Tests {
       Assert.IsTrue(storage.FindFont(TestData.Font1_Description.UID).Activated, "ActivateFont shoudl activate the corresponding font in the FontStorage");
     }
 
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Storage.Behavior")]
     public void DeactivateFont_shouldDeactivateFont() {
       FSFontStorage storage = new FSFontStorage(TestPath);
       storage.Load().Wait();
@@ -84,7 +92,8 @@ namespace Storage.Impl.Tests {
       Assert.IsFalse(storage.FindFont(TestData.Font1_Description.UID).Activated, "DeactivateFont should deactivate the corresponding font in the FontStorage");
     }
 
-    [TestMethod()]
+    [TestMethod]
+    [TestCategory("Storage.Behavior")]
     public void Load_shouldLoadSavedData() {
       string storagePath = TestPath;
       FSFontStorage storage = new FSFontStorage(storagePath);

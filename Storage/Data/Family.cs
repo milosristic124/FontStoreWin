@@ -47,7 +47,7 @@ namespace Storage.Data {
     #region events
     public event FontAddedHandler OnFontAdded;
     public event FontRemovedHandler OnFontRemoved;
-    public event FontActivationChangedHandler OnFontActivationChanged;
+    public event FontActivationChangedHandler OnActivationChanged;
     public event FullyActivatedChangedHandler OnFullyActivatedChanged;
     #endregion
 
@@ -134,7 +134,7 @@ namespace Storage.Data {
       // 4. don't care, nothing change
 
       // whatever happens we transmit the font event
-      OnFontActivationChanged?.Invoke(this, sender);
+      OnActivationChanged?.Invoke(this, sender);
 
       // if we are doing mass act/deactivations we don't want to do repetitive work
       if (_batchActivation) return;

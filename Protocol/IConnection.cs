@@ -1,5 +1,6 @@
 ﻿using Protocol.Payloads;
 using Protocol.Transport;
+using Storage;
 using System;
 
 namespace Protocol {
@@ -12,6 +13,7 @@ namespace Protocol {
   public interface IConnection : IConnectionObservable {
     #region properties
     IConnectionTransport Transport { get; }
+    IFontStorage Storage { get; }
     UserData UserData { get; }
 
     TimeSpan AuthenticationRetryInterval { get; }

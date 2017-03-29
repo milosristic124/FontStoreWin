@@ -65,6 +65,10 @@
       <Project>{de2e0581-3b35-44bc-a408-f3f480d70f18}</Project>
       <Name>ProtocolPayloads</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ProtocolTransport\ProtocolTransport.csproj">
+      <Project>{2f40baa9-89c9-44d7-8060-233b5230b94b}</Project>
+      <Name>ProtocolTransport</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Protocol\Protocol.csproj">
       <Project>{b7175444-75c9-4579-87fc-706de922c89f}</Project>
       <Name>Protocol</Name>

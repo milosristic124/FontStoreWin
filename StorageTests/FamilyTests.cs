@@ -6,6 +6,7 @@ namespace Storage.Impl.Tests {
   [TestClass]
   public class FamilyTests {
     [TestMethod]
+    [TestCategory("Family.Behavior")]
     public void FamilyAddFont_shouldAddFontToTheFamily() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
       Font font = new Font(TestData.Font1_Description);
@@ -15,6 +16,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Family.Behavior")]
     public void FamilyAddFont_shouldUpdateFontInTheFamily() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
       Font font = new Font(TestData.Font1_Description);
@@ -28,6 +30,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Family.Events")]
     public void FamilyAddFont_shouldTriggerAddFontEvent() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
       Font font = new Font(TestData.Font1_Description);
@@ -42,6 +45,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Family.Events")]
     public void FamilyAddFont_shouldTriggerRemoveAndAddFontEvents_whenUpdatingFont() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
       Font font = new Font(TestData.Font1_Description);
@@ -65,6 +69,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Family.Behavior")]
     public void FamilyRemoveFont_shouldRemoveFontFromTheFamily() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
       Font font = new Font(TestData.Font1_Description);
@@ -75,6 +80,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Family.Events")]
     public void FamilyRemoveFont_shouldTriggerRemovedFontEvent() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
       Font font = new Font(TestData.Font1_Description);
@@ -90,6 +96,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Family.Behavior")]
     public void FamilyRemoveFont_shouldDoNothing_whenFontDoesNotExist() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
 
@@ -103,6 +110,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Family.Behavior")]
     public void FamilyFindFont_shouldReturnSearchedFont() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
       Font font = new Font(TestData.Font1_Description);
@@ -112,6 +120,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Family.Behavior")]
     public void FamilyFindFont_shouldReturnNull_whenFontDoesNotExist() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
 
@@ -119,6 +128,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Family.Behavior")]
     public void FamilyFullyActivated_shouldBeFalse_whenAtLeastOneFontIsNotActivated() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
       Font font1 = new Font(TestData.Font1_Description);
@@ -133,6 +143,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Family.Behavior")]
     public void FamilyFullyActivated_shouldBeTrue_whenAllFontsAreActivated() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
       Font font1 = new Font(TestData.Font1_Description);
@@ -147,6 +158,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Family.Behavior")]
     public void FamilyFullyActivatedSet_shouldSetAllFontsActivatedState() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
       Font font1 = new Font(TestData.Font1_Description);
@@ -162,6 +174,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Family.Events")]
     public void Family_shouldTriggerFullyActivatedEvent_whenAllFontsBecomeActivated() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
       Font font1 = new Font(TestData.Font1_Description);
@@ -180,6 +193,7 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Family.Events")]
     public void Family_shouldTriggerFullyActivatedEvent_whenFullyActivatedStatusIsLost() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
       Font font1 = new Font(TestData.Font1_Description);
@@ -200,13 +214,14 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Family.Events")]
     public void Family_shouldTriggerFontActivatedEvent_whenChildFontActivationStatusChange() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
       Font font = new Font(TestData.Font1_Description);
       family.Add(font);
 
       bool eventTriggered = false;
-      family.OnFontActivationChanged += delegate {
+      family.OnActivationChanged += delegate {
         eventTriggered = true;
       };
 

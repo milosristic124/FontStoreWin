@@ -1,11 +1,10 @@
-﻿using Protocol;
+﻿using Microsoft.Win32;
+using Protocol;
 using Storage;
-using System.Windows;
-using Utilities.FSM;
 using System;
-using Microsoft.Win32;
+using System.Windows;
 using System.Windows.Input;
-using UI.Views;
+using Utilities.FSM;
 
 namespace UI {
   /// <summary>

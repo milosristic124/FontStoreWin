@@ -53,6 +53,7 @@
     <Compile Include="Protocol\MockedHttpRequest.cs" />
     <Compile Include="Protocol\MockedHttpResponse.cs" />
     <Compile Include="Protocol\MockedTransport.cs" />
+    <Compile Include="Storage\MockedStorage.cs" />
     <Compile Include="TestData.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -60,13 +61,24 @@
       <Project>{de2e0581-3b35-44bc-a408-f3f480d70f18}</Project>
       <Name>ProtocolPayloads</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ProtocolTransport\ProtocolTransport.csproj">
+      <Project>{2f40baa9-89c9-44d7-8060-233b5230b94b}</Project>
+      <Name>ProtocolTransport</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Protocol\Protocol.csproj">
       <Project>{b7175444-75c9-4579-87fc-706de922c89f}</Project>
       <Name>Protocol</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Storage\Storage.csproj">
+      <Project>{115A3A3E-95CD-45AE-BE11-7ECC218FB91E}</Project>
+      <Name>Storage</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="FontManager\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
