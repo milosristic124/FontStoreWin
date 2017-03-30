@@ -20,7 +20,6 @@ namespace Protocol {
     TimeSpan ConnectionRetryInterval { get; }
 
     int DownloadParallelism { get; }
-    TimeSpan DownloadTimeout { get; }
     #endregion
 
     #region methods

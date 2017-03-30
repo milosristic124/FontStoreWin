@@ -13,8 +13,14 @@ namespace Protocol {
     public TimeSpan AuthenticationRetryInterval { get; protected set; }
     public TimeSpan ConnectionRetryInterval { get; protected set; }
 
-    public int DownloadParallelism { get; protected set; }
-    public TimeSpan DownloadTimeout { get; protected set; }
+    public int DownloadParallelism {
+      get {
+        return Transport.DownloadParallelism;
+      }
+      protected set {
+        Transport.DownloadParallelism = value;
+      }
+    }
     #endregion
 
     #region ctor

@@ -44,13 +44,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FSFontStorage.cs" />
+    <Compile Include="FontStorage.cs" />
+    <Compile Include="Internal\FontInstallerAgent.cs" />
+    <Compile Include="Internal\FSStorage.cs" />
+    <Compile Include="Internal\FSSynchronizerAgent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FontInstaller\FontInstaller.csproj">
+      <Project>{7d9852a5-6911-478f-b863-c31fbcdd8065}</Project>
+      <Name>FontInstaller</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProtocolPayloads\ProtocolPayloads.csproj">
       <Project>{de2e0581-3b35-44bc-a408-f3f480d70f18}</Project>
       <Name>ProtocolPayloads</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProtocolTransport\ProtocolTransport.csproj">
+      <Project>{2F40BAA9-89C9-44D7-8060-233B5230B94B}</Project>
+      <Name>ProtocolTransport</Name>
     </ProjectReference>
     <ProjectReference Include="..\Storage\Storage.csproj">
       <Project>{115a3a3e-95cd-45ae-be11-7ecc218fb91e}</Project>

@@ -7,6 +7,8 @@ namespace Protocol.Transport {
     public string EndPoint { get; set; }
     public string AuthToken { get; set; }
     public Dictionary<string, string> UrlParams { get; set; }
+
+    public int DownloadParallelism { get; set; }
     #endregion
 
     #region ctor

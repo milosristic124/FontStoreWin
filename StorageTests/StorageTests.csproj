@@ -55,14 +55,22 @@
   <ItemGroup>
     <Compile Include="FamilyTests.cs" />
     <Compile Include="FontTests.cs" />
-    <Compile Include="FSFontStorageTests.cs" />
+    <Compile Include="FontStorageTests.cs" />
     <Compile Include="FamilyCollectionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FontInstaller\FontInstaller.csproj">
+      <Project>{7d9852a5-6911-478f-b863-c31fbcdd8065}</Project>
+      <Name>FontInstaller</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProtocolPayloads\ProtocolPayloads.csproj">
       <Project>{de2e0581-3b35-44bc-a408-f3f480d70f18}</Project>
       <Name>ProtocolPayloads</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProtocolTransport\ProtocolTransport.csproj">
+      <Project>{2f40baa9-89c9-44d7-8060-233b5230b94b}</Project>
+      <Name>ProtocolTransport</Name>
     </ProjectReference>
     <ProjectReference Include="..\Protocol\Protocol.csproj">
       <Project>{b7175444-75c9-4579-87fc-706de922c89f}</Project>

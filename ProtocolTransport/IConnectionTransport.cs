@@ -5,11 +5,7 @@ namespace Protocol.Transport {
   public delegate void TransportClosedHandler();
   public delegate void TransportOpenedHandler();
   public delegate void TransportErrorHandler(Exception exception);
-
-  public interface IHttpTransport {
-    IHttpRequest CreateHttpRequest(string endpoint);
-  }
-
+  
   public interface IConnectionTransport: IHttpTransport {
     #region properties
     string EndPoint { get; set; }

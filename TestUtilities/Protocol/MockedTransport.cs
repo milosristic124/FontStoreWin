@@ -16,6 +16,7 @@ namespace TestUtilities.Protocol {
 
     #region ctor
     public MockedTransport() : base() {
+      DownloadParallelism = 2;
       _connecting = false;
       _disconnecting = false;
       _tracer = new CallTracer();

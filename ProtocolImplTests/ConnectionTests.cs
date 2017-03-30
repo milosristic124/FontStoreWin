@@ -263,56 +263,6 @@ namespace Protocol.Impl.Tests {
     }
 
     [TestMethod]
-    [TestCategory("Protocol.Update")]
-    public void UpdateCatalog_shouldDownloadNewFonts_andInstallThem() {
-      MockedTransport transport = new MockedTransport();
-      MockedStorage storage = new MockedStorage();
-      Connection connection = new TestConnection(transport, storage);
-
-      connected(transport, connection, delegate {
-        AutoResetEvent catalogUpdateRequested = new AutoResetEvent(false);
-        AutoResetEvent fontUpdateRequested = new AutoResetEvent(false);
-        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
-          if (evt == "catalog.update:request") {
-            catalogUpdateRequested.Set();
-          }
-          else if (evt == UserTopicEvent(connection, "update:request")) {
-            fontUpdateRequested.Set();
-          }
-        };
-
-        bool downloadRequested = false;
-        transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
-          if (request.Endpoint.Contains("downloads")) {
-            downloadRequested = true;
-            return request.CreateResponse(HttpStatusCode.OK, "BODYBODYBODY");
-          }
-          return null;
-        };
-
-        AutoResetEvent updateFinished = new AutoResetEvent(false);
-        connection.OnCatalogUpdateFinished += delegate {
-          updateFinished.Set();
-        };
-
-        connection.UpdateCatalog();
-
-        catalogUpdateRequested.WaitOne(); // wait for the catalog update request
-        transport.SimulateMessage("catalog", "font:description", TestData.Font1_Description);
-        transport.SimulateMessage("catalog", "update:complete");
-
-        fontUpdateRequested.WaitOne(); // wait for the fonts update request
-        transport.SimulateMessage(UserTopicEvent(connection), "font:activation", TestData.Font1_Id);
-        transport.SimulateMessage(UserTopicEvent(connection), "update:complete");
-
-        updateFinished.WaitOne(); // wait for the update to complete
-
-        Assert.IsTrue(downloadRequested, "Updating the catalog should download fonts");
-        storage.Verify("SaveFontFile", 1); // one font was saved
-      });
-    }
-
-    [TestMethod]
     [TestCategory("Protocol.Running")]
     public void FontActivationMessage_shouldActivateFont() {
       MockedTransport transport = new MockedTransport();

@@ -28,7 +28,6 @@ namespace Protocol.Impl {
       AuthenticationRetryInterval = TimeSpan.FromSeconds(10);
       ConnectionRetryInterval = TimeSpan.FromSeconds(10);
       DownloadParallelism = 3;
-      DownloadTimeout = TimeSpan.FromSeconds(60);
 
       _fsm = new FiniteStateMachine<ConnectionState>(new Idle(this));
       _fsm.Start();

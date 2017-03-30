@@ -1,4 +1,5 @@
-﻿using Utilities.Extensions;
+﻿using Storage.Data;
+using Utilities.Extensions;
 
 namespace Protocol.Impl.States {
   class UpdatingFonts : ConnectionState {

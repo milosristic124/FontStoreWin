@@ -1,19 +1,17 @@
-﻿using Protocol.Payloads;
+﻿using FontInstaller;
+using Protocol.Payloads;
 using Storage;
 using Storage.Data;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace TestUtilities.Storage {
   public class MockedStorage : CallTracer, IFontStorage {
-    #region private data
-    private Dictionary<string, byte[]> _files;
-    #endregion
-
     #region properties
+    public IFontInstaller Installer { get; set; }
+
     public FamilyCollection FamilyCollection { get; private set; }
     public IList<Family> ActivatedFamilies {
       get {
@@ -40,7 +38,6 @@ namespace TestUtilities.Storage {
       LastCatalogUpdate = DateTime.Now;
       LastFontStatusUpdate = DateTime.Now;
       FamilyCollection = new FamilyCollection();
-      _files = new Dictionary<string, byte[]>();
     }
     #endregion
 
@@ -97,19 +94,21 @@ namespace TestUtilities.Storage {
       });
     }
 
-    public bool IsFontDownloaded(string uid) {
-      RegisterCall("IsFontDownloaded");
-      return _files.ContainsKey(uid);
+    public void SynchronizeWithSystem(Action then = null) {
+      RegisterCall("SynchronizeWithSystem");
+      then?.Invoke();
     }
 
-    public Task SaveFontFile(string uid, Stream data) {
-      RegisterCall("SaveFontFile");
-      return Task.Factory.StartNew(delegate {
-        using (MemoryStream mem = new MemoryStream()) {
-          data.CopyTo(mem);
-          _files[uid] = mem.ToArray();
-        }
-      });
+    public void BeginSynchronization() {
+      RegisterCall("BeginSynchronization");
+    }
+
+    public void EndSynchronization() {
+      RegisterCall("EndSynchronization");
+    }
+
+    public void AbortSynchronization() {
+      RegisterCall("AbortSynchronization");
     }
     #endregion
 

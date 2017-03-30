@@ -44,6 +44,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FontInstaller\FontInstaller.csproj">
+      <Project>{7d9852a5-6911-478f-b863-c31fbcdd8065}</Project>
+      <Name>FontInstaller</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PhoenixTransport\PhoenixTransport.csproj">
       <Project>{334eaac4-1dca-4440-bb6e-ef64084bff65}</Project>
       <Name>PhoenixTransport</Name>

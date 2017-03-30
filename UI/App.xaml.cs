@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using Protocol;
+using Protocol.Transport;
 using Storage;
 using System;
 using System.Windows;
@@ -19,6 +20,7 @@ namespace UI {
     #endregion
 
     #region properies
+    public IConnectionTransport Transport { get; private set; }
     public IFontStorage Storage { get; private set; }
     public IConnection Connection { get; private set; }
     public System.Windows.Forms.NotifyIcon NotifyIcon { get; private set; }
@@ -47,8 +49,9 @@ namespace UI {
 
     #region method
     public void InitializeCore() {
-      Storage = Core.Factory.InitializeStorage();
-      Connection = Core.Factory.InitializeServerConnection(Storage);
+      Transport = Core.Factory.InitializeTransport();
+      Storage = Core.Factory.InitializeStorage(Transport);
+      Connection = Core.Factory.InitializeServerConnection(Transport, Storage);
     }
     #endregion
 
