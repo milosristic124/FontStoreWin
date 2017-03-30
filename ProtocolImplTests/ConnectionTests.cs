@@ -317,6 +317,32 @@ namespace Protocol.Impl.Tests {
 
     [TestMethod]
     [TestCategory("Protocol.Disconnect")]
+    public void Disconnect_shouldStopUpdatingFontStorage() {
+      MockedTransport transport = new MockedTransport();
+      MockedStorage storage = new MockedStorage();
+      Connection connection = new TestConnection(transport, storage);
+
+      updated(transport, connection, delegate {
+        AutoResetEvent disconnected = new AutoResetEvent(false);
+        connection.OnDisconnected += () => {
+          disconnected.Set();
+        };
+
+        transport.OnDisconnectAttempt += () => true;
+
+        connection.Disconnect(DisconnectReason.Quit);
+
+        disconnected.WaitOne();
+        //int timeout = 500;
+        //bool signaled = disconnected.WaitOne(timeout);
+        //Assert.IsTrue(signaled, "Disconnect should trigger a disconnected event");
+
+        storage.Verify("EndSynchronization", 1);
+      });
+    }
+
+    [TestMethod]
+    [TestCategory("Protocol.Disconnect")]
     public void Disconnect_shouldDisconnectTheTransport() {
       MockedTransport transport = new MockedTransport();
       MockedStorage storage = new MockedStorage();
@@ -380,10 +406,10 @@ namespace Protocol.Impl.Tests {
       connection.Connect("test_email", "test_password");
 
       // DEBUG unit tests
-      //testDoneEvent.WaitOne();
-      if (!testDoneEvent.WaitOne(timeout)) {
-        Assert.Fail("Test should execute in less than {0}ms", timeout);
-      }
+      testDoneEvent.WaitOne();
+      //if (!testDoneEvent.WaitOne(timeout)) {
+      //  Assert.Fail("Test should execute in less than {0}ms", timeout);
+      //}
 
       if (error != null) {
         throw new Exception("Test failed", error);

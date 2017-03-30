@@ -39,14 +39,14 @@ namespace Protocol.Impl {
       if (CanTransition<Authenticating>()) {
         // All the FSM states lives in their Start method.
         // We must ensure that the calling thread is never blocked (most likely the UI thread)
-        Task.Factory.StartNew(() => {
+        Task.Run(() => {
           _fsm.State = new Authenticating(this, email, password);
         });
       }
     }
 
     public override void Disconnect(DisconnectReason reason, string error = null) {
-      Task.Factory.StartNew(() => {
+      Task.Run(() => {
         _fsm.State = new Disconnecting(this, reason, error);
       });
     }
@@ -54,7 +54,7 @@ namespace Protocol.Impl {
     public override void UpdateCatalog() {
       AssertTransition<UpdatingCatalog>("update the catalog");
 
-      Task.Factory.StartNew(() => {
+      Task.Run(() => {
         _fsm.State = new UpdatingCatalog(this);
       });
     }

@@ -82,14 +82,14 @@ namespace TestUtilities.Storage {
 
     public Task Load() {
       RegisterCall("Load");
-      return Task.Factory.StartNew(() => {
+      return Task.Run(() => {
         Loaded = true;
       });
     }
 
     public Task Save() {
       RegisterCall("Save");
-      return Task.Factory.StartNew(() => {
+      return Task.Run(() => {
         HasChanged = false;
       });
     }

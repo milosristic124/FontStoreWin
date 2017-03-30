@@ -82,7 +82,7 @@ namespace Storage.Impl {
     #region methods
     public Task Load() {
       if (Loaded) {
-        return Task.Factory.StartNew(() => { });
+        return Task.Run(() => { });
       }
 
       UnregisterCollectionEvents();
@@ -95,7 +95,7 @@ namespace Storage.Impl {
 
     public Task Save() {
       if (!HasChanged) {
-        return Task.Factory.StartNew(() => { });
+        return Task.Run(() => { });
       }
 
       return _HDDStorage.Save(FamilyCollection).ContinueWith(delegate {

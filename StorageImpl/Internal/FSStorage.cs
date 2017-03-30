@@ -98,7 +98,7 @@ namespace Storage.Impl.Internal {
           File.WriteAllText(_metadataFilePath, serialization);
         });
       } else {
-        metadataSaving = Task.Factory.StartNew(() => { });
+        metadataSaving = Task.Run(() => { });
       }
 
       Task fontSaving = Task.WhenAll(collection.Families.SelectMany(family => {

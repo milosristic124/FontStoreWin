@@ -24,7 +24,7 @@ namespace TestUtilities.Protocol {
 
     public Task<IHttpResponse> Response {
       get {
-        return Task.Factory.StartNew<IHttpResponse>(() => {
+        return Task.Run<IHttpResponse>(() => {
           string body = Encoding.UTF8.GetString(_bodyStream.ToArray());
           MockedHttpResponse response = OnRequestSent?.Invoke(this, body);
           if (response != null) {

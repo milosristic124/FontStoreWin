@@ -134,7 +134,7 @@ namespace TestUtilities.Protocol {
     }
 
     private async void TriggerConnectionAttempt() {
-      await Task.Factory.StartNew(() => {
+      await Task.Run(() => {
         bool? shouldConnect = _onConnectionAttempt?.Invoke();
         if (shouldConnect.HasValue) {
           _connecting = false;
@@ -149,7 +149,7 @@ namespace TestUtilities.Protocol {
     }
 
     private async void TriggerDisconnectionAttempt() {
-      await Task.Factory.StartNew(() => {
+      await Task.Run(() => {
         bool? shouldDisconnect = _onDisconnectionAttempt?.Invoke();
         if (shouldDisconnect.HasValue) {
           _disconnecting = false;

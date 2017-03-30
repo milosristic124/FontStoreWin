@@ -132,7 +132,7 @@ namespace Storage.Impl.Tests {
     public void SynchronizeWithSystem_shouldDownloadAndInstallFonts() {
       MockedTransport transport = new MockedTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer);
+      FontStorage storage = new FontStorage(transport, installer, TestPath);
 
       storage.AddFont(TestData.Font1_Description);
       storage.AddFont(TestData.Font2_Description);
@@ -148,17 +148,15 @@ namespace Storage.Impl.Tests {
         return null;
       };
 
-      installer.OnInstallRequest += (string uid, InstallationScope scope) => {
-        return true;
-      };
+      installer.OnInstallRequest += (string uid, InstallationScope scope) => true;
 
       AutoResetEvent evt = new AutoResetEvent(false);
       storage.SynchronizeWithSystem(delegate {
         evt.Set();
       });
 
-      int timeout = 10000;
-      if (!evt.WaitOne(/*timeout*/)) {
+      int timeout = 1000;
+      if (!evt.WaitOne(timeout)) {
         Assert.Fail("SynchronizeWithSystem should finish synchronizing in less than {0} ms", timeout);
       }
 
@@ -172,16 +170,163 @@ namespace Storage.Impl.Tests {
         "SynchronizeWithSystem should install activated fonts for process and user");
     }
 
+    [TestMethod]
+    [TestCategory("Storage.FullSynchronization")]
     public void SynchronizeWithSystem_shouldNotReactToRealTimeEventsAfterward() {
+      MockedTransport transport = new MockedTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      FontStorage storage = new FontStorage(transport, installer, TestPath);
+
+      storage.AddFont(TestData.Font1_Description);
+
+      int downloadCount = 0;
+      transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
+        if (request.Endpoint.Contains("downloads")) {
+          downloadCount += 1;
+          return request.CreateResponse(System.Net.HttpStatusCode.OK, "FONTFONTFONTFONT");
+        }
+        return null;
+      };
+
+      installer.OnInstallRequest += (string uid, InstallationScope scope) => true;
+
+      AutoResetEvent evt = new AutoResetEvent(false);
+      storage.SynchronizeWithSystem(delegate {
+        evt.Set();
+      });
+
+      int timeout = 1000;
+      if (!evt.WaitOne(timeout)) {
+        Assert.Fail("SynchronizeWithSystem should finish synchronizing in less than {0} ms", timeout);
+      }
+
+      storage.AddFont(TestData.Font2_Description);
+
+      Assert.AreEqual(1, downloadCount, "SynchronizeWithSystem should not download fonts in realtime");
+      installer.Verify("InstallFont", 1);
+      installer.Verify("UnsintallFont", 0);
     }
 
+    [TestMethod]
+    [TestCategory("Storage.RealTimeSynchronization")]
     public void BeginSynchronization_shouldDownloadAndInstallFonts() {
+      MockedTransport transport = new MockedTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      FontStorage storage = new FontStorage(transport, installer, TestPath);
+
+      storage.AddFont(TestData.Font1_Description);
+      storage.AddFont(TestData.Font2_Description);
+      storage.AddFont(TestData.Font3_Description);
+      storage.ActivateFont(TestData.Font1_Description.UID);
+
+      int downloadCount = 0;
+      transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
+        if (request.Endpoint.Contains("downloads")) {
+          downloadCount += 1;
+          return request.CreateResponse(System.Net.HttpStatusCode.OK, "FONTFONTFONTFONT");
+        }
+        return null;
+      };
+
+      installer.OnInstallRequest += (string uid, InstallationScope scope) => true;
+
+      storage.BeginSynchronization();
+
+      int timeout = 1000;
+      if (!Task.Delay(10).Wait(timeout)) {
+        Assert.Fail("BeginSynchronization should finish synchronizing in less than {0} ms", timeout);
+      }
+
+
+      Assert.AreEqual(3, downloadCount, "BeginSynchronization should download all the buffered updates");
+      installer.Verify("InstallFont", 4);
+      installer.Verify("UnsintallFont", 0);
+
+      Assert.AreEqual(InstallationScope.Process, installer.FontInstallationScope(TestData.Font2_Description.UID),
+        "BeginSynchronization should install deactivated fonts for process only");
+      Assert.AreEqual(InstallationScope.All, installer.FontInstallationScope(TestData.Font1_Description.UID),
+        "BeginSynchronization should install activated fonts for process and user");
     }
 
+    [TestMethod]
+    [TestCategory("Storage.RealTimeSynchronization")]
     public void BeginSynchronization_shouldReactToRealTimeEvents() {
+      MockedTransport transport = new MockedTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      FontStorage storage = new FontStorage(transport, installer, TestPath);
+
+      int downloadCount = 0;
+      transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
+        if (request.Endpoint.Contains("downloads")) {
+          downloadCount += 1;
+          return request.CreateResponse(System.Net.HttpStatusCode.OK, "FONTFONTFONTFONT");
+        }
+        return null;
+      };
+
+      installer.OnInstallRequest += (string uid, InstallationScope scope) => true;
+
+      storage.BeginSynchronization();
+
+      Task asyncEvents = Task.Run(delegate {
+        storage.AddFont(TestData.Font1_Description);
+        storage.AddFont(TestData.Font2_Description);
+        storage.ActivateFont(TestData.Font1_Description.UID);
+        Thread.Sleep(10);
+      });
+
+      int timeout = 1000;
+      if (!asyncEvents.Wait(timeout)) {
+        Assert.Fail("BeginSynchronization should finish synchronizing in less than {0} ms", timeout);
+      }
+
+
+      Assert.AreEqual(2, downloadCount, "BeginSynchronization should download fonts in realtime");
+      installer.Verify("InstallFont", 3);
+      installer.Verify("UnsintallFont", 0);
+
+      Assert.AreEqual(InstallationScope.Process, installer.FontInstallationScope(TestData.Font2_Description.UID),
+        "BeginSynchronization should install deactivated fonts for process only");
+      Assert.AreEqual(InstallationScope.All, installer.FontInstallationScope(TestData.Font1_Description.UID),
+        "BeginSynchronization should install activated fonts for process and user");
     }
 
+    [TestMethod]
+    [TestCategory("Storage.RealTimeSynchronization")]
     public void EndSynchronization_shouldNotReactToRealTimeEventsAfterward() {
+      MockedTransport transport = new MockedTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      FontStorage storage = new FontStorage(transport, installer, TestPath);
+
+      int downloadCount = 0;
+      transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
+        if (request.Endpoint.Contains("downloads")) {
+          downloadCount += 1;
+          return request.CreateResponse(System.Net.HttpStatusCode.OK, "FONTFONTFONTFONT");
+        }
+        return null;
+      };
+
+      installer.OnInstallRequest += (string uid, InstallationScope scope) => true;
+
+      storage.EndSynchronization();
+
+      Task asyncEvents = Task.Run(delegate {
+        storage.AddFont(TestData.Font1_Description);
+        storage.AddFont(TestData.Font2_Description);
+        storage.ActivateFont(TestData.Font1_Description.UID);
+        Thread.Sleep(10);
+      });
+
+      int timeout = 1000;
+      if (!asyncEvents.Wait(timeout)) {
+        Assert.Fail("EndSynchronization should finish synchronizing in less than {0} ms", timeout);
+      }
+
+
+      Assert.AreEqual(0, downloadCount, "EndSynchronization should not download fonts in realtime");
+      installer.Verify("InstallFont", 0);
+      installer.Verify("UnsintallFont", 0);
     }
 
     private string TestPath {
@@ -217,7 +362,7 @@ namespace Storage.Impl.Tests {
     #region methods
     public Task InstallFont(string uid, InstallationScope scope, MemoryStream fontData) {
       RegisterCall("InstallFont");
-      return Task.Factory.StartNew(() => {
+      return Task.Run(() => {
         bool? shouldInstall = OnInstallRequest?.Invoke(uid, scope);
         if (shouldInstall.HasValue && !shouldInstall.Value) {
           return;
@@ -233,7 +378,7 @@ namespace Storage.Impl.Tests {
 
     public Task UnsintallFont(string uid, InstallationScope scope) {
       RegisterCall("UnsintallFont");
-      return Task.Factory.StartNew(() => {
+      return Task.Run(() => {
         if (_installedFonts.ContainsKey(uid)) {
           if (scope == InstallationScope.All || _installedFonts[uid] == scope) {
             _installedFonts.Remove(uid);
