@@ -24,10 +24,7 @@ namespace Protocol.Impl.States {
     protected override void Start() {
       RegisterEvents();
       WillTransition = true; // This state is supposed to change at any moment
-
-      // start real-time synchronization
       _context.Storage.BeginSynchronization();
-
       _context.TriggerUpdateFinished();
     }
     #endregion

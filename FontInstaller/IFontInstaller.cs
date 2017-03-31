@@ -9,7 +9,7 @@ namespace FontInstaller {
   }
 
   public interface IFontInstaller {
-    Task InstallFont(string uid, InstallationScope scope, MemoryStream fontData);
-    Task UnsintallFont(string uid, InstallationScope scope);
+    Task<bool> InstallFont(string uid, InstallationScope scope, MemoryStream fontData);
+    Task<bool> UnsintallFont(string uid, InstallationScope scope);
   }
 }

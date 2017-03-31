@@ -1,6 +1,7 @@
 ﻿using Protocol;
 using Protocol.Transport;
 using Storage;
+using FontInstaller;
 
 namespace Core {
   public static class Factory {
@@ -12,8 +13,12 @@ namespace Core {
       return new Protocol.Impl.Connection(transport, storage);
     }
 
-    public static IFontStorage InitializeStorage(IHttpTransport transport) {
-      return new Storage.Impl.FontStorage(transport, null);
+    public static IFontInstaller InitializeFontInstaller() {
+      return new FontInstaller.Impl.FontInstaller();
+    }
+
+    public static IFontStorage InitializeStorage(IHttpTransport transport, IFontInstaller installer) {
+      return new Storage.Impl.FontStorage(transport, installer);
     }
   }
 }

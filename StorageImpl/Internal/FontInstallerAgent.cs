@@ -4,7 +4,6 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Utilities.Extensions;
 using Utilities.Threading;
 
 namespace Storage.Impl.Internal {
@@ -52,19 +51,19 @@ namespace Storage.Impl.Internal {
       _cancelSource.Cancel();
     }
 
-    public void QueueInstall(Font font, InstallationScope scope, Action then = null) {
+    public void QueueInstall(Font font, InstallationScope scope, Action<bool> then = null) {
       _agent.Enqueue(delegate {
         Stream cryptedData = _storage.ReadFontFile(font.UID).Result;
         MemoryStream decryptedData = DecryptFontData(cryptedData).Result;
-        _installer.InstallFont(font.UID, scope, decryptedData).Wait();
-        then?.Invoke();
+        bool installed = _installer.InstallFont(font.UID, scope, decryptedData).Result;
+        then?.Invoke(installed);
       });
     }
 
-    public void QueueUninstall(Font font, InstallationScope scope, Action then = null) {
+    public void QueueUninstall(Font font, InstallationScope scope, Action<bool> then = null) {
       _agent.Enqueue(delegate {
-        _installer.UnsintallFont(font.UID, scope).Wait();
-        then?.Invoke();
+        bool uninstalled = _installer.UnsintallFont(font.UID, scope).Result;
+        then?.Invoke(uninstalled);
       });
     }
     #endregion

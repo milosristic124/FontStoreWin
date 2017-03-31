@@ -184,8 +184,8 @@ namespace Storage.Impl {
 
     private void FamilyCollection_OnFontRemoved(FamilyCollection sender, Family target, Font oldFont) {
       if (oldFont.Activated) {
-        _installAgent.QueueUninstall(oldFont, InstallationScope.All, delegate {
-          _fsAgent.QueueDeletion(oldFont);
+        _installAgent.QueueUninstall(oldFont, InstallationScope.All, succeed => {
+          if (succeed) _fsAgent.QueueDeletion(oldFont);
         });
       } else {
         _fsAgent.QueueDeletion(oldFont);

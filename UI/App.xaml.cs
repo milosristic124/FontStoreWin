@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using FontInstaller;
+using Microsoft.Win32;
 using Protocol;
 using Protocol.Transport;
 using Storage;
@@ -20,6 +21,7 @@ namespace UI {
     #endregion
 
     #region properies
+    public IFontInstaller FontInstaller { get; private set; }
     public IConnectionTransport Transport { get; private set; }
     public IFontStorage Storage { get; private set; }
     public IConnection Connection { get; private set; }
@@ -49,8 +51,9 @@ namespace UI {
 
     #region method
     public void InitializeCore() {
+      FontInstaller = Core.Factory.InitializeFontInstaller();
       Transport = Core.Factory.InitializeTransport();
-      Storage = Core.Factory.InitializeStorage(Transport);
+      Storage = Core.Factory.InitializeStorage(Transport, FontInstaller);
       Connection = Core.Factory.InitializeServerConnection(Transport, Storage);
     }
     #endregion
