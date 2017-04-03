@@ -351,6 +351,10 @@ namespace Storage.Impl.Tests {
     #region test
     public delegate bool InstallationRequestHandler(string uid, InstallationScope scope);
     public event InstallationRequestHandler OnInstallRequest;
+
+    public delegate bool UninstallationRequestHandler(string uid, InstallationScope scope);
+    public event UninstallationRequestHandler OnUninstallRequest;
+
     public InstallationScope? FontInstallationScope(string uid) {
       if (_installedFonts.ContainsKey(uid)) {
         return _installedFonts[uid];
@@ -360,12 +364,12 @@ namespace Storage.Impl.Tests {
     #endregion
 
     #region methods
-    public Task InstallFont(string uid, InstallationScope scope, MemoryStream fontData) {
+    public Task<bool> InstallFont(string uid, InstallationScope scope, MemoryStream fontData) {
       RegisterCall("InstallFont");
       return Task.Run(() => {
         bool? shouldInstall = OnInstallRequest?.Invoke(uid, scope);
         if (shouldInstall.HasValue && !shouldInstall.Value) {
-          return;
+          return false;
         }
 
         if (_installedFonts.ContainsKey(uid) && _installedFonts[uid] != scope) {
@@ -373,12 +377,18 @@ namespace Storage.Impl.Tests {
         } else {
           _installedFonts[uid] = scope;
         }
+        return true;
       });
     }
 
-    public Task UnsintallFont(string uid, InstallationScope scope) {
+    public Task<bool> UnsintallFont(string uid, InstallationScope scope) {
       RegisterCall("UnsintallFont");
       return Task.Run(() => {
+        bool? shouldUninstall = OnUninstallRequest?.Invoke(uid, scope);
+        if (shouldUninstall.HasValue && !shouldUninstall.Value) {
+          return false;
+        }
+
         if (_installedFonts.ContainsKey(uid)) {
           if (scope == InstallationScope.All || _installedFonts[uid] == scope) {
             _installedFonts.Remove(uid);
@@ -388,6 +398,7 @@ namespace Storage.Impl.Tests {
             _installedFonts[uid] = InstallationScope.User;
           }
         }
+        return true;
       });
     }
     #endregion

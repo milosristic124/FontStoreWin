@@ -17,15 +17,17 @@ namespace Storage.Data {
     public delegate void FontRemovedHandler(FamilyCollection sender, Family target, Font oldFont);
 
     public delegate void FontActivationChangedHandler(FamilyCollection sender, Family fontFamily, Font target);
+    public delegate void FontInstallationChangedHandler(FamilyCollection sender, Family fontFamily, Font target);
     #endregion
 
     #region events
     public event CollectionClearedHandler OnCollectionCleared;
     public event FamilyAddedHandler OnFamilyAdded;
     public event FamilyRemovedHandler OnFamilyRemoved;
-    public event FontActivationChangedHandler OnActivationChanged;
     public event FontAddedHandler OnFontAdded;
     public event FontRemovedHandler OnFontRemoved;
+    public event FontActivationChangedHandler OnActivationChanged;
+    public event FontInstallationChangedHandler OnInstallationChanged;
     #endregion
 
     #region ctor
@@ -96,16 +98,22 @@ namespace Storage.Data {
       family.OnFontAdded += Family_OnFontAdded;
       family.OnFontRemoved += Family_OnFontRemoved;
       family.OnActivationChanged += Family_OnFontActivationChanged;
+      family.OnInstallationChanged += Family_OnFontInstallationChanged;
     }
 
     private void UnregisterFamilyEvents(Family family) {
       family.OnFontAdded -= Family_OnFontAdded;
       family.OnFontRemoved -= Family_OnFontRemoved;
       family.OnActivationChanged -= Family_OnFontActivationChanged;
+      family.OnInstallationChanged -= Family_OnFontInstallationChanged;
     }
     #endregion
 
     #region event handling
+    private void Family_OnFontInstallationChanged(Family sender, Font target) {
+      OnInstallationChanged?.Invoke(this, sender, target);
+    }
+
     private void Family_OnFontActivationChanged(Family sender, Font target) {
       OnActivationChanged?.Invoke(this, sender, target);
     }

@@ -41,6 +41,7 @@ namespace Storage.Data {
     public delegate void FontAddedHandler(Family sender, Font newFont);
     public delegate void FontRemovedHandler(Family sender, Font removedFont);
     public delegate void FontActivationChangedHandler(Family sender, Font target);
+    public delegate void FontInstallationChangedHandler(Family sender, Font target);
     public delegate void FullyActivatedChangedHandler(Family sender);
     #endregion
 
@@ -48,6 +49,7 @@ namespace Storage.Data {
     public event FontAddedHandler OnFontAdded;
     public event FontRemovedHandler OnFontRemoved;
     public event FontActivationChangedHandler OnActivationChanged;
+    public event FontInstallationChangedHandler OnInstallationChanged;
     public event FullyActivatedChangedHandler OnFullyActivatedChanged;
     #endregion
 
@@ -67,7 +69,7 @@ namespace Storage.Data {
         UpdateFamilyActivationStatus(false);
 
         foreach (Font font in Fonts) {
-          font.OnActivationChanged += FontActivationChanged;
+          RegisterFontEvents(font);
         }
       }
     }
@@ -80,7 +82,7 @@ namespace Storage.Data {
         OnFontRemoved?.Invoke(this, removedFont);
       }
 
-      font.OnActivationChanged += FontActivationChanged;
+      RegisterFontEvents(font);
       Fonts.Add(font);
       OnFontAdded?.Invoke(this, font);
 
@@ -106,10 +108,20 @@ namespace Storage.Data {
     private Font RemoveAndReturnFont(string uid) {
       Font font = FindFont(uid);
       if (font != null) {
-        font.OnActivationChanged -= FontActivationChanged;
+        UnregisterFontEvents(font);
         Fonts.Remove(font);
       }
       return font;
+    }
+
+    private void RegisterFontEvents(Font font) {
+      font.OnActivationChanged += FontActivationChanged;
+      font.OnInstallationChanged += FontInstallationChanged;
+    }
+
+    private void UnregisterFontEvents(Font font) {
+      font.OnActivationChanged -= FontActivationChanged;
+      font.OnInstallationChanged -= FontInstallationChanged;
     }
 
     private void ToggleFullFamilyActivation(bool newValue) {
@@ -119,6 +131,24 @@ namespace Storage.Data {
       }
       _batchActivation = false;
       UpdateFamilyActivationStatus();
+    }
+
+    private void UpdateFamilyActivationStatus(bool trigger = true) {
+      bool prevValue = _fullyActivated;
+      _fullyActivated = !Fonts.Any(font => !font.Activated);
+      if (trigger && _fullyActivated != prevValue) {
+        TriggerFullyActivatedEvent();
+      }
+    }
+
+    private void TriggerFullyActivatedEvent() {
+      OnFullyActivatedChanged?.Invoke(this);
+    }
+    #endregion
+
+    #region event handling
+    private void FontInstallationChanged(Font sender) {
+      OnInstallationChanged?.Invoke(this, sender);
     }
 
     private void FontActivationChanged(Font sender) {
@@ -142,21 +172,10 @@ namespace Storage.Data {
       if (FullyActivated && !sender.Activated) { // case 2
         _fullyActivated = false;
         TriggerFullyActivatedEvent();
-      } else if (!FullyActivated && sender.Activated) { // case 3
+      }
+      else if (!FullyActivated && sender.Activated) { // case 3
         UpdateFamilyActivationStatus();
       }
-    }
-
-    private void UpdateFamilyActivationStatus(bool trigger = true) {
-      bool prevValue = _fullyActivated;
-      _fullyActivated = !Fonts.Any(font => !font.Activated);
-      if (trigger && _fullyActivated != prevValue) {
-        TriggerFullyActivatedEvent();
-      }
-    }
-
-    private void TriggerFullyActivatedEvent() {
-      OnFullyActivatedChanged?.Invoke(this);
     }
     #endregion
   }

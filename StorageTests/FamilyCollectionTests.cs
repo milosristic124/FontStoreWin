@@ -140,6 +140,23 @@ namespace Storage.Impl.Tests {
 
     [TestMethod]
     [TestCategory("FamilyCollection.Events")]
+    public void FamilyCollection_shouldTriggerFontInstallationEvent_whenFontInstallationStatusChange() {
+      FamilyCollection collection = new FamilyCollection();
+      Font font = new Font(TestData.Font1_Description);
+      collection.AddFont(font);
+
+      bool eventTriggered = false;
+      collection.OnInstallationChanged += delegate {
+        eventTriggered = true;
+      };
+
+      font.IsInstalled = true;
+
+      Assert.IsTrue(eventTriggered, "FamilyCollection should trigger font installation event when a font installation status change");
+    }
+
+    [TestMethod]
+    [TestCategory("FamilyCollection.Events")]
     public void FamilyCollection_shouldTriggerAddFontEvent_whenFontIsAddedToFamily() {
       FamilyCollection collection = new FamilyCollection();
       Font font = new Font(TestData.Font1_Description);

@@ -7,6 +7,7 @@ namespace Storage.Data {
   public class Font {
     #region private data
     private bool _activated;
+    private bool _installed;
     #endregion
 
     #region properties
@@ -53,20 +54,34 @@ namespace Storage.Data {
         }
       }
     }
+    public bool IsInstalled {
+      get {
+        return _installed;
+      }
+      set {
+        if (_installed != value) {
+          _installed = value;
+          OnInstallationChanged?.Invoke(this);
+        }
+      }
+    }
     #endregion
 
     #region delegates
     public delegate void FontActivationEventHandler(Font sender);
+    public delegate void FontInstallationEventhandler(Font sender);
     #endregion
 
     #region events
     public event FontActivationEventHandler OnActivationChanged;
+    public event FontInstallationEventhandler OnInstallationChanged;
     #endregion
 
     #region ctor
     public Font(FontDescription desc) {
       Description = desc;
       _activated = false;
+      _installed = false;
     }
 
     public Font(string uid, string familyName, string name, Uri downloadUrl, int createdAt) : this(new FontDescription {

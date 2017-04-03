@@ -56,6 +56,9 @@ namespace Storage.Impl.Internal {
         Stream cryptedData = _storage.ReadFontFile(font.UID).Result;
         MemoryStream decryptedData = DecryptFontData(cryptedData).Result;
         bool installed = _installer.InstallFont(font.UID, scope, decryptedData).Result;
+        if (installed) {
+          font.IsInstalled = true;
+        }
         then?.Invoke(installed);
       });
     }
@@ -63,6 +66,9 @@ namespace Storage.Impl.Internal {
     public void QueueUninstall(Font font, InstallationScope scope, Action<bool> then = null) {
       _agent.Enqueue(delegate {
         bool uninstalled = _installer.UnsintallFont(font.UID, scope).Result;
+        if (uninstalled) {
+          font.IsInstalled = false;
+        }
         then?.Invoke(uninstalled);
       });
     }

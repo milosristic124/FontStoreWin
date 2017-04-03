@@ -228,5 +228,21 @@ namespace Storage.Impl.Tests {
       font.Activated = true;
       Assert.IsTrue(eventTriggered, "Family should trigger font activation events when font activation status change");
     }
+
+    [TestMethod]
+    [TestCategory("Family.Events")]
+    public void Family_shouldtriggerFontInstallationEvent_whenChildFontInstallationStatusChange() {
+      Family family = new Family(TestData.Font1_Description.FamilyName);
+      Font font = new Font(TestData.Font1_Description);
+      family.Add(font);
+
+      bool eventTriggered = false;
+      family.OnInstallationChanged += delegate {
+        eventTriggered = true;
+      };
+
+      font.IsInstalled = true;
+      Assert.IsTrue(eventTriggered, "Family should trigger font installation events when font installation status change");
+    }
   }
 }

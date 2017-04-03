@@ -19,5 +19,20 @@ namespace Storage.Impl.Tests {
 
       Assert.IsTrue(eventTriggered, "Font.Activated status change should trigger a font activation event");
     }
+
+    [TestMethod]
+    [TestCategory("Font.Events")]
+    public void FontInstallation_shouldTriggerInstallationEvent() {
+      Font font = new Font(TestData.Font1_Description);
+
+      bool eventTriggered = false;
+      font.OnInstallationChanged += delegate {
+        eventTriggered = true;
+      };
+
+      font.IsInstalled = true;
+
+      Assert.IsTrue(eventTriggered, "Font.IsInstalled status change should trigger a font installation event");
+    }
   }
 }
