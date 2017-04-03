@@ -15,6 +15,12 @@ namespace Utilities.Threading {
     #endregion
 
     #region properties
+    public int CommandCount {
+      get {
+        return _commandQueue.Count;
+      }
+    }
+
     public bool Running {
       get {
         return _running;

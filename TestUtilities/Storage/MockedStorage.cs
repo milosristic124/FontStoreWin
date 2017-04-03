@@ -4,13 +4,15 @@ using Storage;
 using Storage.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities.Extensions;
 
 namespace TestUtilities.Storage {
   public class MockedStorage : CallTracer, IFontStorage {
     #region properties
-    public IFontInstaller Installer { get; set; }
+    public IFontInstaller Installer { get; private set; }
 
     public FamilyCollection FamilyCollection { get; private set; }
     public IList<Family> ActivatedFamilies {
@@ -33,28 +35,34 @@ namespace TestUtilities.Storage {
     public DateTime? LastFontStatusUpdate { get; set; }
     #endregion
 
+    #region events
+    public event FontInstallationHandler OnFontInstall;
+    public event FontUninstallationHandler OnFontUninstall;
+    #endregion
+
     #region ctor
-    public MockedStorage() {
+    public MockedStorage(IFontInstaller installer) {
+      Installer = installer;
       LastCatalogUpdate = DateTime.Now;
       LastFontStatusUpdate = DateTime.Now;
       FamilyCollection = new FamilyCollection();
+      RegisterCollectionEvents();
     }
     #endregion
+
 
     #region methods
     public Font AddFont(FontDescription description) {
       RegisterCall("AddFont");
       Font newFont = new Font(description);
       FamilyCollection.AddFont(newFont);
-
-      HasChanged = true;
       return newFont;
     }
 
     public void RemoveFont(string uid) {
       RegisterCall("RemoveFont");
+      
       FamilyCollection.RemoveFont(uid);
-      HasChanged = true;
     }
 
     public void ActivateFont(string uid) {
@@ -62,7 +70,6 @@ namespace TestUtilities.Storage {
       Font font = FamilyCollection.FindFont(uid);
       if (font != null) {
         font.Activated = true;
-        HasChanged = true;
       }
     }
 
@@ -71,7 +78,6 @@ namespace TestUtilities.Storage {
       Font font = FamilyCollection.FindFont(uid);
       if (font != null) {
         font.Activated = false;
-        HasChanged = true;
       }
     }
 
@@ -119,6 +125,42 @@ namespace TestUtilities.Storage {
 
     private Family FindFamilyByFontUID(string uid) {
       return FamilyCollection.Families.FirstOrDefault(family => family.FindFont(uid) != null);
+    }
+
+    private void RegisterCollectionEvents() {
+      FamilyCollection.OnActivationChanged += FamilyCollection_OnActivationChanged;
+      FamilyCollection.OnFontAdded += FamilyCollection_OnFontAdded;
+      FamilyCollection.OnFontRemoved += FamilyCollection_OnFontRemoved;
+    }
+    #endregion
+
+    #region event handling
+    private void FamilyCollection_OnActivationChanged(FamilyCollection sender, Family fontFamily, Font target) {
+      if (target.Activated) {
+        FontAPIResult result = Installer.InstallFont(target.UID, InstallationScope.User, new MemoryStream()).Result;
+        if (result != FontAPIResult.Noop)
+          OnFontInstall?.Invoke(target, InstallationScope.User, result == FontAPIResult.Success);
+      }
+      else {
+        FontAPIResult result = Installer.UninstallFont(target.UID, InstallationScope.User).Result;
+        if (result != FontAPIResult.Noop)
+          OnFontInstall?.Invoke(target, InstallationScope.User, result == FontAPIResult.Success);
+      }
+      HasChanged = true;
+    }
+
+    private void FamilyCollection_OnFontRemoved(FamilyCollection sender, Family target, Font oldFont) {
+      FontAPIResult result = Installer.UninstallFont(oldFont.UID, InstallationScope.All).Result;
+      if (result != FontAPIResult.Noop)
+        OnFontUninstall?.Invoke(oldFont, InstallationScope.All, result == FontAPIResult.Success);
+      HasChanged = true;
+    }
+
+    private void FamilyCollection_OnFontAdded(FamilyCollection sender, Family target, Font newFont) {
+      FontAPIResult result = Installer.InstallFont(newFont.UID, InstallationScope.Process, new MemoryStream()).Result;
+      if (result != FontAPIResult.Noop)
+        OnFontInstall?.Invoke(newFont, InstallationScope.Process, result == FontAPIResult.Success);
+      HasChanged = true;
     }
     #endregion
   }

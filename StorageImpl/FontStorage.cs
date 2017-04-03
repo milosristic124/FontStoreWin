@@ -6,6 +6,7 @@ using Storage.Impl.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Storage.Impl {
@@ -56,6 +57,11 @@ namespace Storage.Impl {
       }
     }
     public FamilyCollection FamilyCollection { get; private set; }
+    #endregion
+
+    #region events
+    public event FontInstallationHandler OnFontInstall;
+    public event FontUninstallationHandler OnFontUninstall;
     #endregion
 
     #region ctor
@@ -132,10 +138,13 @@ namespace Storage.Impl {
     }
 
     public void SynchronizeWithSystem(Action then = null) {
-      _synchronizationCallback = then;
-
-      _fsAgent.OnDownloadsFinished += Synchronization_DownloadsFinished;
-      _fsAgent.BeginDownloads();
+      if (_fsAgent.CommandCount > 0) {
+        _synchronizationCallback = then;
+        _fsAgent.OnDownloadsFinished += Synchronization_DownloadsFinished;
+        _fsAgent.BeginDownloads();
+      } else {
+        then?.Invoke();
+      }
     }
 
     public void BeginSynchronization() {
@@ -152,7 +161,6 @@ namespace Storage.Impl {
       _fsAgent.AbortDownloads();
       _installAgent.AbortInstalls();
     }
-
     #endregion
 
     #region synchronization event handling
@@ -160,13 +168,29 @@ namespace Storage.Impl {
       _fsAgent.PauseDownloads();
       _fsAgent.OnDownloadsFinished -= Synchronization_DownloadsFinished;
 
-      _installAgent.OnInstallsFinished += Synchronization_InstallsFinished;
-      _installAgent.BeginInstalls();
+      if (_installAgent.CommandCount > 0) {
+        _installAgent.OnInstallsFinished += Synchronization_InstallsFinished;
+        _installAgent.BeginInstalls();
+      } else {
+        _synchronizationCallback?.Invoke();
+      }
     }
 
     private void Synchronization_InstallsFinished() {
-      _installAgent.PauseInstalls();
       _installAgent.OnInstallsFinished -= Synchronization_InstallsFinished;
+      _installAgent.PauseInstalls();
+
+      if (_fsAgent.CommandCount > 0) {
+        _fsAgent.OnDownloadsFinished += Synchronization_RemoveFinished;
+        _fsAgent.BeginDownloads();
+      } else {
+        _synchronizationCallback?.Invoke();
+      }
+    }
+
+    private void Synchronization_RemoveFinished() {
+      _fsAgent.PauseDownloads();
+      _fsAgent.OnDownloadsFinished -= Synchronization_RemoveFinished;
 
       _synchronizationCallback?.Invoke();
     }
@@ -175,27 +199,39 @@ namespace Storage.Impl {
     #region font event handling
     private void FamilyCollection_OnActivationChanged(FamilyCollection sender, Family fontFamily, Font target) {
       if (target.Activated) {
-        _installAgent.QueueInstall(target, InstallationScope.User);
+        _installAgent.QueueInstall(target, InstallationScope.User, result => {
+          if (result != FontAPIResult.Noop)
+            OnFontInstall?.Invoke(target, InstallationScope.User, result == FontAPIResult.Success);
+        });
       } else {
-        _installAgent.QueueUninstall(target, InstallationScope.User);
+        _installAgent.QueueUninstall(target, InstallationScope.User, result => {
+          if (result != FontAPIResult.Noop)
+            OnFontUninstall?.Invoke(target, InstallationScope.User, result == FontAPIResult.Success);
+        });
       }
       HasChanged = true;
     }
 
     private void FamilyCollection_OnFontRemoved(FamilyCollection sender, Family target, Font oldFont) {
-      if (oldFont.Activated) {
-        _installAgent.QueueUninstall(oldFont, InstallationScope.All, succeed => {
-          if (succeed) _fsAgent.QueueDeletion(oldFont);
-        });
-      } else {
-        _fsAgent.QueueDeletion(oldFont);
-      }
+      _installAgent.QueueUninstall(oldFont, InstallationScope.All, result => {
+        if (result != FontAPIResult.Failure) {
+          _fsAgent.QueueDeletion(oldFont, delegate {
+            if (result != FontAPIResult.Noop)
+              OnFontUninstall?.Invoke(oldFont, InstallationScope.All, result == FontAPIResult.Success);
+          });
+        } else {
+          OnFontUninstall?.Invoke(oldFont, InstallationScope.All, result == FontAPIResult.Success);
+        }
+      });
       HasChanged = true;
     }
 
     private void FamilyCollection_OnFontAdded(FamilyCollection sender, Family target, Font newFont) {
       _fsAgent.QueueDownload(newFont, delegate {
-        _installAgent.QueueInstall(newFont, InstallationScope.Process);
+        _installAgent.QueueInstall(newFont, InstallationScope.Process, result => {
+          if (result != FontAPIResult.Noop)
+            OnFontInstall?.Invoke(newFont, InstallationScope.Process, result == FontAPIResult.Success);
+        });
       });
       HasChanged = true;
     }

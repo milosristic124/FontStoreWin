@@ -17,6 +17,14 @@ namespace Storage.Impl.Internal {
     private CancellationTokenSource _cancelSource;
     #endregion
 
+    #region properties
+    public int CommandCount {
+      get {
+        return _agent.CommandCount;
+      }
+    }
+    #endregion
+
     #region delegates
     public delegate void ProcessingStartedHandler();
     public delegate void ProcessingFinishedHandler();

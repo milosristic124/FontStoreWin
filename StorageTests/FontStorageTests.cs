@@ -7,6 +7,8 @@ using TestUtilities;
 using TestUtilities.Protocol;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using TestUtilities.FontManager;
+using Storage.Data;
 
 namespace Storage.Impl.Tests {
   [TestClass]
@@ -208,6 +210,21 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Storage.FullSynchronization")]
+    public void SynchronizeWithSystem_shouldExecuteCallbackImmediately_whenNoActionsAreQueued() {
+      MockedTransport transport = new MockedTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      FontStorage storage = new FontStorage(transport, installer, TestPath);
+
+      bool callbackExecuted = false;
+      storage.SynchronizeWithSystem(delegate {
+        callbackExecuted = true;
+      });
+
+      Assert.IsTrue(callbackExecuted, "SynchronizeWithSystem should execute callback immediately if there is nothing to do");
+    }
+
+    [TestMethod]
     [TestCategory("Storage.RealTimeSynchronization")]
     public void BeginSynchronization_shouldDownloadAndInstallFonts() {
       MockedTransport transport = new MockedTransport();
@@ -329,78 +346,181 @@ namespace Storage.Impl.Tests {
       installer.Verify("UnsintallFont", 0);
     }
 
+    [TestMethod]
+    [TestCategory("Storage.Events")]
+    public void ActivateFont_shouldTriggerUserScopeInstallationEvent() {
+      MockedTransport transport = new MockedTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      FontStorage storage = new FontStorage(transport, installer, TestPath);
+
+      transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
+        return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
+      };
+
+      bool eventTriggered = false;
+      storage.OnFontInstall += (Font font, InstallationScope scope, bool succeed) => {
+        if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.User) {
+          eventTriggered = true;
+        }
+      };
+
+      storage.AddFont(TestData.Font1_Description);
+      storage.ActivateFont(TestData.Font1_Description.UID);
+
+      AutoResetEvent syncDone = new AutoResetEvent(false);
+      storage.SynchronizeWithSystem(delegate {
+        syncDone.Set();
+      });
+      int timeout = 500;
+      Assert.IsTrue(syncDone.WaitOne(timeout), "Storage.SynchronizeWithSystem should finish in less than {0} ms", timeout);
+
+      Assert.IsTrue(eventTriggered, "Storage.ActivateFont should trigger an installation in user scope event for activated font");
+    }
+
+    [TestMethod]
+    [TestCategory("Storage.Events")]
+    public void DeactivateFont_shouldTriggerUserScopeUninstallationEvent() {
+      MockedTransport transport = new MockedTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      FontStorage storage = new FontStorage(transport, installer, TestPath);
+
+      transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
+        return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
+      };
+
+      bool eventTriggered = false;
+      storage.OnFontUninstall += (Font font, InstallationScope scope, bool succeed) => {
+        if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.User) {
+          eventTriggered = true;
+        }
+      };
+
+      storage.AddFont(TestData.Font1_Description);
+      storage.ActivateFont(TestData.Font1_Description.UID);
+      storage.DeactivateFont(TestData.Font1_Description.UID);
+
+      AutoResetEvent syncDone = new AutoResetEvent(false);
+      storage.SynchronizeWithSystem(delegate {
+        syncDone.Set();
+      });
+      int timeout = 500;
+      Assert.IsTrue(syncDone.WaitOne(timeout), "Storage.SynchronizeWithSystem should finish in less than {0} ms", timeout);
+
+      Assert.IsTrue(eventTriggered, "Storage.DeactivateFont should trigger an uninstallation in user scope event for deactivated font");
+    }
+
+    [TestMethod]
+    [TestCategory("Storage.Events")]
+    public void RemoveFont_shouldTriggerAllScopeUninstallationEvent() {
+      MockedTransport transport = new MockedTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      FontStorage storage = new FontStorage(transport, installer, TestPath);
+
+      transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
+        return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
+      };
+
+      bool eventTriggered = false;
+      storage.OnFontUninstall += (Font font, InstallationScope scope, bool succeed) => {
+        if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.All) {
+          eventTriggered = true;
+        }
+      };
+
+      storage.AddFont(TestData.Font1_Description);
+      storage.ActivateFont(TestData.Font1_Description.UID);
+      storage.RemoveFont(TestData.Font1_Description.UID);
+
+      AutoResetEvent syncDone = new AutoResetEvent(false);
+      storage.SynchronizeWithSystem(delegate {
+        syncDone.Set();
+      });
+      int timeout = 500;
+      Assert.IsTrue(syncDone.WaitOne(timeout), "Storage.SynchronizeWithSystem should finish in less than {0} ms", timeout);
+
+      Assert.IsTrue(eventTriggered, "Storage.RemoveFont should trigger an uninstallation in all scopes event for uninstalled font");
+    }
+
+    [TestMethod]
+    [TestCategory("Storage.Events")]
+    public void AddFont_shouldTriggerProcessScopeInstallationEvent() {
+      MockedTransport transport = new MockedTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      FontStorage storage = new FontStorage(transport, installer, TestPath);
+
+      transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
+        return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
+      };
+
+      bool eventTriggered = false;
+      storage.OnFontInstall += (Font font, InstallationScope scope, bool succeed) => {
+        if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.Process) {
+          eventTriggered = true;
+        }
+      };
+
+      storage.AddFont(TestData.Font1_Description);
+
+      AutoResetEvent syncDone = new AutoResetEvent(false);
+      storage.SynchronizeWithSystem(delegate {
+        syncDone.Set();
+      });
+      int timeout = 500;
+      Assert.IsTrue(syncDone.WaitOne(timeout), "Storage.SynchronizeWithSystem should finish in less than {0} ms", timeout);
+
+      Assert.IsTrue(eventTriggered, "Storage.AddFont should trigger an installation in process scope event for added font");
+    }
+
+    [TestMethod]
+    [TestCategory("Storage.Events")]
+    public void AddFont_shouldTriggerAllScopeUninstallationEvent_whenFontIsUpdated() {
+      MockedTransport transport = new MockedTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      FontStorage storage = new FontStorage(transport, installer, TestPath);
+
+      transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
+        return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
+      };
+
+      storage.AddFont(TestData.Font1_Description);
+
+      AutoResetEvent syncDone = new AutoResetEvent(false);
+      storage.SynchronizeWithSystem(delegate {
+        syncDone.Set();
+      });
+      int timeout = 500;
+      Assert.IsTrue(syncDone.WaitOne(timeout), "Storage.SynchronizeWithSystem should finish in less than {0} ms", timeout);
+      // ensure font is downloaded/installed
+
+      bool uninstallTriggered = false;
+      storage.OnFontUninstall += (Font font, InstallationScope scope, bool succeed) => {
+        if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.All) {
+          uninstallTriggered = true;
+        }
+      };
+      bool installTriggered = false;
+      storage.OnFontInstall += (Font font, InstallationScope scope, bool succeed) => {
+        if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.Process) {
+          installTriggered = true;
+        }
+      };
+
+      storage.AddFont(TestData.Font1_Description2);
+
+      storage.SynchronizeWithSystem(delegate {
+        syncDone.Set();
+      });
+      Assert.IsTrue(syncDone.WaitOne(timeout), "Storage.SynchronizeWithSystem should finish in less than {0} ms", timeout);
+
+      Assert.IsTrue(uninstallTriggered, "Storage.AddFont should trigger an uninstallation in all scope event for updated font");
+      Assert.IsTrue(installTriggered, "Storage.AddFont should trigger an installation in process scope event for updated font");
+    }
+
     private string TestPath {
       get {
         string tempDir = Path.GetTempPath();
         return string.Format("{0}{1}\\", tempDir, Guid.NewGuid().ToString());
       }
     }
-  }
-
-  public class MockedFontInstaller : CallTracer, IFontInstaller {
-    #region private data
-    private Dictionary<string, InstallationScope> _installedFonts;
-    #endregion
-
-    #region ctor
-    public MockedFontInstaller() {
-      _installedFonts = new Dictionary<string, InstallationScope>();
-    }
-    #endregion
-
-    #region test
-    public delegate bool InstallationRequestHandler(string uid, InstallationScope scope);
-    public event InstallationRequestHandler OnInstallRequest;
-
-    public delegate bool UninstallationRequestHandler(string uid, InstallationScope scope);
-    public event UninstallationRequestHandler OnUninstallRequest;
-
-    public InstallationScope? FontInstallationScope(string uid) {
-      if (_installedFonts.ContainsKey(uid)) {
-        return _installedFonts[uid];
-      }
-      return null;
-    }
-    #endregion
-
-    #region methods
-    public Task<bool> InstallFont(string uid, InstallationScope scope, MemoryStream fontData) {
-      RegisterCall("InstallFont");
-      return Task.Run(() => {
-        bool? shouldInstall = OnInstallRequest?.Invoke(uid, scope);
-        if (shouldInstall.HasValue && !shouldInstall.Value) {
-          return false;
-        }
-
-        if (_installedFonts.ContainsKey(uid) && _installedFonts[uid] != scope) {
-          _installedFonts[uid] = InstallationScope.All;
-        } else {
-          _installedFonts[uid] = scope;
-        }
-        return true;
-      });
-    }
-
-    public Task<bool> UnsintallFont(string uid, InstallationScope scope) {
-      RegisterCall("UnsintallFont");
-      return Task.Run(() => {
-        bool? shouldUninstall = OnUninstallRequest?.Invoke(uid, scope);
-        if (shouldUninstall.HasValue && !shouldUninstall.Value) {
-          return false;
-        }
-
-        if (_installedFonts.ContainsKey(uid)) {
-          if (scope == InstallationScope.All || _installedFonts[uid] == scope) {
-            _installedFonts.Remove(uid);
-          } else if (scope == InstallationScope.User) {
-            _installedFonts[uid] = InstallationScope.Process;
-          } else {
-            _installedFonts[uid] = InstallationScope.User;
-          }
-        }
-        return true;
-      });
-    }
-    #endregion
   }
 }

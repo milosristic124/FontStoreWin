@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Storage {
+  public delegate void FontInstallationHandler(Font font, InstallationScope scope, bool succeed);
+  public delegate void FontUninstallationHandler(Font font, InstallationScope scope, bool succeed);
+
   public interface IFontStorage {
     #region properties
     IFontInstaller Installer { get; }
@@ -19,6 +22,11 @@ namespace Storage {
     IList<Family> ActivatedFamilies { get; }
     IList<Family> NewFamilies { get; }
     FamilyCollection FamilyCollection { get; }
+    #endregion
+
+    #region events
+    event FontInstallationHandler OnFontInstall;
+    event FontUninstallationHandler OnFontUninstall;
     #endregion
 
     #region methods

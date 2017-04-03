@@ -56,6 +56,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FontInstaller\FontInstaller.csproj">
+      <Project>{7d9852a5-6911-478f-b863-c31fbcdd8065}</Project>
+      <Name>FontInstaller</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProtocolImpl\ProtocolImpl.csproj">
       <Project>{DFDC0E22-4E95-447B-9DE2-EF4139CDEDC1}</Project>
       <Name>ProtocolImpl</Name>

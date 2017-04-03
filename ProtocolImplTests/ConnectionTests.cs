@@ -5,6 +5,7 @@ using System;
 using System.Net;
 using System.Threading;
 using TestUtilities;
+using TestUtilities.FontManager;
 using TestUtilities.Protocol;
 using TestUtilities.Storage;
 
@@ -150,7 +151,8 @@ namespace Protocol.Impl.Tests {
     [TestCategory("Protocol.Update")]
     public void UpdateCatalog_shouldUpdateTheFontCatalog() {
       MockedTransport transport = new MockedTransport();
-      MockedStorage storage = new MockedStorage();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      MockedStorage storage = new MockedStorage(installer);
       Connection connection = new TestConnection(transport, storage);
 
       connected(transport, connection, delegate {
@@ -173,10 +175,11 @@ namespace Protocol.Impl.Tests {
         autoResetEvent.WaitOne(); // wait for a catalog update request to 'send' the catalog update
         transport.SimulateMessage("catalog", "font:description", TestData.Font1_Description);
         transport.SimulateMessage("catalog", "font:description", TestData.Font2_Description);
+        transport.SimulateMessage("catalog", "font:description", TestData.Font3_Description);
         transport.SimulateMessage("catalog", "font:deletion", TestData.Font1_Id);
 
         Assert.IsTrue(catalogUpdateRequested, "Updating the catalog should request an update of the catalog fonts data");
-        Assert.AreEqual(1, storage.FamilyCollection.Families.Count, "Font description messages should add fonts to the font storage");
+        Assert.AreEqual(2, storage.FamilyCollection.Families.Count, "Font description messages should add fonts to the font storage");
         Assert.IsNull(storage.FindFont(TestData.Font1_Description.UID), "Font deletion message should remove fonts from the font storage");
       });
     }
@@ -185,7 +188,8 @@ namespace Protocol.Impl.Tests {
     [TestCategory("Protocol.Update")]
     public void UpdateCatalog_shouldUpdateTheFontsStatus() {
       MockedTransport transport = new MockedTransport();
-      MockedStorage storage = new MockedStorage();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      MockedStorage storage = new MockedStorage(installer);
       Connection connection = new TestConnection(transport, storage);
 
       connected(transport, connection, delegate {
@@ -221,7 +225,8 @@ namespace Protocol.Impl.Tests {
     [TestCategory("Protocol.Update")]
     public void UpdateCatalog_shouldTriggerEvent_whenUpdateIsFinished() {
       MockedTransport transport = new MockedTransport();
-      MockedStorage storage = new MockedStorage();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      MockedStorage storage = new MockedStorage(installer);
       Connection connection = new TestConnection(transport, storage);
 
       connected(transport, connection, delegate {
@@ -261,12 +266,77 @@ namespace Protocol.Impl.Tests {
         Assert.IsTrue(eventRaised, "Updating the catalog should trigger an update finished event when terminated");
       });
     }
+    
+    [TestMethod]
+    [TestCategory("Protocol.Update")]
+    public void UpdateCatalog_shouldSendInstallationReport() {
+      MockedTransport transport = new MockedTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      MockedStorage storage = new MockedStorage(installer);
+      Connection connection = new TestConnection(transport, storage);
+
+      connected(transport, connection, delegate {
+        AutoResetEvent catalogUpdateRequest = new AutoResetEvent(false);
+        AutoResetEvent fontUpdateRequest = new AutoResetEvent(false);
+
+        int installationSuccessReport = 0;
+        int installationFailureReport = 0;
+        int uninstallationSuccessReport = 0;
+        int uninstallationFailureReport = 0;
+        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+          if (evt == "catalog.update:request") {
+            catalogUpdateRequest.Set();
+          }
+          else if (evt == UserTopicEvent(connection, "update:request")) {
+            fontUpdateRequest.Set();
+          }
+          else if (evt == UserTopicEvent(connection, "font:installation-success")) {
+            installationSuccessReport += 1;
+          }
+          else if (evt == UserTopicEvent(connection, "font:installation-failure")) {
+            installationFailureReport += 1;
+          }
+          else if (evt == UserTopicEvent(connection, "font:uninstallation-success")) {
+            uninstallationSuccessReport += 1;
+          }
+          else if (evt == UserTopicEvent(connection, "font:uninstallation-failure")) {
+            uninstallationFailureReport += 1;
+          }
+        };
+
+        transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
+          if (request.Endpoint.Contains("downloads")) {
+            return request.CreateResponse(HttpStatusCode.OK, "BODYBODYBODY");
+          }
+          return null;
+        };
+
+        AutoResetEvent updateFinished = new AutoResetEvent(false);
+        connection.OnCatalogUpdateFinished += delegate {
+          updateFinished.Set();
+        };
+
+        connection.UpdateCatalog();
+
+        catalogUpdateRequest.WaitOne(); // wait for the catalog update request
+        transport.SimulateMessage("catalog", "font:description", TestData.Font1_Description); // 
+        transport.SimulateMessage("catalog", "font:description", TestData.Font2_Description);
+        transport.SimulateMessage("catalog", "font:description", TestData.Font3_Description);
+        transport.SimulateMessage("catalog", "font:description", TestData.Font1_Description2);
+        transport.SimulateMessage("catalog", "update:complete");
+        fontUpdateRequest.WaitOne(); // wait for the fonts update request
+        transport.SimulateMessage(UserTopicEvent(connection), "font:activation", TestData.Font1_Id);
+        transport.SimulateMessage(UserTopicEvent(connection), "update:complete");
+        updateFinished.WaitOne(); // wait for the update to finish
+      });
+    }
 
     [TestMethod]
     [TestCategory("Protocol.Running")]
     public void FontActivationMessage_shouldActivateFont() {
       MockedTransport transport = new MockedTransport();
-      MockedStorage storage = new MockedStorage();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      MockedStorage storage = new MockedStorage(installer);
       Connection connection = new TestConnection(transport, storage);
 
       updated(transport, connection, delegate {
@@ -279,7 +349,8 @@ namespace Protocol.Impl.Tests {
     [TestCategory("Protocol.Running")]
     public void FontDeactivationMessage_shouldDeactivateFont() {
       MockedTransport transport = new MockedTransport();
-      MockedStorage storage = new MockedStorage();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      MockedStorage storage = new MockedStorage(installer);
       Connection connection = new TestConnection(transport, storage);
 
       updated(transport, connection, delegate {
@@ -293,7 +364,8 @@ namespace Protocol.Impl.Tests {
     [TestCategory("Protocol.Running")]
     public void FontRemovedMessage_shouldRemoveFontFromCatalog() {
       MockedTransport transport = new MockedTransport();
-      MockedStorage storage = new MockedStorage();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      MockedStorage storage = new MockedStorage(installer);
       Connection connection = new TestConnection(transport, storage);
 
       updated(transport, connection, delegate {
@@ -306,7 +378,8 @@ namespace Protocol.Impl.Tests {
     [TestCategory("Protocol.Running")]
     public void FontDescriptionMessage_shouldAddFontToTheCatalog() {
       MockedTransport transport = new MockedTransport();
-      MockedStorage storage = new MockedStorage();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      MockedStorage storage = new MockedStorage(installer);
       Connection connection = new TestConnection(transport, storage);
 
       updated(transport, connection, delegate {
@@ -319,7 +392,8 @@ namespace Protocol.Impl.Tests {
     [TestCategory("Protocol.Disconnect")]
     public void Disconnect_shouldStopUpdatingFontStorage() {
       MockedTransport transport = new MockedTransport();
-      MockedStorage storage = new MockedStorage();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      MockedStorage storage = new MockedStorage(installer);
       Connection connection = new TestConnection(transport, storage);
 
       updated(transport, connection, delegate {
@@ -332,10 +406,9 @@ namespace Protocol.Impl.Tests {
 
         connection.Disconnect(DisconnectReason.Quit);
 
-        disconnected.WaitOne();
-        //int timeout = 500;
-        //bool signaled = disconnected.WaitOne(timeout);
-        //Assert.IsTrue(signaled, "Disconnect should trigger a disconnected event");
+        int timeout = 500;
+        bool signaled = disconnected.WaitOne(timeout);
+        Assert.IsTrue(signaled, "Disconnect should trigger a disconnected event");
 
         storage.Verify("EndSynchronization", 1);
       });
@@ -345,7 +418,8 @@ namespace Protocol.Impl.Tests {
     [TestCategory("Protocol.Disconnect")]
     public void Disconnect_shouldDisconnectTheTransport() {
       MockedTransport transport = new MockedTransport();
-      MockedStorage storage = new MockedStorage();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      MockedStorage storage = new MockedStorage(installer);
       Connection connection = new TestConnection(transport, storage);
 
       connected(transport, connection, delegate {
@@ -406,10 +480,10 @@ namespace Protocol.Impl.Tests {
       connection.Connect("test_email", "test_password");
 
       // DEBUG unit tests
-      testDoneEvent.WaitOne();
-      //if (!testDoneEvent.WaitOne(timeout)) {
-      //  Assert.Fail("Test should execute in less than {0}ms", timeout);
-      //}
+      //testDoneEvent.WaitOne();
+      if (!testDoneEvent.WaitOne(timeout)) {
+        Assert.Fail("Test should execute in less than {0}ms", timeout);
+      }
 
       if (error != null) {
         throw new Exception("Test failed", error);

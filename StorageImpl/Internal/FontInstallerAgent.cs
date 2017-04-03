@@ -15,6 +15,14 @@ namespace Storage.Impl.Internal {
     private ProcessingAgent _agent;
     #endregion
 
+    #region properties
+    public int CommandCount {
+      get {
+        return _agent.CommandCount;
+      }
+    }
+    #endregion
+
     #region delegates
     public delegate void ProcessingStartedHandler();
     public delegate void ProcessingFinishedHandler();
@@ -51,25 +59,30 @@ namespace Storage.Impl.Internal {
       _cancelSource.Cancel();
     }
 
-    public void QueueInstall(Font font, InstallationScope scope, Action<bool> then = null) {
+    public void QueueInstall(Font font, InstallationScope scope, Action<FontAPIResult> then = null) {
       _agent.Enqueue(delegate {
-        Stream cryptedData = _storage.ReadFontFile(font.UID).Result;
-        MemoryStream decryptedData = DecryptFontData(cryptedData).Result;
-        bool installed = _installer.InstallFont(font.UID, scope, decryptedData).Result;
-        if (installed) {
+        FontAPIResult result;
+
+        using (Stream cryptedData = _storage.ReadFontFile(font.UID).Result) {
+          using (MemoryStream decryptedData = DecryptFontData(cryptedData).Result) {
+            result = _installer.InstallFont(font.UID, scope, decryptedData).Result;
+          }
+        }
+
+        if (result != FontAPIResult.Failure) {
           font.IsInstalled = true;
         }
-        then?.Invoke(installed);
+        then?.Invoke(result);
       });
     }
 
-    public void QueueUninstall(Font font, InstallationScope scope, Action<bool> then = null) {
+    public void QueueUninstall(Font font, InstallationScope scope, Action<FontAPIResult> then = null) {
       _agent.Enqueue(delegate {
-        bool uninstalled = _installer.UnsintallFont(font.UID, scope).Result;
-        if (uninstalled) {
+        FontAPIResult result = _installer.UninstallFont(font.UID, scope).Result;
+        if (result != FontAPIResult.Failure) {
           font.IsInstalled = false;
         }
-        then?.Invoke(uninstalled);
+        then?.Invoke(result);
       });
     }
     #endregion
