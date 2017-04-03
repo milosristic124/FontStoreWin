@@ -352,6 +352,26 @@ namespace Protocol.Impl.Tests {
 
     [TestMethod]
     [TestCategory("Protocol.Running")]
+    public void FinishingCatalogUpdate_shouldGenerateAClientReadyMessage() {
+      MockedTransport transport = new MockedTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      MockedStorage storage = new MockedStorage(installer);
+      Connection connection = new TestConnection(transport, storage);
+
+      bool clientReadyMessageSent = false;
+      transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+        if (evt == UserTopicEvent(connection, "ready")) {
+          clientReadyMessageSent = true;
+        }
+      };
+
+      updated(transport, connection, delegate {
+        Assert.IsTrue(clientReadyMessageSent, "The client should notify the server when it is ready to transition to real-time communication");
+      });
+    }
+
+    [TestMethod]
+    [TestCategory("Protocol.Running")]
     public void FontActivationMessage_shouldActivateFont() {
       MockedTransport transport = new MockedTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
@@ -406,10 +426,55 @@ namespace Protocol.Impl.Tests {
         storage.Verify("RemoveFont", 1);
       });
     }
+    
+    [TestMethod]
+    [TestCategory("Protocol.Running")]
+    public void FontInstallation_shouldGenerateFontInstallationReports() {
+      MockedTransport transport = new MockedTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      MockedStorage storage = new MockedStorage(installer);
+      Connection connection = new TestConnection(transport, storage);
+
+      updated(transport, connection, delegate {
+        int installReport = 0;
+        int uninstallReport = 0;
+        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+          if (evt == UserTopicEvent(connection, "font:installation-success")) {
+            installReport += 1;
+          } else if (evt == UserTopicEvent(connection, "font:uninstallation-success")) {
+            uninstallReport += 1;
+          }
+        };
+
+        transport.SimulateMessage("catalog", "font:description", TestData.Font2_Description); // nothing
+        transport.SimulateMessage(UserTopicEvent(connection), "font:activated", TestData.Font1_Id); // install ok
+        transport.SimulateMessage("catalog", "font:description", TestData.Font1_Description2); // uninstall ok + install ok
+        transport.SimulateMessage(UserTopicEvent(connection), "font:deactivated", TestData.Font1_Id); // uninstall ok
+        transport.SimulateMessage("catalog", "font:deletion", TestData.Font2_Id); // nothing (& used for thread synchronization)
+
+        AutoResetEvent lastMessageProcessed = new AutoResetEvent(false);
+        storage.FamilyCollection.OnFontRemoved += (Storage.Data.FamilyCollection sender, Storage.Data.Family target, Storage.Data.Font oldFont) => {
+          if (oldFont.UID == TestData.Font2_Description.UID) {
+            lastMessageProcessed.Set();
+          }
+        };
+
+        int timeout = 500;
+        bool signaled = lastMessageProcessed.WaitOne(timeout);
+        Assert.IsTrue(signaled, "Test data should be processed in less than {0} ms", timeout);
+
+        Assert.AreEqual(2, installReport, "Real-time server activation should generate installation reports");
+        Assert.AreEqual(2, uninstallReport, "Real-time server deactivation should generate uninstallation reports");
+      });
+    }
+
+    private void FamilyCollection_OnFontRemoved(Storage.Data.FamilyCollection sender, Storage.Data.Family target, Storage.Data.Font oldFont) {
+      throw new NotImplementedException();
+    }
 
     [TestMethod]
     [TestCategory("Protocol.Disconnect")]
-    public void Disconnect_shouldStopUpdatingFontStorage() {
+    public void DisconnectReception_shouldDisconnectTriggerDisconnectedEvent_andStopUpdatingFontStorage() {
       MockedTransport transport = new MockedTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
       MockedStorage storage = new MockedStorage(installer);
@@ -421,9 +486,7 @@ namespace Protocol.Impl.Tests {
           disconnected.Set();
         };
 
-        transport.OnDisconnectAttempt += () => true;
-
-        connection.Disconnect(DisconnectReason.Quit);
+        transport.SimulateMessage(UserTopicEvent(connection), "disconnect", TestData.DisconnectReason);
 
         int timeout = 500;
         bool signaled = disconnected.WaitOne(timeout);
@@ -435,7 +498,7 @@ namespace Protocol.Impl.Tests {
 
     [TestMethod]
     [TestCategory("Protocol.Disconnect")]
-    public void Disconnect_shouldDisconnectTheTransport() {
+    public void Disconnect_shouldDisconnectTheTransport_andStopUpdatingFontStorage() {
       MockedTransport transport = new MockedTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
       MockedStorage storage = new MockedStorage(installer);
@@ -455,6 +518,7 @@ namespace Protocol.Impl.Tests {
         bool signaled = disconnected.WaitOne(timeout);
         Assert.IsTrue(signaled, "Disconnect should trigger a disconnected event");
 
+        storage.Verify("EndSynchronization", 1);
         transport.Verify("Disconnect", 1);
       });
     }

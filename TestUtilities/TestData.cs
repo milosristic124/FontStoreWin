@@ -7,8 +7,13 @@ namespace TestUtilities {
     public static string Serialize(object obj) {
       return JsonConvert.SerializeObject(obj);
     }
-    public static T Deserialize<T>(string json) {
-      return JsonConvert.DeserializeObject<T>(json);
+
+    private static int TimeStamp_Now() {
+      return (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+    }
+
+    private static int TimeStamp_MinusDays(int days) {
+      return TimeStamp_Now() - (int)(new TimeSpan(days, 0, 0, 0).TotalSeconds);
     }
 
     public static string AuthenticationErrorReason = "authentication error";
@@ -24,6 +29,10 @@ namespace TestUtilities {
         Settings = "http://localhost/test_uid/settings",
         Visit = "http://localhost"
       }
+    };
+
+    public static Disconnect DisconnectReason = new Disconnect {
+      Reason = "I don't like you"
     };
 
     public static FontDescription Font1_Description = new FontDescription {
@@ -70,13 +79,5 @@ namespace TestUtilities {
     public static FontId Font2_Id = new FontId {
       UID = Font2_Description.UID
     };
-
-    private static int TimeStamp_Now() {
-      return (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-    }
-
-    private static int TimeStamp_MinusDays(int days) {
-      return TimeStamp_Now() - (int)(new TimeSpan(days, 0, 0, 0).TotalSeconds);
-    }
   }
 }

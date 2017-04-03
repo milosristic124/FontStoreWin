@@ -25,6 +25,8 @@ namespace Protocol.Impl.States {
       RegisterEvents();
       WillTransition = true; // This state is supposed to change at any moment
       _context.Storage.BeginSynchronization();
+      _context.UserChannel.SendUpdateComplete();
+
       _context.TriggerUpdateFinished();
     }
     #endregion
