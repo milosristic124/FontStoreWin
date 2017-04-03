@@ -1,4 +1,6 @@
-﻿namespace Protocol.Impl.States {
+﻿using FontInstaller;
+
+namespace Protocol.Impl.States {
   class Installing : ConnectionState {
     #region ctor
     public Installing(Connection connection) : this("Installing", connection) {
@@ -17,10 +19,27 @@
     }
 
     protected override void Start() {
+      _context.Storage.OnFontInstall += Storage_OnFontInstall;
+      _context.Storage.OnFontUninstall += Storage_OnFontUninstall;
+
       _context.Storage.SynchronizeWithSystem(delegate {
         WillTransition = true;
         FSM.State = new Running(_context);
       });
+    }
+    #endregion
+
+    #region installation events handling
+    private void Storage_OnFontUninstall(Storage.Data.Font font, InstallationScope scope, bool succeed) {
+      if (scope == InstallationScope.User || scope == InstallationScope.All) {
+        _context.UserChannel.SendFontUninstallationReport(font.UID, succeed);
+      }
+    }
+
+    private void Storage_OnFontInstall(Storage.Data.Font font, InstallationScope scope, bool succeed) {
+      if (scope == InstallationScope.User || scope == InstallationScope.All) {
+         _context.UserChannel.SendFontInstallationReport(font.UID, succeed);
+      }
     }
     #endregion
   }

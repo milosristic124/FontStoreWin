@@ -42,6 +42,10 @@ namespace TestUtilities {
       CreatedAt = TimeStamp_MinusDays(10)
     };
 
+    public static FontId Font1_Id = new FontId {
+      UID = Font1_Description.UID
+    };
+
     public static FontDescription Font3_Description = new FontDescription {
       UID = "test_font_uid_3",
       FamilyName = "TestFamilyName",
@@ -50,8 +54,8 @@ namespace TestUtilities {
       CreatedAt = TimeStamp_MinusDays(10)
     };
 
-    public static FontId Font1_Id = new FontId {
-      UID = Font1_Description.UID
+    public static FontId Font3_Id = new FontId {
+      UID = Font3_Description.UID
     };
 
 

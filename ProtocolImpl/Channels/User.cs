@@ -51,6 +51,24 @@ namespace Protocol.Impl.Channels {
     public void SendUpdateRequest() {
       _underlying.Send("update:request", null);
     }
+
+    public void SendFontInstallationReport(string uid, bool succeed) {
+      string evt = succeed ? "font:installation-success" : "font:installation-failure";
+      _underlying.Send(evt, JsonConvert.SerializeObject(new Payloads.FontId() {
+        UID = uid
+      }));
+    }
+
+    public void SendFontUninstallationReport(string uid, bool succeed) {
+      string evt = succeed ? "font:uninstallation-success" : "font:uninstallation-failure";
+      _underlying.Send(evt, JsonConvert.SerializeObject(new Payloads.FontId() {
+        UID = uid
+      }));
+    }
+
+    public void SendUpdateComplete() {
+      _underlying.Send("ready", null);
+    }
     #endregion
 
     #region delegates

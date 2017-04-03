@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using FontInstaller;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Protocol.Transport;
 using Storage;
 using System;
@@ -279,6 +280,16 @@ namespace Protocol.Impl.Tests {
         AutoResetEvent catalogUpdateRequest = new AutoResetEvent(false);
         AutoResetEvent fontUpdateRequest = new AutoResetEvent(false);
 
+        installer.OnInstallRequest += (string uid, InstallationScope scope) => {
+          if (scope == InstallationScope.User && uid == TestData.Font2_Description.UID) {
+            return false;
+          }
+          return true;
+        };
+        installer.OnUninstallRequest += (string uid, InstallationScope scope) => {
+          return uid != TestData.Font3_Description.UID;
+        };
+
         int installationSuccessReport = 0;
         int installationFailureReport = 0;
         int uninstallationSuccessReport = 0;
@@ -319,15 +330,23 @@ namespace Protocol.Impl.Tests {
         connection.UpdateCatalog();
 
         catalogUpdateRequest.WaitOne(); // wait for the catalog update request
-        transport.SimulateMessage("catalog", "font:description", TestData.Font1_Description); // 
-        transport.SimulateMessage("catalog", "font:description", TestData.Font2_Description);
-        transport.SimulateMessage("catalog", "font:description", TestData.Font3_Description);
-        transport.SimulateMessage("catalog", "font:description", TestData.Font1_Description2);
+        transport.SimulateMessage("catalog", "font:description", TestData.Font1_Description); // no report
+        transport.SimulateMessage("catalog", "font:description", TestData.Font2_Description); // no report
+        transport.SimulateMessage("catalog", "font:description", TestData.Font3_Description); // no report
         transport.SimulateMessage("catalog", "update:complete");
         fontUpdateRequest.WaitOne(); // wait for the fonts update request
-        transport.SimulateMessage(UserTopicEvent(connection), "font:activation", TestData.Font1_Id);
+        transport.SimulateMessage(UserTopicEvent(connection), "font:activation", TestData.Font1_Id); // install ok
+        transport.SimulateMessage(UserTopicEvent(connection), "font:activation", TestData.Font3_Id); // install ok
+        transport.SimulateMessage(UserTopicEvent(connection), "font:activation", TestData.Font2_Id); // install ko
+        transport.SimulateMessage(UserTopicEvent(connection), "font:deactivation", TestData.Font1_Id); // uninstall ok
+        transport.SimulateMessage(UserTopicEvent(connection), "font:deactivation", TestData.Font3_Id); // uninstall ko
         transport.SimulateMessage(UserTopicEvent(connection), "update:complete");
         updateFinished.WaitOne(); // wait for the update to finish
+
+        Assert.AreEqual(2, installationSuccessReport, "Font installations should send font messages to the server when updating catalog");
+        Assert.AreEqual(1, installationFailureReport, "Font installation failures should send font messages to the server when updating catalog");
+        Assert.AreEqual(1, uninstallationSuccessReport, "Font uninstallations should send font messages to the server when updating catalog");
+        Assert.AreEqual(1, uninstallationFailureReport, "Font uninstallation failures should send font messages to the server when updating catalog");
       });
     }
 

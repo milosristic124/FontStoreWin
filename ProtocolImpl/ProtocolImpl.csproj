@@ -61,6 +61,10 @@
     <Compile Include="States\UpdatingFonts.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FontInstaller\FontInstaller.csproj">
+      <Project>{7d9852a5-6911-478f-b863-c31fbcdd8065}</Project>
+      <Name>FontInstaller</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProtocolPayloads\ProtocolPayloads.csproj">
       <Project>{de2e0581-3b35-44bc-a408-f3f480d70f18}</Project>
       <Name>ProtocolPayloads</Name>

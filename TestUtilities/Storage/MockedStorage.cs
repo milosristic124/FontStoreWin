@@ -11,6 +11,11 @@ using Utilities.Extensions;
 
 namespace TestUtilities.Storage {
   public class MockedStorage : CallTracer, IFontStorage {
+    #region private data 
+    private Queue<Action> _callbackBuffer;
+    private bool _synchronizing;
+    #endregion
+
     #region properties
     public IFontInstaller Installer { get; private set; }
 
@@ -46,10 +51,12 @@ namespace TestUtilities.Storage {
       LastCatalogUpdate = DateTime.Now;
       LastFontStatusUpdate = DateTime.Now;
       FamilyCollection = new FamilyCollection();
+      _callbackBuffer = new Queue<Action>();
+      _synchronizing = false;
+
       RegisterCollectionEvents();
     }
     #endregion
-
 
     #region methods
     public Font AddFont(FontDescription description) {
@@ -100,21 +107,26 @@ namespace TestUtilities.Storage {
       });
     }
 
-    public void SynchronizeWithSystem(Action then = null) {
+    public async void SynchronizeWithSystem(Action then = null) {
       RegisterCall("SynchronizeWithSystem");
-      then?.Invoke();
+      await ProcessBufferedCallbacks(true).Then(delegate {
+        then?.Invoke();
+      });
     }
 
     public void BeginSynchronization() {
       RegisterCall("BeginSynchronization");
+      _synchronizing = true;
     }
 
     public void EndSynchronization() {
       RegisterCall("EndSynchronization");
+      _synchronizing = false;
     }
 
     public void AbortSynchronization() {
       RegisterCall("AbortSynchronization");
+      _synchronizing = false;
     }
     #endregion
 
@@ -132,6 +144,23 @@ namespace TestUtilities.Storage {
       FamilyCollection.OnFontAdded += FamilyCollection_OnFontAdded;
       FamilyCollection.OnFontRemoved += FamilyCollection_OnFontRemoved;
     }
+
+    private async Task ProcessBufferedCallbacks(bool forced = false) {
+      await Task.Run(delegate {
+        while (_callbackBuffer.Count > 0 && (forced || _synchronizing)) {
+          Action callback = _callbackBuffer.Dequeue();
+          callback();
+        }
+      });
+    }
+
+    private void QueueCallback(Action callback) {
+      if (_synchronizing) {
+        callback();
+      } else {
+        _callbackBuffer.Enqueue(callback);
+      }
+    }
     #endregion
 
     #region event handling
@@ -139,12 +168,12 @@ namespace TestUtilities.Storage {
       if (target.Activated) {
         FontAPIResult result = Installer.InstallFont(target.UID, InstallationScope.User, new MemoryStream()).Result;
         if (result != FontAPIResult.Noop)
-          OnFontInstall?.Invoke(target, InstallationScope.User, result == FontAPIResult.Success);
+          QueueCallback(() => OnFontInstall?.Invoke(target, InstallationScope.User, result == FontAPIResult.Success));
       }
       else {
         FontAPIResult result = Installer.UninstallFont(target.UID, InstallationScope.User).Result;
         if (result != FontAPIResult.Noop)
-          OnFontInstall?.Invoke(target, InstallationScope.User, result == FontAPIResult.Success);
+          QueueCallback(() => OnFontUninstall?.Invoke(target, InstallationScope.User, result == FontAPIResult.Success));
       }
       HasChanged = true;
     }
@@ -152,14 +181,14 @@ namespace TestUtilities.Storage {
     private void FamilyCollection_OnFontRemoved(FamilyCollection sender, Family target, Font oldFont) {
       FontAPIResult result = Installer.UninstallFont(oldFont.UID, InstallationScope.All).Result;
       if (result != FontAPIResult.Noop)
-        OnFontUninstall?.Invoke(oldFont, InstallationScope.All, result == FontAPIResult.Success);
+        QueueCallback(() => OnFontUninstall?.Invoke(oldFont, InstallationScope.All, result == FontAPIResult.Success));
       HasChanged = true;
     }
 
     private void FamilyCollection_OnFontAdded(FamilyCollection sender, Family target, Font newFont) {
       FontAPIResult result = Installer.InstallFont(newFont.UID, InstallationScope.Process, new MemoryStream()).Result;
       if (result != FontAPIResult.Noop)
-        OnFontInstall?.Invoke(newFont, InstallationScope.Process, result == FontAPIResult.Success);
+        QueueCallback(() => OnFontInstall?.Invoke(newFont, InstallationScope.Process, result == FontAPIResult.Success));
       HasChanged = true;
     }
     #endregion
