@@ -1,5 +1,6 @@
 ﻿using Protocol.Payloads;
 using Protocol.Transport;
+using Protocol.Transport.Http;
 using Storage;
 using System;
 
@@ -13,6 +14,7 @@ namespace Protocol {
   public interface IConnection : IConnectionObservable {
     #region properties
     IConnectionTransport Transport { get; }
+    IHttpTransport HttpTransport { get; }
     IFontStorage Storage { get; }
     UserData UserData { get; }
 

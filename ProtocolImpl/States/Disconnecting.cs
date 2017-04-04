@@ -46,11 +46,11 @@
 
         _context.Transport.Disconnect(() => {
           WillTransition = true;
-          _context.TriggerDisconnection();
+          _context.TriggerConnectionClosed();
         });
       } else {
         WillTransition = true;
-        _context.TriggerDisconnection();
+        _context.TriggerConnectionClosed();
       }
     }
   }

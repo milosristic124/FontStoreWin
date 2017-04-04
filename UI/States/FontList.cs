@@ -1,4 +1,5 @@
 ﻿using System;
+using UI.Utilities;
 using Utilities.Extensions;
 
 namespace UI.States {
@@ -16,16 +17,16 @@ namespace UI.States {
     #endregion
 
     #region ctor
-    public FontList(App application) : base(application) {
-      _view = new Views.FontList(Application.Connection.UserData);
+    public FontList(App application, WindowPosition prevPos = null) : base(application, prevPos) {
+      _view = new Views.FontList(Application.Context.Connection.UserData);
       Application.SetDragHandle(_view.DragHandle);
       Application.MainWindow = _view;
-      SetWindowPosition(_view);
+      SetWindowPosition(_view, WindowPosition);
 
       _view.OnExit += _view_OnExit;
       _view.OnLogout += _view_OnLogout;
 
-      Application.Connection.OnCatalogUpdateFinished += Connection_OnCatalogUpdateFinished;
+      Application.Context.Connection.OnCatalogUpdateFinished += Connection_OnCatalogUpdateFinished;
     }
     #endregion
 
@@ -38,15 +39,15 @@ namespace UI.States {
 
     public override async void Show() {
       if (!IsShown) {
-        SetWindowPosition(_view);
+        SetWindowPosition(_view, WindowPosition);
         _view.Activate();
         _view.Show();
 
-        if (!Application.Storage.Loaded) {
+        if (!Application.Context.Storage.Loaded) {
           ShowLoadingState();
-          await Application.Storage.Load()
+          await Application.Context.Storage.Load()
             .Then(() => {
-              Application.Connection.UpdateCatalog();
+              Application.Context.Connection.UpdateCatalog();
             })
             .Recover(e => {
               Console.WriteLine(string.Format("Catalog loading failed: {0}", e.Message));
@@ -72,7 +73,7 @@ namespace UI.States {
 
     private void ShowLoadedState() {
       _view.InvokeOnUIThread(() => {
-        _view.Storage = Application.Storage;
+        _view.Storage = Application.Context.Storage;
         _view.LoadingState(false);
       });
     }
@@ -80,24 +81,24 @@ namespace UI.States {
 
     #region action handling
     private void _view_OnLogout() {
-      Application.Connection.Disconnect(Protocol.DisconnectReason.Logout);
+      Application.Context.Connection.Disconnect(Protocol.DisconnectReason.Logout);
       _view.InvokeOnUIThread(() => {
         WillTransition = true;
-        FSM.State = new Login(Application);
+        FSM.State = new Login(Application, WindowPosition.FromWindow(_view));
         FSM.State.Show();
         Dispose();
       });
     }
 
     private void _view_OnExit() {
-      Application.Connection.Disconnect(Protocol.DisconnectReason.Quit);
+      Application.Context.Connection.Disconnect(Protocol.DisconnectReason.Quit);
       Application.Shutdown();
     }
     #endregion
 
     #region event handling
     private async void Connection_OnCatalogUpdateFinished() {
-      await Application.Storage.Save();
+      await Application.Context.Storage.Save();
       ShowLoadedState();
     }
     #endregion

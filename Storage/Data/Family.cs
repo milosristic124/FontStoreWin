@@ -40,6 +40,8 @@ namespace Storage.Data {
     #region delegates
     public delegate void FontAddedHandler(Family sender, Font newFont);
     public delegate void FontRemovedHandler(Family sender, Font removedFont);
+    public delegate void FontUpdatedHandler(Family sender, Font removedFont, Font updatedFont);
+
     public delegate void FontActivationChangedHandler(Family sender, Font target);
     public delegate void FontInstallationChangedHandler(Family sender, Font target);
     public delegate void FullyActivatedChangedHandler(Family sender);
@@ -48,6 +50,8 @@ namespace Storage.Data {
     #region events
     public event FontAddedHandler OnFontAdded;
     public event FontRemovedHandler OnFontRemoved;
+    public event FontUpdatedHandler OnFontUpdated;
+
     public event FontActivationChangedHandler OnActivationChanged;
     public event FontInstallationChangedHandler OnInstallationChanged;
     public event FullyActivatedChangedHandler OnFullyActivatedChanged;
@@ -78,14 +82,18 @@ namespace Storage.Data {
     #region methods
     public Family Add(Font font) {
       Font removedFont = RemoveAndReturnFont(font.UID);
-      if (removedFont != null) {
-        OnFontRemoved?.Invoke(this, removedFont);
-      }
 
       RegisterFontEvents(font);
       Fonts.Add(font);
-      OnFontAdded?.Invoke(this, font);
 
+      if (removedFont == null) {
+        OnFontAdded?.Invoke(this, font);
+      } else {
+        OnFontUpdated?.Invoke(this, removedFont, font);
+      }
+
+      // will trigger all the correct events to install the font if it was previously installed
+      font.Activated = removedFont?.Activated ?? font.Activated;
       UpdateFamilyActivationStatus();
       return this;
     }

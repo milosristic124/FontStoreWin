@@ -25,12 +25,12 @@ namespace Storage.Impl.Internal {
 
     #region delegates
     public delegate void ProcessingStartedHandler();
-    public delegate void ProcessingFinishedHandler();
+    public delegate void ProcessingFinishedHandler(int processedCommands);
     #endregion
 
     #region events
-    public event ProcessingStartedHandler OnInstallsStarted;
-    public event ProcessingFinishedHandler OnInstallsFinished;
+    public event ProcessingStartedHandler OnProcessingStarted;
+    public event ProcessingFinishedHandler OnProcessingFinished;
     #endregion
 
     #region ctor
@@ -46,15 +46,15 @@ namespace Storage.Impl.Internal {
     #endregion
 
     #region methods
-    public void BeginInstalls() {
+    public void StartProcessing() {
       _agent.Start();
     }
 
-    public void PauseInstalls() {
+    public void PauseProcessing() {
       _agent.Stop();
     }
 
-    public void AbortInstalls() {
+    public void AbortProcessing() {
       _agent.Stop();
       _cancelSource.Cancel();
     }
@@ -99,11 +99,11 @@ namespace Storage.Impl.Internal {
 
     #region event handling
     private void _agent_OnProcessingStarted() {
-      OnInstallsStarted?.Invoke();
+      OnProcessingStarted?.Invoke();
     }
 
-    private void _agent_OnProcessingFinished() {
-      OnInstallsFinished?.Invoke();
+    private void _agent_OnProcessingFinished(int processedCommands) {
+      OnProcessingFinished?.Invoke(processedCommands);
     }
     #endregion
   }

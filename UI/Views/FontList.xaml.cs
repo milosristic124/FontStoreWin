@@ -13,9 +13,6 @@ namespace UI.Views {
   public partial class FontList : Window, IView {
     #region data
     private Protocol.Payloads.UserData _userData;
-    private int _installedCount;
-    private int _newCount;
-    private int _allCount;
     private IFontStorage _storage;
 
     private ViewModels.FamilyCollectionVM _collectionVM;

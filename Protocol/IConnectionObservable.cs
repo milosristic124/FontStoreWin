@@ -5,7 +5,8 @@ namespace Protocol {
     event ConnectionEstablishedHandler OnEstablished;
     event ConnectionValidationFailedHandler OnValidationFailure;
     event CatalogUpdateFinishedHandler OnCatalogUpdateFinished;
-    event ConnectionClosedHandler OnDisconnected;
+    event ConnectionClosedHandler OnConnectionClosed;
+    event DisconnectionHandler OnDisconnected;
   }
 
   #region event handlers
@@ -13,5 +14,6 @@ namespace Protocol {
   public delegate void ConnectionEstablishedHandler(UserData userData);
   public delegate void CatalogUpdateFinishedHandler();
   public delegate void ConnectionClosedHandler();
+  public delegate void DisconnectionHandler(string reason);
   #endregion
 }

@@ -31,6 +31,9 @@ namespace Protocol.Impl.Channels {
       _underlying.On("update:complete", () => {
         OnUpdateComplete?.Invoke();
       });
+      _underlying.On("disconnect", (Payloads.Disconnect disc) => {
+        OnDisconnection?.Invoke(disc.Reason);
+      });
 
       return _underlying.Join();
     }
@@ -39,6 +42,7 @@ namespace Protocol.Impl.Channels {
       _underlying.Off("font:activation");
       _underlying.Off("font:deactivation");
       _underlying.Off("udpate:complete");
+      _underlying.Off("disconnection");
       return _underlying.Leave();
     }
 
@@ -66,7 +70,7 @@ namespace Protocol.Impl.Channels {
       }));
     }
 
-    public void SendUpdateComplete() {
+    public void TransitionToRealtimeCommunication() {
       _underlying.Send("ready", null);
     }
     #endregion
@@ -75,12 +79,17 @@ namespace Protocol.Impl.Channels {
     public delegate void FontActivationHandler(string uid);
     public delegate void FontDeactivationHandler(string uid);
     public delegate void UpdateCompleteHandler();
+    public delegate void DisconnectionHandler(string reason);
     #endregion
 
     #region events
     public event FontActivationHandler OnFontActivation;
     public event FontDeactivationHandler OnFontDeactivation;
     public event UpdateCompleteHandler OnUpdateComplete;
+    #endregion
+
+    #region internal events
+    internal event DisconnectionHandler OnDisconnection;
     #endregion
   }
 }

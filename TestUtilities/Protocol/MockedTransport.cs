@@ -1,4 +1,5 @@
 ﻿using Protocol.Transport;
+using Protocol.Transport.Http;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -16,7 +17,6 @@ namespace TestUtilities.Protocol {
 
     #region ctor
     public MockedTransport() : base() {
-      DownloadParallelism = 2;
       _connecting = false;
       _disconnecting = false;
       _tracer = new CallTracer();
@@ -59,13 +59,6 @@ namespace TestUtilities.Protocol {
 
       TriggerDisconnectionAttempt();
     }
-
-    public override IHttpRequest CreateHttpRequest(string endpoint) {
-      RegisterCall("CreateHttpRequest");
-      MockedHttpRequest request = new MockedHttpRequest(endpoint);
-      request.OnRequestSent += Request_OnRequestSent;
-      return request;
-    }
     #endregion
 
     #region test methods
@@ -76,11 +69,12 @@ namespace TestUtilities.Protocol {
       }
     }
 
+    public void SimulateTermination() {
+      Closed?.Invoke();
+    }
+
     public delegate void MessageSentHandler(MockedBroadcastResponse resp, string evt, dynamic payload);
     public event MessageSentHandler OnMessageSent;
-
-    public delegate MockedHttpResponse HttpRequestSentHandler(MockedHttpRequest request, string body);
-    public event HttpRequestSentHandler OnHttpRequestSent;
 
     public delegate bool ConnectionAttemptHandler();
     public event ConnectionAttemptHandler OnConnectionAttempt {
@@ -127,10 +121,6 @@ namespace TestUtilities.Protocol {
     #region private methods
     private void Chan_OnMessageSent(MockedBroadcastChannel chan, MockedBroadcastResponse resp, string evt, dynamic payload) {
       OnMessageSent?.Invoke(resp, string.Format("{0}.{1}", chan.Topic, evt), payload);
-    }
-
-    private MockedHttpResponse Request_OnRequestSent(MockedHttpRequest request, string body) {
-      return OnHttpRequestSent?.Invoke(request, body);
     }
 
     private async void TriggerConnectionAttempt() {

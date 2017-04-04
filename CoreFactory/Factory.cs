@@ -2,23 +2,18 @@
 using Protocol.Transport;
 using Storage;
 using FontInstaller;
+using Protocol.Transport.Http;
 
 namespace Core {
   public static class Factory {
-    public static IConnectionTransport InitializeTransport() {
-      return new Protocol.Transport.Phoenix.ConnectionTransport();
-    }
+    public static ApplicationContext InitializeApplicationContext() {
+      IConnectionTransport transport = new Protocol.Transport.Phoenix.ConnectionTransport();
+      IHttpTransport http = new Protocol.Transport.Http.Impl.HttpTransport();
+      IFontInstaller installer = new FontInstaller.Impl.FontInstaller();
+      IFontStorage storage = new Storage.Impl.FontStorage(http, installer);
+      IConnection connection = new Protocol.Impl.Connection(transport, http, storage);
 
-    public static IConnection InitializeServerConnection(IConnectionTransport transport, IFontStorage storage) {
-      return new Protocol.Impl.Connection(transport, storage);
-    }
-
-    public static IFontInstaller InitializeFontInstaller() {
-      return new FontInstaller.Impl.FontInstaller();
-    }
-
-    public static IFontStorage InitializeStorage(IHttpTransport transport, IFontInstaller installer) {
-      return new Storage.Impl.FontStorage(transport, installer);
+      return new ApplicationContext(connection);
     }
   }
 }

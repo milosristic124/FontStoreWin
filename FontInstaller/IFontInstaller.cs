@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace FontInstaller {
@@ -8,11 +9,11 @@ namespace FontInstaller {
     Failure
   }
 
+  [FlagsAttribute]
   public enum InstallationScope {
-    None,
-    Process,
-    User,
-    All
+    None = 0,
+    Process = 1,
+    User = 2
   }
 
   public interface IFontInstaller {

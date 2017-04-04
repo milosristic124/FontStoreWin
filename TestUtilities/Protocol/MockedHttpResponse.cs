@@ -1,4 +1,5 @@
 ﻿using Protocol.Transport;
+using Protocol.Transport.Http;
 using System.IO;
 using System.Net;
 using System.Text;

@@ -51,9 +51,10 @@ namespace TestUtilities.FontManager {
       if (alreadyExists && _installedFonts[uid] == scope) {
         return Task.FromResult(FontAPIResult.Noop);
       }
-      else if (alreadyExists && _installedFonts[uid] != scope) {
-        _installedFonts[uid] = InstallationScope.All;
-      } else {
+      else if (alreadyExists) {
+        _installedFonts[uid] |= scope;
+      }
+      else {
         _installedFonts[uid] = scope;
       }
       return Task.FromResult(FontAPIResult.Success);
@@ -67,14 +68,13 @@ namespace TestUtilities.FontManager {
       }
 
       if (_installedFonts.ContainsKey(uid)) {
-        if (scope == InstallationScope.All || _installedFonts[uid] == scope) {
-          _installedFonts.Remove(uid);
-        }
-        else if (scope == InstallationScope.User) {
-          _installedFonts[uid] = InstallationScope.Process;
+        if (_installedFonts[uid].HasFlag(scope)) {
+          _installedFonts[uid] &= ~scope;
+          if (_installedFonts[uid] == InstallationScope.None)
+            _installedFonts.Remove(uid);
         }
         else {
-          _installedFonts[uid] = InstallationScope.User;
+          return Task.FromResult(FontAPIResult.Noop);
         }
         return Task.FromResult(FontAPIResult.Success);
       }

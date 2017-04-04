@@ -56,8 +56,6 @@
     <Compile Include="BroadcastChannelResult.cs" />
     <Compile Include="BroadcastResponse.cs" />
     <Compile Include="ConnectionTransport.cs" />
-    <Compile Include="HttpRequest.cs" />
-    <Compile Include="HttpResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

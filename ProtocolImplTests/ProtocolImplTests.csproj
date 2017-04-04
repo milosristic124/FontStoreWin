@@ -56,6 +56,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ConnectionTestUtilities\ConnectionTestUtilities.csproj">
+      <Project>{79871541-3A7D-4FB6-83CF-E585DB53E403}</Project>
+      <Name>ConnectionTestUtilities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FontInstaller\FontInstaller.csproj">
       <Project>{7d9852a5-6911-478f-b863-c31fbcdd8065}</Project>
       <Name>FontInstaller</Name>

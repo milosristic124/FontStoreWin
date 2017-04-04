@@ -186,6 +186,23 @@ namespace Storage.Impl.Tests {
       Assert.IsTrue(eventTriggered, "FamilyCollection should trigger font removed event when fonts are removed from the collection");
     }
 
+    [TestMethod]
+    [TestCategory("FamilyCollection.Events")]
+    public void FamilyCollection_shouldTriggerUpdatedFontEvent_whenFontIsUpdated() {
+      FamilyCollection collection = new FamilyCollection();
+      Font font = new Font(TestData.Font1_Description);
+      Font updatedFont = new Font(TestData.Font1_Description2);
+      collection.AddFont(font);
+
+      bool eventTriggered = false;
+      collection.OnFontUpdated += delegate {
+        eventTriggered = true;
+      };
+      collection.AddFont(updatedFont);
+
+      Assert.IsTrue(eventTriggered, "FamilyCollection should trigger font removed event when fonts are removed from the collection");
+    }
+
     #region setup methods
     private FamilyCollection NewCollection() {
       FamilyCollection collection = new FamilyCollection();

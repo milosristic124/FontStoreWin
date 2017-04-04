@@ -7,6 +7,7 @@ namespace UI.States {
   abstract class UIState : IState<UIState>, IDisposable {
     #region data
     protected App Application;
+    protected WindowPosition WindowPosition;
     #endregion
 
     #region properties
@@ -17,8 +18,9 @@ namespace UI.States {
     #endregion
 
     #region ctor
-    public UIState(App application) {
+    public UIState(App application, WindowPosition previousPos) {
       Application = application;
+      WindowPosition = previousPos;
     }
     #endregion
 
@@ -36,6 +38,10 @@ namespace UI.States {
         Hide();
       }
     }
+
+    public void ResetWindowPosition() {
+      WindowPosition = null;
+    }
     #endregion
 
     #region UIState methods
@@ -45,11 +51,16 @@ namespace UI.States {
     #endregion
 
     #region internal methods
-    protected void SetWindowPosition(Window window, double bottomMargin = 10, double rightMargin = 10) {
-      double left, top;
-      TaskBarLocationProvider.CalculateWindowPositionByTaskbar(window.Width, window.Height, out left, out top);
-      window.Top = top - bottomMargin;
-      window.Left = left - rightMargin;
+    protected void SetWindowPosition(Window window, WindowPosition previousPos = null, double bottomMargin = 10, double rightMargin = 10) {
+      if (previousPos == null) {
+        double left, top;
+        TaskBarLocationProvider.CalculateWindowPositionByTaskbar(window.Width, window.Height, out left, out top);
+        window.Top = top - bottomMargin;
+        window.Left = left - rightMargin;
+      } else {
+        window.Top = previousPos.Top;
+        window.Left = previousPos.Left;
+      }
     }
     #endregion
   }
@@ -61,7 +72,7 @@ namespace UI.States {
       }
     }
 
-    public NoUI(App application) : base(application) {
+    public NoUI(App application) : base(application, null) {
     }
 
     public override void Show() {

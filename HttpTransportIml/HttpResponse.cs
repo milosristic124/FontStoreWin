@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Net;
 
-namespace Protocol.Transport.Phoenix {
+namespace Protocol.Transport.Http.Impl {
   public class HttpResponse : IHttpResponse {
     #region private data
     private HttpWebResponse _impl;

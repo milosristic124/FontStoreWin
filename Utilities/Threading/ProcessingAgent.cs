@@ -8,10 +8,17 @@ namespace Utilities.Threading {
   public class ProcessingAgent {
     #region private data
     private ConcurrentQueue<Action> _commandQueue;
-    private int _concurrentFactor;
     private bool _running;
     private CancellationTokenSource _cancelSource;
     private bool _processingStarted;
+    private int _processedCommands;
+
+    private Func<int> _getConcurrentFactor;
+    private int _concurrentFactor {
+      get {
+        return _getConcurrentFactor();
+      }
+    }
     #endregion
 
     #region properties
@@ -33,7 +40,7 @@ namespace Utilities.Threading {
             OnProcessingStarted?.Invoke();
           }
           else {
-            OnProcessingFinished?.Invoke();
+            OnProcessingFinished?.Invoke(_processedCommands);
           }
         }
       }
@@ -42,7 +49,7 @@ namespace Utilities.Threading {
 
     #region delegates
     public delegate void ProcessingStartedHandler();
-    public delegate void ProcessingFinishedHandler();
+    public delegate void ProcessingFinishedHandler(int processedCommands);
     #endregion
 
     #region events
@@ -52,7 +59,10 @@ namespace Utilities.Threading {
 
     #region ctor
     public ProcessingAgent(int concurrentFactor, CancellationTokenSource cancelSource) {
-      _concurrentFactor = concurrentFactor;
+      if (concurrentFactor < 1) throw new Exception($"Processing agent concurrent factor can not be less than 1 (value = {concurrentFactor})");
+
+      _getConcurrentFactor = () => concurrentFactor;
+
       _running = false;
       _commandQueue = new ConcurrentQueue<Action>();
       _processingStarted = false;
@@ -63,11 +73,26 @@ namespace Utilities.Threading {
         _cancelSource = new CancellationTokenSource();
       }
     }
+
+    public ProcessingAgent(Func<int> getConcurrentFactor, CancellationTokenSource cancelSource) {
+      _getConcurrentFactor = getConcurrentFactor;
+      _running = false;
+      _commandQueue = new ConcurrentQueue<Action>();
+      _processingStarted = false;
+
+      if (cancelSource != null) {
+        _cancelSource = cancelSource;
+      }
+      else {
+        _cancelSource = new CancellationTokenSource();
+      }
+    }
     #endregion
 
     #region methods
     public void Start() {
       _processingStarted = true;
+      _processedCommands = 0;
       StartProcessing();
     }
 
@@ -103,6 +128,7 @@ namespace Utilities.Threading {
             }
           }
           Task.WaitAll(batch.ToArray());
+          _processedCommands += batch.Count;
         }
         Running = false;
       });

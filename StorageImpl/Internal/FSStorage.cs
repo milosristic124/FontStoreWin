@@ -19,13 +19,65 @@ namespace Storage.Impl.Internal {
     private string _fontRootPath;
 
     // db files
-    private string _metadataFilePath;
-    private string _fontDBPath;
+    //private string _metadataFilePath;
+    //private string _fontDBPath;
+
+    private string _sessionID;
+    private string _sessionPath;
+    #endregion
+
+    #region private properties
+    private string _fontDBPath {
+      get {
+        return _sessionPath + "fnt.db";
+
+        //if (SessionID != null) {
+        //  return string.Format("{0}{1}\\fnt.db", _storageRootPath, _sessionID);
+        //} else {
+        //  return _storageRootPath + "fnt.db";
+        //}
+      }
+    }
+
+    private string _metadataFilePath {
+      get {
+        return _sessionPath + "mta.db";
+        //if (SessionID != null) {
+        //  return string.Format("{0}{1}\\mta.db", _storageRootPath, _sessionID);
+        //} else {
+        //  return _storageRootPath + "mta.db";
+        //}
+      }
+    }
     #endregion
 
     #region properties
     public DateTime? LastCatalogUpdate { get; set; }
     public DateTime? LastFontStatusUpdate { get; set; }
+
+    public string SessionID {
+      get {
+        return _sessionID;
+      }
+      set {
+        if (_sessionID != value) {
+          _sessionID = value.Trim();
+
+          if (_sessionID == null) {
+            _sessionPath = _storageRootPath;
+          } else {
+            _sessionPath = _storageRootPath + _sessionID;
+            if (!_sessionPath.EndsWith("\\")) {
+              _sessionPath += "\\";
+            }
+
+            if (!Directory.Exists(_sessionPath)) {
+              Directory.CreateDirectory(_sessionPath);
+            }
+          }
+        }
+      }
+    }
     #endregion
 
     #region ctor
@@ -37,6 +89,8 @@ namespace Storage.Impl.Internal {
       if (!_storageRootPath.EndsWith("\\")) {
         _storageRootPath += "\\";
       }
+      _sessionPath = _storageRootPath;
+      _sessionID = null;
 
       if (!Directory.Exists(_storageRootPath)) {
         Directory.CreateDirectory(_storageRootPath);
@@ -48,8 +102,6 @@ namespace Storage.Impl.Internal {
         Directory.CreateDirectory(_fontRootPath);
       }
 
-      _fontDBPath = string.Format("{0}{1}", _storageRootPath, "fnt.db");
-      _metadataFilePath = string.Format("{0}{1}", _storageRootPath, "mta.db");
     }
     #endregion
 

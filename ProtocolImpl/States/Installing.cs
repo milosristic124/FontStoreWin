@@ -13,14 +13,15 @@ namespace Protocol.Impl.States {
     #region methods
     public override void Abort() {
       _context.Storage.AbortSynchronization();
+      Stop();
     }
 
     public override void Stop() {
+      UnregisterStorageEvents();
     }
 
     protected override void Start() {
-      _context.Storage.OnFontInstall += Storage_OnFontInstall;
-      _context.Storage.OnFontUninstall += Storage_OnFontUninstall;
+      RegisterStorageEvents();
 
       _context.Storage.SynchronizeWithSystem(delegate {
         WillTransition = true;
@@ -29,16 +30,28 @@ namespace Protocol.Impl.States {
     }
     #endregion
 
+    #region private methods
+    private void RegisterStorageEvents() {
+      _context.Storage.OnFontInstall += Storage_OnFontInstall;
+      _context.Storage.OnFontUninstall += Storage_OnFontUninstall;
+    }
+
+    private void UnregisterStorageEvents() {
+      _context.Storage.OnFontInstall -= Storage_OnFontInstall;
+      _context.Storage.OnFontUninstall -= Storage_OnFontUninstall;
+    }
+    #endregion
+
     #region installation events handling
     private void Storage_OnFontUninstall(Storage.Data.Font font, InstallationScope scope, bool succeed) {
-      if (scope == InstallationScope.User || scope == InstallationScope.All) {
+      if (scope.HasFlag(InstallationScope.User)) {
         _context.UserChannel.SendFontUninstallationReport(font.UID, succeed);
       }
     }
 
     private void Storage_OnFontInstall(Storage.Data.Font font, InstallationScope scope, bool succeed) {
-      if (scope == InstallationScope.User || scope == InstallationScope.All) {
-         _context.UserChannel.SendFontInstallationReport(font.UID, succeed);
+      if (scope.HasFlag(InstallationScope.User)) {
+        _context.UserChannel.SendFontInstallationReport(font.UID, succeed);
       }
     }
     #endregion

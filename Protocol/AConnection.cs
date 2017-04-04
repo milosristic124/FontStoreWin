@@ -1,11 +1,13 @@
 ﻿using Protocol.Payloads;
 using Protocol.Transport;
+using Protocol.Transport.Http;
 using Storage;
 using System;
 
 namespace Protocol {
   public abstract class AConnection: IConnection {
     #region properties
+    public IHttpTransport HttpTransport { get; private set; }
     public IConnectionTransport Transport { get; private set; }
     public IFontStorage Storage { get; private set; }
     public UserData UserData { get; protected set; }
@@ -15,17 +17,15 @@ namespace Protocol {
 
     public int DownloadParallelism {
       get {
-        return Transport.DownloadParallelism;
-      }
-      protected set {
-        Transport.DownloadParallelism = value;
+        return HttpTransport.DownloadParallelism;
       }
     }
     #endregion
 
     #region ctor
-    public AConnection(IConnectionTransport transport, IFontStorage storage) {
+    public AConnection(IConnectionTransport transport, IHttpTransport http, IFontStorage storage) {
       Transport = transport;
+      HttpTransport = http;
       Storage = storage;
     }
     #endregion
@@ -40,7 +40,8 @@ namespace Protocol {
     public abstract event ConnectionEstablishedHandler OnEstablished;
     public abstract event ConnectionValidationFailedHandler OnValidationFailure;
     public abstract event CatalogUpdateFinishedHandler OnCatalogUpdateFinished;
-    public abstract event ConnectionClosedHandler OnDisconnected;
+    public abstract event ConnectionClosedHandler OnConnectionClosed;
+    public abstract event DisconnectionHandler OnDisconnected;
     #endregion
   }
 }

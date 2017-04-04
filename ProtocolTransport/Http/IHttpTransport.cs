@@ -1,4 +1,4 @@
-﻿namespace Protocol.Transport {
+﻿namespace Protocol.Transport.Http {
   public interface IHttpTransport {
     #region properties
     int DownloadParallelism { get; set; }

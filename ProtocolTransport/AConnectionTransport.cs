@@ -7,8 +7,6 @@ namespace Protocol.Transport {
     public string EndPoint { get; set; }
     public string AuthToken { get; set; }
     public Dictionary<string, string> UrlParams { get; set; }
-
-    public int DownloadParallelism { get; set; }
     #endregion
 
     #region ctor
@@ -29,8 +27,6 @@ namespace Protocol.Transport {
     public abstract void Connect();
     public abstract void Disconnect(Action callback = null);
     public abstract IBroadcastChannel Channel(string name);
-
-    public abstract IHttpRequest CreateHttpRequest(string endpoint);
     #endregion
   }
 }

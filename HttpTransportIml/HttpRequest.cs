@@ -3,7 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Utilities.Extensions;
 
-namespace Protocol.Transport.Phoenix {
+namespace Protocol.Transport.Http.Impl {
   public class HttpRequest : IHttpRequest {
     #region private data
     private HttpWebRequest _impl;

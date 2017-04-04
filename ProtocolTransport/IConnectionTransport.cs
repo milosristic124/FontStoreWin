@@ -6,7 +6,7 @@ namespace Protocol.Transport {
   public delegate void TransportOpenedHandler();
   public delegate void TransportErrorHandler(Exception exception);
   
-  public interface IConnectionTransport: IHttpTransport {
+  public interface IConnectionTransport {
     #region properties
     string EndPoint { get; set; }
     Dictionary<string, string> UrlParams { get; set; }

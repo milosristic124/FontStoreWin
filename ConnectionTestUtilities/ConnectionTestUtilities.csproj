@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2F40BAA9-89C9-44D7-8060-233B5230B94B}</ProjectGuid>
+    <ProjectGuid>{79871541-3A7D-4FB6-83CF-E585DB53E403}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Protocol.Transport</RootNamespace>
-    <AssemblyName>ProtocolTransport</AssemblyName>
+    <RootNamespace>Protocol.Impl.Tests</RootNamespace>
+    <AssemblyName>ConnectionTestUtilities</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,16 +41,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AConnectionTransport.cs" />
-    <Compile Include="IBroadcastChannel.cs" />
-    <Compile Include="IBroadcastChannelResult.cs" />
-    <Compile Include="IBroadcastResponse.cs" />
-    <Compile Include="IConnectionTransport.cs" />
-    <Compile Include="Http\IHttpRequest.cs" />
-    <Compile Include="Http\IHttpResponse.cs" />
-    <Compile Include="Http\IHttpTransport.cs" />
+    <Compile Include="TestConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResponseStatus.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProtocolImpl\ProtocolImpl.csproj">
+      <Project>{DFDC0E22-4E95-447B-9DE2-EF4139CDEDC1}</Project>
+      <Name>ProtocolImpl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProtocolPayloads\ProtocolPayloads.csproj">
+      <Project>{DE2E0581-3B35-44BC-A408-F3F480D70F18}</Project>
+      <Name>ProtocolPayloads</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProtocolTransport\ProtocolTransport.csproj">
+      <Project>{2F40BAA9-89C9-44D7-8060-233B5230B94B}</Project>
+      <Name>ProtocolTransport</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Protocol\Protocol.csproj">
+      <Project>{B7175444-75C9-4579-87FC-706DE922C89F}</Project>
+      <Name>Protocol</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Storage\Storage.csproj">
+      <Project>{115A3A3E-95CD-45AE-BE11-7ECC218FB91E}</Project>
+      <Name>Storage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestUtilities\TestUtilities.csproj">
+      <Project>{46D69BAD-6E11-4AEE-A242-5335AE3FFC7A}</Project>
+      <Name>TestUtilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

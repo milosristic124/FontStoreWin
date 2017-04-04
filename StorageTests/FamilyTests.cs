@@ -30,6 +30,22 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Family.Behavior")]
+    public void FamilyAddFont_shouldTranferActivatedState_whenUpdatingFonts() {
+      Family family = new Family(TestData.Font1_Description.FamilyName);
+      Font font = new Font(TestData.Font1_Description);
+      Font updatedFont = new Font(TestData.Font1_Description2);
+
+      font.Activated = true;
+
+      family.Add(font);
+      family.Add(updatedFont);
+
+      Assert.IsTrue((family.FindFont(TestData.Font1_Description.UID)?.Activated).Value,
+        "AddFont should transfer activated state to updated font when updating a font");
+    }
+
+    [TestMethod]
     [TestCategory("Family.Events")]
     public void FamilyAddFont_shouldTriggerAddFontEvent() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
@@ -46,7 +62,7 @@ namespace Storage.Impl.Tests {
 
     [TestMethod]
     [TestCategory("Family.Events")]
-    public void FamilyAddFont_shouldTriggerRemoveAndAddFontEvents_whenUpdatingFont() {
+    public void FamilyAddFont_shouldTriggerUpdateFontEvents_whenUpdatingFont() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
       Font font = new Font(TestData.Font1_Description);
       Font updatedFont = new Font(TestData.Font1_Description2);
@@ -61,11 +77,16 @@ namespace Storage.Impl.Tests {
       family.OnFontRemoved += delegate {
         removeTriggered = true;
       };
+      bool updateTriggered = false;
+      family.OnFontUpdated += delegate {
+        updateTriggered = true;
+      };
 
       family.Add(updatedFont);
 
-      Assert.IsTrue(removeTriggered, "Family.Add should trigger font removed event when replacing existing font");
-      Assert.IsTrue(addTriggered, "Family.Add should trigger font added event when replacing existing font");
+      Assert.IsFalse(removeTriggered, "Family.Add should not trigger font removed event when replacing existing font");
+      Assert.IsFalse(addTriggered, "Family.Add should not trigger font added event when replacing existing font");
+      Assert.IsTrue(updateTriggered, "Family.Add should trigger font updated event when replacing existing font");
     }
 
     [TestMethod]

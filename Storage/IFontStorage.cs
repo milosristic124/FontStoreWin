@@ -12,6 +12,7 @@ namespace Storage {
   public interface IFontStorage {
     #region properties
     IFontInstaller Installer { get; }
+    string SessionID { get; set; }
 
     DateTime? LastCatalogUpdate { get; set; }
     DateTime? LastFontStatusUpdate { get; set; }

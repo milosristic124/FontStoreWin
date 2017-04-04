@@ -1,9 +1,8 @@
 ﻿using Newtonsoft.Json;
-using Protocol.Transport;
+using Protocol.Transport.Http;
 using System;
 using System.IO;
 using System.Net;
-using System.Threading.Tasks;
 using Utilities;
 using Utilities.Extensions;
 
@@ -45,7 +44,7 @@ namespace Protocol.Impl.States {
     }
 
     protected override async void Start() {
-      _authRequest = _context.Transport.CreateHttpRequest(Urls.Authentication);
+      _authRequest = _context.HttpTransport.CreateHttpRequest(Urls.Authentication);
 
       _authRequest.Method = WebRequestMethods.Http.Post;
       _authRequest.ContentType = "application/json";

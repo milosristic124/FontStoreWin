@@ -23,15 +23,14 @@ namespace FontInstaller.Impl {
       bool privateScope = _privateFonts.ContainsKey(uid);
       bool userScope = _userFonts.ContainsKey(uid);
 
-      if (userScope && privateScope) {
-        return InstallationScope.All;
-      } else if (userScope) {
-        return InstallationScope.User;
-      } else if (privateScope) {
-        return InstallationScope.Process;
-      } else {
-        return InstallationScope.None;
+      InstallationScope scope = InstallationScope.None;
+      if (_privateFonts.ContainsKey(uid)) {
+        scope |= InstallationScope.Process;
       }
+      if (_userFonts.ContainsKey(uid)) {
+        scope |= InstallationScope.User;
+      }
+      return scope;
     }
 
     public async Task<FontAPIResult> InstallFont(string uid, InstallationScope scope, MemoryStream fontData) {
@@ -41,11 +40,6 @@ namespace FontInstaller.Impl {
             return InstallPrivateFont(uid, fontData);
 
           case InstallationScope.User:
-            return InstallUserFont(uid, fontData);
-
-          case InstallationScope.All:
-            FontAPIResult result = InstallPrivateFont(uid, fontData);
-            if (result == FontAPIResult.Failure) return result;
             return InstallUserFont(uid, fontData);
 
           default: return FontAPIResult.Failure;
@@ -61,11 +55,6 @@ namespace FontInstaller.Impl {
 
           case InstallationScope.User:
             return UninstallUserFont(uid);
-
-          case InstallationScope.All:
-            FontAPIResult result = UninstallUserFont(uid);
-            if (result == FontAPIResult.Failure) return result;
-            return UninstallPrivateFont(uid);
 
           default: return FontAPIResult.Failure;
         }

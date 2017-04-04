@@ -18,6 +18,7 @@ namespace TestUtilities.Storage {
 
     #region properties
     public IFontInstaller Installer { get; private set; }
+    public string SessionID { get; set; }
 
     public FamilyCollection FamilyCollection { get; private set; }
     public IList<Family> ActivatedFamilies {
@@ -55,6 +56,20 @@ namespace TestUtilities.Storage {
       _synchronizing = false;
 
       RegisterCollectionEvents();
+    }
+    #endregion
+
+    #region test
+    public void SimulateFontInstall(string uid, InstallationScope scope, bool succeed) {
+      Font font = FindFont(uid);
+      if (font == null) throw new Exception($"Invalid test uid: {uid}");
+      OnFontInstall?.Invoke(font, scope, succeed);
+    }
+
+    public void SimulateFontUninstall(string uid, InstallationScope scope, bool succeed) {
+      Font font = FindFont(uid);
+      if (font == null) throw new Exception($"Invalid test uid: {uid}");
+      OnFontUninstall?.Invoke(font, scope, succeed);
     }
     #endregion
 
@@ -179,9 +194,14 @@ namespace TestUtilities.Storage {
     }
 
     private void FamilyCollection_OnFontRemoved(FamilyCollection sender, Family target, Font oldFont) {
-      FontAPIResult result = Installer.UninstallFont(oldFont.UID, InstallationScope.All).Result;
-      if (result != FontAPIResult.Noop)
-        QueueCallback(() => OnFontUninstall?.Invoke(oldFont, InstallationScope.All, result == FontAPIResult.Success));
+      FontAPIResult userRes = Installer.UninstallFont(oldFont.UID, InstallationScope.User).Result;
+      if (userRes == FontAPIResult.Failure) {
+        QueueCallback(() => OnFontUninstall?.Invoke(oldFont, InstallationScope.User, false));
+      } else {
+        FontAPIResult procRes = Installer.UninstallFont(oldFont.UID, InstallationScope.Process).Result;
+        if (procRes != FontAPIResult.Noop)
+          QueueCallback(() => OnFontUninstall?.Invoke(oldFont, InstallationScope.Process, procRes == FontAPIResult.Success));
+      }
       HasChanged = true;
     }
 

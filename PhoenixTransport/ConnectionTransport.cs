@@ -50,11 +50,6 @@ namespace Protocol.Transport.Phoenix {
       Channel chan = _socket?.Channel(name);
       return new BroadcastChannel(chan);
     }
-
-    public override IHttpRequest CreateHttpRequest(string endpoint) {
-      HttpWebRequest request = WebRequest.CreateHttp(endpoint);
-      return new HttpRequest(request);
-    }
     #endregion
 
     #region events

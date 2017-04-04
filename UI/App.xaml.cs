@@ -1,8 +1,4 @@
-﻿using FontInstaller;
-using Microsoft.Win32;
-using Protocol;
-using Protocol.Transport;
-using Storage;
+﻿using Microsoft.Win32;
 using System;
 using System.Windows;
 using System.Windows.Input;
@@ -21,10 +17,7 @@ namespace UI {
     #endregion
 
     #region properies
-    public IFontInstaller FontInstaller { get; private set; }
-    public IConnectionTransport Transport { get; private set; }
-    public IFontStorage Storage { get; private set; }
-    public IConnection Connection { get; private set; }
+    public Core.ApplicationContext Context { get; private set; }
     public System.Windows.Forms.NotifyIcon NotifyIcon { get; private set; }
     #endregion
 
@@ -51,10 +44,7 @@ namespace UI {
 
     #region method
     public void InitializeCore() {
-      FontInstaller = Core.Factory.InitializeFontInstaller();
-      Transport = Core.Factory.InitializeTransport();
-      Storage = Core.Factory.InitializeStorage(Transport, FontInstaller);
-      Connection = Core.Factory.InitializeServerConnection(Transport, Storage);
+      Context = Core.Factory.InitializeApplicationContext();
     }
     #endregion
 
@@ -95,6 +85,7 @@ namespace UI {
     private void NotifyIcon_Click(object sender, EventArgs e) {
       if (_wasDragged && _ui.State.IsShown) {
         _ui.State.Hide();
+        _ui.State.ResetWindowPosition();
         _wasDragged = false;
       }
       else if (!_ui.State.IsShown) {
