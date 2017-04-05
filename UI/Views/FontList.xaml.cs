@@ -28,15 +28,7 @@ namespace UI.Views {
       }
     }
 
-    public IFontStorage Storage {
-      get {
-        return _storage;
-      }
-      set {
-        _storage = value;
-        UpdateCounters();
-      }
-    }
+    public IFontStorage Storage { get; set; }
     #endregion
 
     #region delegate
@@ -62,6 +54,12 @@ namespace UI.Views {
       Dispatcher.Invoke(action);
     }
 
+    public void UpdateCounters() {
+      AllCountLabel.Content = string.Format("({0})", Storage.FamilyCollection.Families.Count);
+      NewCountLabel.Content = string.Format("({0})", Storage.NewFamilies.Count);
+      InstalledCountLabel.Content = string.Format("({0})", Storage.ActivatedFamilies.Count);
+    }
+
     public void LoadingState(bool isLoading) {
       if (isLoading) {
         LoadingBar.Visibility = Visibility.Visible;
@@ -78,6 +76,8 @@ namespace UI.Views {
         NewCountLabel.Visibility = Visibility.Visible;
         AllCountLabel.Visibility = Visibility.Visible;
 
+        UpdateCounters();
+
         _collectionVM = new ViewModels.FamilyCollectionVM(Storage.FamilyCollection);
         FamilyTree.ItemsSource = _collectionVM.Families;
         FamilyTree.Visibility = Visibility.Visible;
@@ -86,11 +86,6 @@ namespace UI.Views {
     #endregion
 
     #region private methods
-    private void UpdateCounters() {
-      AllCountLabel.Content = string.Format("({0})", Storage.FamilyCollection.Families.Count);
-      NewCountLabel.Content = string.Format("({0})", Storage.NewFamilies.Count);
-      InstalledCountLabel.Content = string.Format("({0})", Storage.ActivatedFamilies.Count);
-    }
     #endregion
 
     #region UI event handling

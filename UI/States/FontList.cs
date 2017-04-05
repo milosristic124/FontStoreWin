@@ -23,10 +23,14 @@ namespace UI.States {
       Application.MainWindow = _view;
       SetWindowPosition(_view, WindowPosition);
 
+      _view.Storage = Application.Context.Storage;
+
       _view.OnExit += _view_OnExit;
       _view.OnLogout += _view_OnLogout;
 
       Application.Context.Connection.OnCatalogUpdateFinished += Connection_OnCatalogUpdateFinished;
+      Application.Context.Storage.OnFontInstall += Storage_OnFontInstall;
+      Application.Context.Storage.OnFontUninstall += Storage_OnFontUninstall;
     }
     #endregion
 
@@ -61,6 +65,9 @@ namespace UI.States {
     public override void Dispose() {
       _view.OnExit -= _view_OnExit;
       _view.OnLogout -= _view_OnLogout;
+      Application.Context.Connection.OnCatalogUpdateFinished -= Connection_OnCatalogUpdateFinished;
+      Application.Context.Storage.OnFontInstall -= Storage_OnFontInstall;
+      Application.Context.Storage.OnFontUninstall -= Storage_OnFontUninstall;
     }
     #endregion
 
@@ -73,7 +80,6 @@ namespace UI.States {
 
     private void ShowLoadedState() {
       _view.InvokeOnUIThread(() => {
-        _view.Storage = Application.Context.Storage;
         _view.LoadingState(false);
       });
     }
@@ -100,6 +106,18 @@ namespace UI.States {
     private async void Connection_OnCatalogUpdateFinished() {
       await Application.Context.Storage.Save();
       ShowLoadedState();
+    }
+
+    private void Storage_OnFontUninstall(Storage.Data.Font font, FontInstaller.InstallationScope scope, bool succeed) {
+      _view.InvokeOnUIThread(() => {
+        _view.UpdateCounters();
+      });
+    }
+
+    private void Storage_OnFontInstall(Storage.Data.Font font, FontInstaller.InstallationScope scope, bool succeed) {
+      _view.InvokeOnUIThread(() => {
+        _view.UpdateCounters();
+      });
     }
     #endregion
   }

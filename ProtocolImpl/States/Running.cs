@@ -57,16 +57,16 @@ namespace Protocol.Impl.States {
     #endregion
 
     #region event handling
-    private void UserChannel_OnFontDeactivation(string uid) {
-      _context.Storage.DeactivateFont(uid);
+    private void UserChannel_OnFontDeactivation(Payloads.FontId fid) {
+      _context.Storage.DeactivateFont(fid);
     }
 
-    private void UserChannel_OnFontActivation(string uid) {
-      _context.Storage.ActivateFont(uid);
+    private void UserChannel_OnFontActivation(Payloads.FontId fid) {
+      _context.Storage.ActivateFont(fid);
     }
 
-    private void CatalogChannel_OnFontDeletion(string uid) {
-      _context.Storage.RemoveFont(uid);
+    private void CatalogChannel_OnFontDeletion(Payloads.FontId fid) {
+      _context.Storage.RemoveFont(fid);
     }
 
     private void CatalogChannel_OnFontDescription(Payloads.FontDescription desc) {

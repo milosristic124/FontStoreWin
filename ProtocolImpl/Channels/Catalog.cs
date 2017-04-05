@@ -1,4 +1,6 @@
 ﻿using Protocol.Transport;
+using System;
+using Utilities;
 
 namespace Protocol.Impl.Channels {
   class Catalog {
@@ -20,7 +22,7 @@ namespace Protocol.Impl.Channels {
         OnFontDescription?.Invoke(desc);
       });
       _underlying.On("font:deletion", (Payloads.FontId del) => {
-        OnFontDeletion?.Invoke(del.UID);
+        OnFontDeletion?.Invoke(del);
       });
       _underlying.On("update:complete", () => {
         OnUpdateComplete?.Invoke();
@@ -36,14 +38,22 @@ namespace Protocol.Impl.Channels {
       return _underlying.Leave();
     }
 
-    public IBroadcastResponse SendUpdateRequest() {
-      return _underlying.Send("update:request", null);
+    public void SendUpdateRequest(DateTime? lastUpdate) {
+      Payloads.UpdateRequest payload;
+      if (lastUpdate == null) {
+        payload = null;
+      }
+      else {
+        payload = new Payloads.UpdateRequest() { LastUpdateDate = lastUpdate.Value.ToTimestamp() };
+      }
+
+      _underlying.Send("update:request", payload);
     }
     #endregion
 
     #region delegates
     public delegate void FontDescriptionHandler(Payloads.FontDescription desc);
-    public delegate void FontDeletionHandler(string uid);
+    public delegate void FontDeletionHandler(Payloads.FontId fid);
     public delegate void UpdateCompleteHandler();
     #endregion
 

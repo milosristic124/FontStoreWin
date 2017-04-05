@@ -74,8 +74,14 @@
         </StackPanel>
       </Grid>
       <StackPanel Margin="0,0,0,40" Height="370">
-        <StackPanel x:Name="NavigationPanel" Height="40" Orientation="Horizontal" VerticalAlignment="Top" Margin="14,0">
-          <RadioButton x:Name="InstalledButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/UI;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Left" IsChecked="True">
+        <Grid x:Name="NavigationPanel" Height="40" VerticalAlignment="Top" Margin="14,0">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="50"/>
+          </Grid.ColumnDefinitions>
+          <RadioButton x:Name="InstalledButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/UI;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Center" IsChecked="True">
             <StackPanel Orientation="Horizontal">
               <Label Background="{x:Null}" Padding="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Installed" Margin="0,0,4,0"/>
               <Label Name="InstalledCountLabel" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(0)">
@@ -85,7 +91,7 @@
               </Label>
             </StackPanel>
           </RadioButton>
-          <RadioButton x:Name="NewButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/UI;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Left" Margin="40,0,0,0">
+          <RadioButton x:Name="NewButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/UI;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Center" Margin="0" Grid.Column="1">
             <StackPanel Orientation="Horizontal">
               <Label Background="{x:Null}" Padding="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Content="New" Margin="0,0,4,0"/>
               <Label x:Name="NewCountLabel" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(0)">
@@ -95,7 +101,7 @@
               </Label>
             </StackPanel>
           </RadioButton>
-          <RadioButton x:Name="AllButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/UI;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Left" Margin="40,0,0,0">
+          <RadioButton x:Name="AllButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/UI;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Center" Margin="0" Grid.Column="2">
             <StackPanel Orientation="Horizontal">
               <Label Background="{x:Null}" Padding="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Content="All Fonts" Margin="0,0,4,0"/>
               <Label x:Name="AllCountLabel" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(0)">
@@ -105,7 +111,7 @@
               </Label>
             </StackPanel>
           </RadioButton>
-        </StackPanel>
+        </Grid>
         <Separator Height="1" Margin="0" VerticalAlignment="Top" d:IsLocked="True">
           <Separator.Background>
             <SolidColorBrush Color="{DynamicResource FSGrey}"/>
@@ -125,61 +131,76 @@
                  HorizontalContentAlignment="Stretch"
                  Height="329"
                  d:DataContext="{d:DesignData Source=../Dev/SampleFamilyTree.xaml}"
-                 ItemsSource="{Binding}" Padding="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Focusable="False" IsTextSearchEnabled="False">
+                 ItemsSource="{Binding}" Padding="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Focusable="False" IsTextSearchEnabled="False" ScrollViewer.CanContentScroll="False">
           <ListBox.ItemTemplate>
             <DataTemplate DataType="{x:Type vm:FamilyVM}">
               <Expander Background="{x:Null}"
                       BorderBrush="{x:Null}"
                       Foreground="{x:Null}"
                       BorderThickness="0"
-                      HorizontalAlignment="Left"
+                      HorizontalAlignment="Stretch"
                       VerticalAlignment="Center"
                       Margin="0"
-                      Padding="0" FontFamily="Litmus" Focusable="False" IsExpanded="True">
-                <Expander.Header>
-                  <Grid Height="40" Width="305" Margin="0">
-                    <Label Content="{Binding Name}" Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" >
-                      <Label.Foreground>
-                        <SolidColorBrush Color="{DynamicResource FSBlack}"/>
-                      </Label.Foreground>
-                    </Label>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,0,5,0" HorizontalAlignment="Right">
-                      <Label Background="{x:Null}" Padding="0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Right" Content="{Binding Fonts.Count, Mode=OneWay}">
+                      Padding="0"
+                      FontFamily="Litmus"
+                      Focusable="False" 
+                      IsExpanded="True" 
+                      HorizontalContentAlignment="Stretch" 
+                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                      VerticalContentAlignment="Stretch"
+                      ScrollViewer.CanContentScroll="False"
+                      Width="Auto"
+                      Header="{Binding}" >
+                <Expander.HeaderTemplate>
+                  <DataTemplate DataType="{x:Type vm:FamilyVM}">
+                    <Grid Height="40" FlowDirection="LeftToRight" Margin="0" HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                      </Grid.ColumnDefinitions>
+                      <Label Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding Name}" Content="{Binding Name, Mode=OneWay}" >
                         <Label.Foreground>
-                          <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                          <SolidColorBrush Color="{DynamicResource FSBlack}"/>
                         </Label.Foreground>
                       </Label>
 
-                      <Label Background="{x:Null}" Content=" Fonts" HorizontalAlignment="Right" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Padding="0" Margin="0,0,14,0">
-                        <Label.Foreground>
-                          <SolidColorBrush Color="{DynamicResource FSGrey}"/>
-                        </Label.Foreground>
-                      </Label>
+                      <StackPanel Orientation="Horizontal" Margin="5,0" HorizontalAlignment="Right" Grid.Column="1">
+                        <Label Background="{x:Null}" Padding="0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Right" Content="{Binding Fonts.Count, Mode=OneWay}">
+                          <Label.Foreground>
+                            <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                          </Label.Foreground>
+                        </Label>
 
-                      <ToggleButton BorderThickness="0"
-                                BorderBrush="{x:Null}"
-                                Background="{x:Null}"
-                                Foreground="{x:Null}"
-                                HorizontalAlignment="Right"
-                                Width="80"
-                                Height="30"
-                                Margin="0"
-                                FontFamily="/UI;component/Fonts/#Litmus"
-                                FontSize="12"
-                                FontWeight="Regular"
-                                Padding="0"
-                                IsChecked="{Binding FullyActivated}"
-                                Style="{DynamicResource FSInstallButton}" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch">
-                        <Border BorderThickness="0" CornerRadius="15" Width="80" Height="30">
-                          <Label Content="Install" Foreground="White" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="{x:Null}"/>
-                        </Border>
-                      </ToggleButton>
-                    </StackPanel>
-                  </Grid>
-                </Expander.Header>
+                        <Label Background="{x:Null}" Content=" Fonts" HorizontalAlignment="Right" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Padding="0" Margin="0,0,14,0">
+                          <Label.Foreground>
+                            <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                          </Label.Foreground>
+                        </Label>
+
+                        <ToggleButton BorderThickness="0"
+                                  BorderBrush="{x:Null}"
+                                  Background="{x:Null}"
+                                  Foreground="{x:Null}"
+                                  HorizontalAlignment="Right"
+                                  Width="80"
+                                  Height="30"
+                                  Margin="0"
+                                  FontFamily="/UI;component/Fonts/#Litmus"
+                                  FontSize="12"
+                                  FontWeight="Regular"
+                                  Padding="0"
+                                  IsChecked="{Binding FullyActivated}"
+                                  Style="{DynamicResource FSInstallButton}" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch">
+                          <Border BorderThickness="0" CornerRadius="15" Width="80" Height="30">
+                            <Label Content="Install" Foreground="White" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="{x:Null}"/>
+                          </Border>
+                        </ToggleButton>
+                      </StackPanel>
+                    </Grid>
+                  </DataTemplate>
+                </Expander.HeaderTemplate>
                 
-                <ListBox Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" BorderThickness="0" ItemsSource="{Binding Fonts}" VerticalContentAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" Padding="0" Margin="0" Focusable="False" IsTextSearchEnabled="False">
+                <ListBox Template="{StaticResource NoScroll}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" BorderThickness="0" ItemsSource="{Binding Fonts}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" Padding="0" Margin="0" Focusable="False" IsTextSearchEnabled="False" IsEnabled="True" ScrollViewer.CanContentScroll="False">
                   <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type vm:FontVM}">
                       <ListBoxItem BorderBrush="{x:Null}" BorderThickness="0" Padding="22,0,5,0" Margin="0,0,0,1" VerticalContentAlignment="Center" VerticalAlignment="Top">
@@ -188,7 +209,7 @@
                         </ListBoxItem.Background>
 
                         <Grid Height="40" HorizontalAlignment="Stretch" Margin="0" Background="{x:Null}">
-                          <Label Content="{Binding Name}" Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" >
+                          <Label Content="{Binding Name}" Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding Name}" >
                             <Label.Foreground>
                               <SolidColorBrush Color="{DynamicResource FSBlack}"/>
                             </Label.Foreground>
@@ -251,7 +272,6 @@
                       </Style.Triggers>
                     </Style>
                   </ListBox.ItemContainerStyle>
-
                 </ListBox>
                 
               </Expander>

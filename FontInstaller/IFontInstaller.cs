@@ -20,5 +20,6 @@ namespace FontInstaller {
     InstallationScope GetFontInstallationScope(string uid);
     Task<FontAPIResult> InstallFont(string uid, InstallationScope scope, MemoryStream fontData);
     Task<FontAPIResult> UninstallFont(string uid, InstallationScope scope);
+    Task UninstallAllFonts();
   }
 }

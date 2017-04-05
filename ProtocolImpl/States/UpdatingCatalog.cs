@@ -26,7 +26,7 @@ namespace Protocol.Impl.States {
       _context.CatalogChannel.OnUpdateComplete += _chan_OnUpdateComplete;
 
       _context.CatalogChannel.Join().Then(() => {
-        _context.CatalogChannel.SendUpdateRequest();
+        _context.CatalogChannel.SendUpdateRequest(_context.Storage.LastCatalogUpdate);
       });
     }
     #endregion
@@ -37,8 +37,8 @@ namespace Protocol.Impl.States {
       FSM.State = new UpdatingFonts(_context);
     }
 
-    private void _chan_OnFontDeletion(string uid) {
-      _context.Storage.RemoveFont(uid);
+    private void _chan_OnFontDeletion(Payloads.FontId fid) {
+      _context.Storage.RemoveFont(fid);
     }
 
     private void _chan_OnFontDescription(Payloads.FontDescription desc) {

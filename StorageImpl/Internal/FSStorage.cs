@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilities;
 using Utilities.Extensions;
 
 namespace Storage.Impl.Internal {
@@ -124,7 +125,13 @@ namespace Storage.Impl.Internal {
       Task fontLoading = ReadText(_fontDBPath).Then(json => {
         if (json != null) {
           foreach (FontData fontData in JsonConvert.DeserializeObject<List<FontData>>(json)) {
-            Font newFont = new Font(fontData);
+            Font newFont = new Font(
+              uid: fontData.UID,
+              familyName: fontData.FamilyName,
+              name: fontData.Name,
+              downloadUrl: fontData.DownloadUrl,
+              timestamp: fontData.CreatedAt
+            );
             newFont.Activated = fontData.Activated;
             collection.AddFont(newFont);
           }
@@ -156,14 +163,7 @@ namespace Storage.Impl.Internal {
       Task fontSaving = Task.WhenAll(collection.Families.SelectMany(family => {
         return family.Fonts.Select(font => {
           return Task.Run(() => {
-            return new FontData() {
-              UID = font.UID,
-              FamilyName = font.FamilyName,
-              Name = font.Name,
-              CreatedAt = font.Description.CreatedAt,
-              DownloadUrl = font.DownloadUrl.AbsoluteUri,
-              Activated = font.Activated
-            };
+            return new FontData(font);
           });
         });
       })).Then(fontData => {
@@ -237,9 +237,31 @@ namespace Storage.Impl.Internal {
       public DateTime LastFontsUpdate { get; set; }
     }
 
-    private class FontData : FontDescription {
+    private class FontData {
+      [JsonProperty("uid")]
+      public string UID { get; set; }
+      [JsonProperty("family_name")]
+      public string FamilyName { get; set; }
+      [JsonProperty("name")]
+      public string Name { get; set; }
+      [JsonProperty("created_at")]
+      public int CreatedAt { get; set; }
+      [JsonProperty("download_url")]
+      public string DownloadUrl { get; set; }
       [JsonProperty("activated")]
       public bool Activated { get; set; }
+
+      public FontData() {
+      }
+
+      public FontData(Font font) {
+        UID = font.UID;
+        FamilyName = font.FamilyName;
+        Name = font.Name;
+        CreatedAt = font.CreatedAt.ToTimestamp();
+        DownloadUrl = font.DownloadUrl.AbsoluteUri;
+        Activated = font.Activated;
+      }
     }
     #endregion
   }

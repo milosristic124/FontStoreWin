@@ -1,4 +1,5 @@
 ﻿using FontInstaller;
+using System;
 
 namespace Protocol.Impl.States {
   class Installing : ConnectionState {
@@ -46,12 +47,17 @@ namespace Protocol.Impl.States {
     private void Storage_OnFontUninstall(Storage.Data.Font font, InstallationScope scope, bool succeed) {
       if (scope.HasFlag(InstallationScope.User)) {
         _context.UserChannel.SendFontUninstallationReport(font.UID, succeed);
+      } else if (scope.HasFlag(InstallationScope.User)) {
+        Console.WriteLine("[Installing] Font uninstalled in scope {0}: success = {1}", scope, succeed);
       }
     }
 
     private void Storage_OnFontInstall(Storage.Data.Font font, InstallationScope scope, bool succeed) {
       if (scope.HasFlag(InstallationScope.User)) {
         _context.UserChannel.SendFontInstallationReport(font.UID, succeed);
+      }
+      else if (scope.HasFlag(InstallationScope.User)) {
+        Console.WriteLine("[Installing] Font installed in scope {0}: success = {1}", scope, succeed);
       }
     }
     #endregion

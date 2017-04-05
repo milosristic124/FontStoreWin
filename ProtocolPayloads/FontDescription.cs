@@ -12,5 +12,7 @@ namespace Protocol.Payloads {
     public string DownloadUrl { get; set; }
     [JsonProperty("created_at")]
     public int CreatedAt { get; set; }
+    [JsonProperty("transmitted_at")]
+    public int TransmittedAt { get; set; }
   }
 }

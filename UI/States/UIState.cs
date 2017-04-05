@@ -37,6 +37,7 @@ namespace UI.States {
       if (IsShown) {
         Hide();
       }
+      Dispose();
     }
 
     public void ResetWindowPosition() {

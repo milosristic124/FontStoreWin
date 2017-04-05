@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Utilities;
 
 namespace Storage.Data {
   public class Font {
@@ -11,38 +12,16 @@ namespace Storage.Data {
     #endregion
 
     #region properties
-    public FontDescription Description { get; private set; }
-    public string UID {
-      get {
-        return Description.UID;
-      }
-    }
-    public string Name {
-      get {
-        return Description.Name;
-      }
-    }
-    public string FamilyName {
-      get {
-        return Description.FamilyName;
-      }
-    }
-    public DateTime CreatedAt {
-      get {
-        DateTime tmp = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        return tmp.AddMilliseconds(Description.CreatedAt);
-      }
-    }
+    public string UID { get; private set; }
+    public string Name { get; private set; }
+    public string FamilyName { get; private set; }
+    public DateTime CreatedAt { get; private set; }
     public bool IsNew {
       get {
         return (DateTime.UtcNow - CreatedAt).TotalDays < 5;
       }
     }
-    public Uri DownloadUrl {
-      get {
-        return new Uri(Description.DownloadUrl);
-      }
-    }
+    public Uri DownloadUrl { get; private set; }
     public bool Activated {
       get {
         return _activated;
@@ -78,19 +57,15 @@ namespace Storage.Data {
     #endregion
 
     #region ctor
-    public Font(FontDescription desc) {
-      Description = desc;
+    public Font(string uid, string familyName, string name, string downloadUrl, int timestamp) {
+      UID = uid;
+      FamilyName = familyName;
+      Name = name;
+      DownloadUrl = new Uri(downloadUrl);
+      CreatedAt = DateTimeHelper.FromTimestamp(timestamp);
       _activated = false;
       _installed = false;
     }
-
-    public Font(string uid, string familyName, string name, Uri downloadUrl, int createdAt) : this(new FontDescription {
-      UID = uid,
-      FamilyName = familyName,
-      Name = name,
-      DownloadUrl = downloadUrl.AbsoluteUri,
-      CreatedAt = createdAt
-    }) { }
     #endregion
   }
 }

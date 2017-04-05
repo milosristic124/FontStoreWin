@@ -40,7 +40,8 @@ namespace TestUtilities {
       FamilyName = "TestFamilyName",
       Name = "TestFontName",
       DownloadUrl = "http://localhost/downloads/font/test_font_uid",
-      CreatedAt = TimeStamp_Now()
+      CreatedAt = TimeStamp_Now(),
+      TransmittedAt = 0
     };
 
     public static FontDescription Font1_Description2 = new FontDescription {
@@ -48,11 +49,13 @@ namespace TestUtilities {
       FamilyName = "TestFamilyName",
       Name = "TestFontName2",
       DownloadUrl = "http://localhost/downloads/font/test_font_uid",
-      CreatedAt = TimeStamp_MinusDays(10)
+      CreatedAt = TimeStamp_MinusDays(10),
+      TransmittedAt = 0
     };
 
     public static FontId Font1_Id = new FontId {
-      UID = Font1_Description.UID
+      UID = Font1_Description.UID,
+      TransmittedAt = 0
     };
 
     public static FontDescription Font3_Description = new FontDescription {
@@ -60,11 +63,13 @@ namespace TestUtilities {
       FamilyName = "TestFamilyName",
       Name = "TestFontName3",
       DownloadUrl = "http://localhost/downloads/font/test_font_uid_3",
-      CreatedAt = TimeStamp_MinusDays(10)
+      CreatedAt = TimeStamp_MinusDays(10),
+      TransmittedAt = 0
     };
 
     public static FontId Font3_Id = new FontId {
-      UID = Font3_Description.UID
+      UID = Font3_Description.UID,
+      TransmittedAt = 0
     };
 
 
@@ -73,11 +78,13 @@ namespace TestUtilities {
       FamilyName = "TestFamilyName_2",
       Name = "TestFontName_2",
       DownloadUrl = "http://localhost/downloads/font/test_font_uid_2",
-      CreatedAt = TimeStamp_Now()
+      CreatedAt = TimeStamp_Now(),
+      TransmittedAt = 0
     };
 
     public static FontId Font2_Id = new FontId {
-      UID = Font2_Description.UID
+      UID = Font2_Description.UID,
+      TransmittedAt = 0
     };
   }
 }

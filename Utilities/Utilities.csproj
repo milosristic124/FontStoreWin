@@ -46,6 +46,7 @@
     <Compile Include="FSM\IState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Threading\ProcessingAgent.cs" />
+    <Compile Include="DateTimeHelper.cs" />
     <Compile Include="Urls.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

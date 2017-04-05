@@ -50,7 +50,7 @@ namespace ProtocolImplTests {
       TestConnection connection = new TestConnection(transport, http, storage);
 
       connection.Updated(delegate {
-        storage.ActivateFont(TestData.Font1_Description.UID);
+        storage.ActivateFont(TestData.Font1_Id);
         Thread.Sleep(10);
 
         int installReport = 0;
@@ -141,7 +141,7 @@ namespace ProtocolImplTests {
       TestConnection connection = new TestConnection(transport, http, storage);
 
       connection.Updated(delegate {
-        storage.ActivateFont(TestData.Font1_Description.UID);
+        storage.ActivateFont(TestData.Font1_Id);
         Thread.Sleep(10);
 
         int installReport = 0;
@@ -204,7 +204,7 @@ namespace ProtocolImplTests {
       TestConnection connection = new TestConnection(transport, http, storage);
 
       connection.Updated(delegate {
-        storage.ActivateFont(TestData.Font1_Description.UID);
+        storage.ActivateFont(TestData.Font1_Id);
         Thread.Sleep(10);
 
         int installReport = 0;

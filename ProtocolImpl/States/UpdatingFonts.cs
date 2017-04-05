@@ -25,26 +25,23 @@ namespace Protocol.Impl.States {
       _context.UserChannel.OnUpdateComplete += UserChannel_OnUpdateComplete;
 
       _context.UserChannel.Join().Then(() => {
-        _context.UserChannel.SendUpdateRequest();
+        _context.UserChannel.SendUpdateRequest(_context.Storage.LastFontStatusUpdate);
       });
     }
     #endregion
 
     #region event handling
     private void UserChannel_OnUpdateComplete() {
-      // local catalog is up-to-date, let's save it
-      _context.Storage.Save().Then(delegate {
-        WillTransition = true;
-        FSM.State = new Installing(_context);
-      });
+      WillTransition = true;
+      FSM.State = new Installing(_context);
     }
 
-    private void UserChannel_OnFontDeactivation(string uid) {
-      _context.Storage.DeactivateFont(uid);
+    private void UserChannel_OnFontDeactivation(Payloads.FontId fid) {
+      _context.Storage.DeactivateFont(fid);
     }
 
-    private void UserChannel_OnFontActivation(string uid) {
-      _context.Storage.ActivateFont(uid);
+    private void UserChannel_OnFontActivation(Payloads.FontId fid) {
+      _context.Storage.ActivateFont(fid);
     }
     #endregion
   }

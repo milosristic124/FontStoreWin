@@ -62,7 +62,7 @@ namespace Storage.Impl.Tests {
       storage.AddFont(TestData.Font1_Description);
       storage.AddFont(TestData.Font1_Description2);
 
-      Assert.AreSame(TestData.Font1_Description2, storage.FamilyCollection.Families[0].Fonts[0].Description,
+      Assert.AreSame(TestData.Font1_Description2.Name, storage.FamilyCollection.Families[0].Fonts[0].Name,
         "AddFont should replace obsolete font in the FontStorage");
     }
 
@@ -74,7 +74,7 @@ namespace Storage.Impl.Tests {
       storage.Load().Wait();
 
       storage.AddFont(TestData.Font1_Description);
-      storage.RemoveFont(TestData.Font1_Description.UID);
+      storage.RemoveFont(TestData.Font1_Id);
 
       Assert.IsTrue(storage.FamilyCollection.Families.Count == 0, "RemoveFont should remove font from the FontStorage");
     }
@@ -87,7 +87,7 @@ namespace Storage.Impl.Tests {
       storage.Load().Wait();
 
       storage.AddFont(TestData.Font1_Description);
-      storage.ActivateFont(TestData.Font1_Description.UID);
+      storage.ActivateFont(TestData.Font1_Id);
 
       Assert.IsTrue(storage.FindFont(TestData.Font1_Description.UID).Activated, "ActivateFont shoudl activate the corresponding font in the FontStorage");
     }
@@ -100,8 +100,8 @@ namespace Storage.Impl.Tests {
       storage.Load().Wait();
 
       storage.AddFont(TestData.Font1_Description);
-      storage.ActivateFont(TestData.Font1_Description.UID);
-      storage.DeactivateFont(TestData.Font1_Description.UID);
+      storage.ActivateFont(TestData.Font1_Id);
+      storage.DeactivateFont(TestData.Font1_Id);
 
       Assert.IsFalse(storage.FindFont(TestData.Font1_Description.UID).Activated, "DeactivateFont should deactivate the corresponding font in the FontStorage");
     }
@@ -116,7 +116,7 @@ namespace Storage.Impl.Tests {
 
       storage.Load().Wait();
       storage.AddFont(TestData.Font1_Description);
-      storage.ActivateFont(TestData.Font1_Description.UID);
+      storage.ActivateFont(TestData.Font1_Id);
       storage.Save().Wait();
 
       storage = new FontStorage(transport, null, storagePath);
@@ -140,7 +140,7 @@ namespace Storage.Impl.Tests {
 
       storage.Load().Wait();
       storage.AddFont(TestData.Font1_Description);
-      storage.ActivateFont(TestData.Font1_Description.UID);
+      storage.ActivateFont(TestData.Font1_Id);
       storage.Save().Wait();
 
       storage = new FontStorage(transport, null, storagePath);
@@ -163,7 +163,7 @@ namespace Storage.Impl.Tests {
       storage.AddFont(TestData.Font1_Description);
       storage.AddFont(TestData.Font2_Description);
       storage.AddFont(TestData.Font3_Description);
-      storage.ActivateFont(TestData.Font1_Description.UID);
+      storage.ActivateFont(TestData.Font1_Id);
 
       int downloadCount = 0;
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
@@ -258,7 +258,7 @@ namespace Storage.Impl.Tests {
       storage.AddFont(TestData.Font1_Description);
       storage.AddFont(TestData.Font2_Description);
       storage.AddFont(TestData.Font3_Description);
-      storage.ActivateFont(TestData.Font1_Description.UID);
+      storage.ActivateFont(TestData.Font1_Id);
 
       int downloadCount = 0;
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
@@ -312,7 +312,7 @@ namespace Storage.Impl.Tests {
       Task asyncEvents = Task.Run(delegate {
         storage.AddFont(TestData.Font1_Description);
         storage.AddFont(TestData.Font2_Description);
-        storage.ActivateFont(TestData.Font1_Description.UID);
+        storage.ActivateFont(TestData.Font1_Id);
         Thread.Sleep(10);
       });
 
@@ -355,7 +355,7 @@ namespace Storage.Impl.Tests {
       Task asyncEvents = Task.Run(delegate {
         storage.AddFont(TestData.Font1_Description);
         storage.AddFont(TestData.Font2_Description);
-        storage.ActivateFont(TestData.Font1_Description.UID);
+        storage.ActivateFont(TestData.Font1_Id);
         Thread.Sleep(10);
       });
 
@@ -389,7 +389,7 @@ namespace Storage.Impl.Tests {
       };
 
       storage.AddFont(TestData.Font1_Description);
-      storage.ActivateFont(TestData.Font1_Description.UID);
+      storage.ActivateFont(TestData.Font1_Id);
 
       AutoResetEvent syncDone = new AutoResetEvent(false);
       storage.SynchronizeWithSystem(delegate {
@@ -420,8 +420,8 @@ namespace Storage.Impl.Tests {
       };
 
       storage.AddFont(TestData.Font1_Description);
-      storage.ActivateFont(TestData.Font1_Description.UID);
-      storage.DeactivateFont(TestData.Font1_Description.UID);
+      storage.ActivateFont(TestData.Font1_Id);
+      storage.DeactivateFont(TestData.Font1_Id);
 
       AutoResetEvent syncDone = new AutoResetEvent(false);
       storage.SynchronizeWithSystem(delegate {
@@ -455,8 +455,8 @@ namespace Storage.Impl.Tests {
       };
 
       storage.AddFont(TestData.Font1_Description);
-      storage.ActivateFont(TestData.Font1_Description.UID);
-      storage.RemoveFont(TestData.Font1_Description.UID);
+      storage.ActivateFont(TestData.Font1_Id);
+      storage.RemoveFont(TestData.Font1_Id);
 
       AutoResetEvent syncDone = new AutoResetEvent(false);
       storage.SynchronizeWithSystem(delegate {
@@ -565,7 +565,7 @@ namespace Storage.Impl.Tests {
       };
 
       storage.AddFont(TestData.Font1_Description);
-      storage.ActivateFont(TestData.Font1_Description.UID);
+      storage.ActivateFont(TestData.Font1_Id);
 
       AutoResetEvent syncDone = new AutoResetEvent(false);
       storage.SynchronizeWithSystem(delegate {

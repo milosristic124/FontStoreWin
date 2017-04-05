@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 using Utilities.Extensions;
 
 namespace TestUtilities.Storage {
@@ -37,8 +38,8 @@ namespace TestUtilities.Storage {
     }
     public bool HasChanged { get; private set; }
     public bool Loaded { get; private set; }
-    public DateTime? LastCatalogUpdate { get; set; }
-    public DateTime? LastFontStatusUpdate { get; set; }
+    public DateTime? LastCatalogUpdate { get; private set; }
+    public DateTime? LastFontStatusUpdate { get; private set; }
     #endregion
 
     #region events
@@ -76,31 +77,46 @@ namespace TestUtilities.Storage {
     #region methods
     public Font AddFont(FontDescription description) {
       RegisterCall("AddFont");
-      Font newFont = new Font(description);
+      Font newFont = new Font(
+        uid: description.UID,
+        familyName: description.FamilyName,
+        name: description.Name,
+        downloadUrl: description.DownloadUrl,
+        timestamp: description.CreatedAt
+      );
       FamilyCollection.AddFont(newFont);
+      LastCatalogUpdate = DateTimeHelper.FromTimestamp(description.TransmittedAt);
       return newFont;
     }
 
-    public void RemoveFont(string uid) {
+    public void RemoveFont(FontId fid) {
       RegisterCall("RemoveFont");
       
-      FamilyCollection.RemoveFont(uid);
+      FamilyCollection.RemoveFont(fid.UID);
+      LastCatalogUpdate = DateTimeHelper.FromTimestamp(fid.TransmittedAt);
     }
 
-    public void ActivateFont(string uid) {
+    public void ActivateFont(FontId fid) {
       RegisterCall("ActivateFont");
-      Font font = FamilyCollection.FindFont(uid);
+      Font font = FamilyCollection.FindFont(fid.UID);
       if (font != null) {
         font.Activated = true;
       }
+      LastFontStatusUpdate = DateTimeHelper.FromTimestamp(fid.TransmittedAt);
     }
 
-    public void DeactivateFont(string uid) {
+    public void DeactivateFont(FontId fid) {
       RegisterCall("DeactivateFont");
-      Font font = FamilyCollection.FindFont(uid);
+      Font font = FamilyCollection.FindFont(fid.UID);
       if (font != null) {
         font.Activated = false;
       }
+      LastFontStatusUpdate = DateTimeHelper.FromTimestamp(fid.TransmittedAt);
+    }
+
+    public void DeactivateAllFonts(Action then = null) {
+      Installer.UninstallAllFonts().Wait();
+      then?.Invoke();
     }
 
     public Font FindFont(string uid) {

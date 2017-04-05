@@ -14,8 +14,8 @@ namespace Storage {
     IFontInstaller Installer { get; }
     string SessionID { get; set; }
 
-    DateTime? LastCatalogUpdate { get; set; }
-    DateTime? LastFontStatusUpdate { get; set; }
+    DateTime? LastCatalogUpdate { get; }
+    DateTime? LastFontStatusUpdate { get; }
 
     bool Loaded { get; }
     bool HasChanged { get; }
@@ -37,9 +37,11 @@ namespace Storage {
     Font FindFont(string uid);
 
     Font AddFont(FontDescription description);
-    void RemoveFont(string uid);
-    void ActivateFont(string uid);
-    void DeactivateFont(string uid);
+    void RemoveFont(FontId fid);
+    void ActivateFont(FontId fid);
+    void DeactivateFont(FontId fid);
+
+    void DeactivateAllFonts(Action then = null);
 
     void SynchronizeWithSystem(Action then = null);
     void BeginSynchronization();

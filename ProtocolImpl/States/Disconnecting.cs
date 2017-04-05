@@ -15,6 +15,7 @@
     }
     #endregion
 
+    #region methods
     public override void Abort() {
       Stop();
     }
@@ -23,35 +24,33 @@
     }
 
     protected override void Start() {
-      if (_context.UserChannel != null) {
-        string message = "Unknown reason.";
-        switch (_reason) {
-          case DisconnectReason.Quit:
-            message = "Application quit.";
-            break;
+      string message = "Unknown reason.";
+      switch (_reason) {
+        case DisconnectReason.Quit:
+          message = "Application quit.";
+          break;
 
-          case DisconnectReason.Logout:
-            message = "User has logout.";
-            break;
+        case DisconnectReason.Logout:
+          message = "User has logout.";
+          break;
 
-          case DisconnectReason.Error:
-            message = string.Format("Application error: [{0}]", _error);
-            break;
-        }
+        case DisconnectReason.Error:
+          message = string.Format("Application error: [{0}]", _error);
+          break;
+      }
 
-        _context.UserChannel.SendDisconnect(message);
+      _context.UserChannel?.SendDisconnect(message);
+      _context.UserChannel?.Leave();
+      _context.CatalogChannel?.Leave();
 
-        _context.UserChannel.Leave();
-        _context.CatalogChannel.Leave();
 
-        _context.Transport.Disconnect(() => {
+      _context.Transport.Disconnect(() => {
+        _context.Storage.DeactivateAllFonts(() => {
           WillTransition = true;
           _context.TriggerConnectionClosed();
         });
-      } else {
-        WillTransition = true;
-        _context.TriggerConnectionClosed();
-      }
+      });
     }
+    #endregion
   }
 }

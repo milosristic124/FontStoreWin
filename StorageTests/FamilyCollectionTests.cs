@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Storage.Data;
+using Storage.Impl.Tests.Utilities;
 using TestUtilities;
 
 namespace Storage.Impl.Tests {
@@ -50,7 +51,7 @@ namespace Storage.Impl.Tests {
     [TestCategory("FamilyCollection.Behavior")]
     public void FamilyCollectionAddFont_shouldCreateNewFamily() {
       FamilyCollection collection = new FamilyCollection();
-      Font font = new Font(TestData.Font1_Description);
+      Font font = Factory.CreateFont(TestData.Font1_Description);
 
       collection.AddFont(font);
       Assert.AreEqual(1, collection.Families.Count, "FamilyCollection.AddFont should create new family");
@@ -60,8 +61,8 @@ namespace Storage.Impl.Tests {
     [TestCategory("FamilyCollection.Behavior")]
     public void FamilyCollectionAddFont_shouldNotCreateNewFamily_whenFamilyAlreadyExists() {
       FamilyCollection collection = new FamilyCollection();
-      Font font1 = new Font(TestData.Font1_Description);
-      Font font3 = new Font(TestData.Font3_Description);
+      Font font1 = Factory.CreateFont(TestData.Font1_Description);
+      Font font3 = Factory.CreateFont(TestData.Font3_Description);
 
       collection.AddFont(font1).AddFont(font3);
       Assert.AreEqual(1, collection.Families.Count, "FamilyCollection.AddFont should not duplicate a family");
@@ -71,7 +72,7 @@ namespace Storage.Impl.Tests {
     [TestCategory("FamilyCollection.Events")]
     public void FamilyCollectionAddFont_shouldTriggerFamilyAddedEvent_whenFamilyIsCreated() {
       FamilyCollection collection = new FamilyCollection();
-      Font font = new Font(TestData.Font1_Description);
+      Font font = Factory.CreateFont(TestData.Font1_Description);
 
       bool eventTriggered = false;
       collection.OnFamilyAdded += delegate {
@@ -86,7 +87,7 @@ namespace Storage.Impl.Tests {
     [TestCategory("FamilyCollection.Behavior")]
     public void FamilyCollectionRemoveFont_shouldRemoveFamily_whenFamilyIsEmpty() {
       FamilyCollection collection = new FamilyCollection();
-      Font font = new Font(TestData.Font1_Description);
+      Font font = Factory.CreateFont(TestData.Font1_Description);
       collection.AddFont(font);
 
       collection.RemoveFont(font.UID);
@@ -97,8 +98,8 @@ namespace Storage.Impl.Tests {
     [TestCategory("FamilyCollection.Behavior")]
     public void FamilyCollectionRemoveFont_shouldNotRemoveFamily_whenFamilyIsNotEmpty() {
       FamilyCollection collection = new FamilyCollection();
-      Font font = new Font(TestData.Font1_Description);
-      Font font3 = new Font(TestData.Font3_Description);
+      Font font = Factory.CreateFont(TestData.Font1_Description);
+      Font font3 = Factory.CreateFont(TestData.Font3_Description);
       collection.AddFont(font).AddFont(font3);
 
       collection.RemoveFont(font.UID);
@@ -109,7 +110,7 @@ namespace Storage.Impl.Tests {
     [TestCategory("FamilyCollection.Events")]
     public void FamilyCollectionRemoveFont_shouldTriggerFamilyRemovedEvent_whenFamilyIsRemoved() {
       FamilyCollection collection = new FamilyCollection();
-      Font font = new Font(TestData.Font1_Description);
+      Font font = Factory.CreateFont(TestData.Font1_Description);
       collection.AddFont(font);
 
       bool eventTriggered = false;
@@ -125,7 +126,7 @@ namespace Storage.Impl.Tests {
     [TestCategory("FamilyCollection.Events")]
     public void FamilyCollection_shouldTriggerFontActivatedEvent_whenFontActivationStatusChange() {
       FamilyCollection collection = new FamilyCollection();
-      Font font = new Font(TestData.Font1_Description);
+      Font font = Factory.CreateFont(TestData.Font1_Description);
       collection.AddFont(font);
 
       bool eventTriggered = false;
@@ -142,7 +143,7 @@ namespace Storage.Impl.Tests {
     [TestCategory("FamilyCollection.Events")]
     public void FamilyCollection_shouldTriggerFontInstallationEvent_whenFontInstallationStatusChange() {
       FamilyCollection collection = new FamilyCollection();
-      Font font = new Font(TestData.Font1_Description);
+      Font font = Factory.CreateFont(TestData.Font1_Description);
       collection.AddFont(font);
 
       bool eventTriggered = false;
@@ -159,7 +160,7 @@ namespace Storage.Impl.Tests {
     [TestCategory("FamilyCollection.Events")]
     public void FamilyCollection_shouldTriggerAddFontEvent_whenFontIsAddedToFamily() {
       FamilyCollection collection = new FamilyCollection();
-      Font font = new Font(TestData.Font1_Description);
+      Font font = Factory.CreateFont(TestData.Font1_Description);
 
       bool eventTriggered = false;
       collection.OnFontAdded += delegate {
@@ -174,7 +175,7 @@ namespace Storage.Impl.Tests {
     [TestCategory("FamilyCollection.Events")]
     public void FamilyCollection_shouldTriggerRemovedFontEvent_whenFontIsRemovedFromFamily() {
       FamilyCollection collection = new FamilyCollection();
-      Font font = new Font(TestData.Font1_Description);
+      Font font = Factory.CreateFont(TestData.Font1_Description);
       collection.AddFont(font);
 
       bool eventTriggered = false;
@@ -190,8 +191,8 @@ namespace Storage.Impl.Tests {
     [TestCategory("FamilyCollection.Events")]
     public void FamilyCollection_shouldTriggerUpdatedFontEvent_whenFontIsUpdated() {
       FamilyCollection collection = new FamilyCollection();
-      Font font = new Font(TestData.Font1_Description);
-      Font updatedFont = new Font(TestData.Font1_Description2);
+      Font font = Factory.CreateFont(TestData.Font1_Description);
+      Font updatedFont = Factory.CreateFont(TestData.Font1_Description2);
       collection.AddFont(font);
 
       bool eventTriggered = false;
@@ -207,8 +208,8 @@ namespace Storage.Impl.Tests {
     private FamilyCollection NewCollection() {
       FamilyCollection collection = new FamilyCollection();
 
-      Font font1 = new Font(TestData.Font1_Description);
-      Font font2 = new Font(TestData.Font2_Description);
+      Font font1 = Factory.CreateFont(TestData.Font1_Description);
+      Font font2 = Factory.CreateFont(TestData.Font2_Description);
 
       collection.AddFont(font1).AddFont(font2);
 

@@ -61,7 +61,7 @@ namespace TestUtilities.FontManager {
     }
 
     public Task<FontAPIResult> UninstallFont(string uid, InstallationScope scope) {
-      RegisterCall("UnsintallFont");
+      RegisterCall("UninstallFont");
       bool shouldUninstall = OnUninstallRequest?.Invoke(uid, scope) ?? true;
       if (!shouldUninstall) {
         return Task.FromResult(FontAPIResult.Failure);
@@ -81,6 +81,13 @@ namespace TestUtilities.FontManager {
       else {
         return Task.FromResult(FontAPIResult.Noop);
       }
+    }
+
+    public async Task UninstallAllFonts() {
+      RegisterCall("UninstallAllFonts");
+      await Task.Run(delegate {
+        _installedFonts.Clear();
+      });
     }
     #endregion
   }

@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Utilities;
+using Utilities.Extensions;
 
 namespace Storage.Impl {
   public class FontStorage : IFontStorage {
@@ -35,16 +37,10 @@ namespace Storage.Impl {
       get {
         return _HDDStorage.LastCatalogUpdate;
       }
-      set {
-        _HDDStorage.LastCatalogUpdate = value;
-      }
     }
     public DateTime? LastFontStatusUpdate {
       get {
         return _HDDStorage.LastFontStatusUpdate;
-      }
-      set {
-        _HDDStorage.LastFontStatusUpdate = value;
       }
     }
 
@@ -119,27 +115,43 @@ namespace Storage.Impl {
     }
 
     public Font AddFont(FontDescription description) {
-      Font newFont = new Font(description);
+      Font newFont = new Font(
+        uid: description.UID,
+        familyName: description.FamilyName,
+        name: description.Name,
+        downloadUrl: description.DownloadUrl,
+        timestamp: description.CreatedAt
+      );
       FamilyCollection.AddFont(newFont);
+      _HDDStorage.LastCatalogUpdate = DateTimeHelper.FromTimestamp(description.TransmittedAt);
       return newFont;
     }
 
-    public void RemoveFont(string uid) {
-      FamilyCollection.RemoveFont(uid);
+    public void RemoveFont(FontId fid) {
+      FamilyCollection.RemoveFont(fid.UID);
+      _HDDStorage.LastCatalogUpdate = DateTimeHelper.FromTimestamp(fid.TransmittedAt);
     }
 
-    public void ActivateFont(string uid) {
-      Font font = FindFont(uid);
+    public void ActivateFont(FontId fid) {
+      Font font = FindFont(fid.UID);
       if (font != null) {
         font.Activated = true;
       }
+      _HDDStorage.LastFontStatusUpdate = DateTimeHelper.FromTimestamp(fid.TransmittedAt);
     }
 
-    public void DeactivateFont(string uid) {
-      Font font = FindFont(uid);
+    public void DeactivateFont(FontId fid) {
+      Font font = FindFont(fid.UID);
       if (font != null) {
         font.Activated = false;
       }
+      _HDDStorage.LastFontStatusUpdate = DateTimeHelper.FromTimestamp(fid.TransmittedAt);
+    }
+
+    public async void DeactivateAllFonts(Action then = null) {
+      await Installer.UninstallAllFonts().Then(delegate {
+        then?.Invoke();
+      });
     }
 
     public Font FindFont(string uid) {

@@ -60,6 +60,15 @@ namespace FontInstaller.Impl {
         }
       });
     }
+
+    public async Task UninstallAllFonts() {
+      await Task.Run(delegate {
+        foreach(string path in _userFonts.Values) {
+          RemoveUserFont(path);
+        }
+        _userFonts.Clear();
+      });
+    }
     #endregion
 
     #region private methods
@@ -68,20 +77,23 @@ namespace FontInstaller.Impl {
         return FontAPIResult.Noop;
       }
       else {
-        byte[] bytes = data.ToArray();
-        IntPtr fontPtr = Marshal.AllocCoTaskMem(bytes.Length);
-        Marshal.Copy(bytes, 0, fontPtr, bytes.Length);
-        uint dummy = 0;
-        IntPtr handle = AddFontMemResourceEx(fontPtr, (uint)bytes.Length, IntPtr.Zero, ref dummy);
-        Marshal.FreeCoTaskMem(fontPtr);
+        using (data) {
+          data.Seek(0, SeekOrigin.Begin);
+          byte[] bytes = data.ToArray();
+          IntPtr fontPtr = Marshal.AllocCoTaskMem(bytes.Length);
+          Marshal.Copy(bytes, 0, fontPtr, bytes.Length);
+          uint dummy = 0;
+          IntPtr handle = AddFontMemResourceEx(fontPtr, (uint)bytes.Length, IntPtr.Zero, ref dummy);
+          Marshal.FreeCoTaskMem(fontPtr);
 
-        if (handle == IntPtr.Zero) {
-          return FontAPIResult.Failure;
-        }
-        else {
-          _privateFonts.Add(uid, handle);
-          SendNotifyMessage(HWND_BROADCAST, WM_FONTCHANGE, IntPtr.Zero, IntPtr.Zero);
-          return FontAPIResult.Success;
+          if (handle == IntPtr.Zero) {
+            return FontAPIResult.Failure;
+          }
+          else {
+            _privateFonts.Add(uid, handle);
+            SendNotifyMessage(HWND_BROADCAST, WM_FONTCHANGE, IntPtr.Zero, IntPtr.Zero);
+            return FontAPIResult.Success;
+          }
         }
       }
     }
@@ -91,38 +103,40 @@ namespace FontInstaller.Impl {
         return FontAPIResult.Noop;
       }
       else {
-        string tempFilePath = Path.GetTempPath() + Guid.NewGuid().ToString();
-        try {
-          using (FileStream fileStream = File.Create(tempFilePath)) {
-            data.CopyTo(fileStream);
-          }
-          bool activatedFonts = AddFontResource(tempFilePath) != 0;
+        using (data) {
+          data.Seek(0, SeekOrigin.Begin);
+          string tempFilePath = Path.GetTempPath() + Guid.NewGuid().ToString();
+          try {
+            using (FileStream fileStream = File.Create(tempFilePath)) {
+              data.CopyTo(fileStream);
+            }
+            bool activatedFonts = AddFontResource(tempFilePath) != 0;
 
-          if (activatedFonts) {
-            SendNotifyMessage(HWND_BROADCAST, WM_FONTCHANGE, IntPtr.Zero, IntPtr.Zero);
-            return FontAPIResult.Success;
+            if (activatedFonts) {
+              _userFonts[uid] = tempFilePath;
+              SendNotifyMessage(HWND_BROADCAST, WM_FONTCHANGE, IntPtr.Zero, IntPtr.Zero);
+              return FontAPIResult.Success;
+            }
+
+            return FontAPIResult.Failure;
+          }
+          catch (Exception) {
+            File.Delete(tempFilePath);
           }
 
           return FontAPIResult.Failure;
-        } catch (Exception) {
-          File.Delete(tempFilePath);
         }
-
-        return FontAPIResult.Failure;
       }
     }
 
     private FontAPIResult UninstallPrivateFont(string uid) {
       if (!_privateFonts.ContainsKey(uid)) {
         return FontAPIResult.Noop;
-      } else {
-        if (RemoveFontMemResourceEx(_privateFonts[uid]) != 0) {
-          _privateFonts.Remove(uid);
-          SendNotifyMessage(HWND_BROADCAST, WM_FONTCHANGE, IntPtr.Zero, IntPtr.Zero);
-          return FontAPIResult.Success;
-        }
-        return FontAPIResult.Failure;
+      } else if (RemovePocessFont(_privateFonts[uid])) {
+        _privateFonts.Remove(uid);
+        return FontAPIResult.Success;
       }
+      return FontAPIResult.Failure;
     }
 
     private FontAPIResult UninstallUserFont(string uid) {
@@ -130,15 +144,32 @@ namespace FontInstaller.Impl {
         return FontAPIResult.Noop;
       } else {
         string fontFilePath = _userFonts[uid];
-        if (RemoveFontResource(fontFilePath) != 0) {
+        if (RemoveUserFont(fontFilePath)) {
           _userFonts.Remove(uid);
-          File.Delete(fontFilePath);
-          SendNotifyMessage(HWND_BROADCAST, WM_FONTCHANGE, IntPtr.Zero, IntPtr.Zero);
           return FontAPIResult.Success;
         }
 
         return FontAPIResult.Failure;
       }
+    }
+    #endregion
+
+    #region font API encapsulation
+    private bool RemovePocessFont(IntPtr handle) {
+      if (RemoveFontMemResourceEx(handle) != 0) {
+        SendNotifyMessage(HWND_BROADCAST, WM_FONTCHANGE, IntPtr.Zero, IntPtr.Zero);
+        return true;
+      }
+      return false;
+    }
+
+    private bool RemoveUserFont(string path) {
+      if (RemoveFontResource(path) != 0) {
+        File.Delete(path);
+        SendNotifyMessage(HWND_BROADCAST, WM_FONTCHANGE, IntPtr.Zero, IntPtr.Zero);
+        return true;
+      }
+      return false;
     }
     #endregion
 

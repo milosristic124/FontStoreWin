@@ -160,5 +160,9 @@
       </Style.Resources>
     </Style>
 
+    <ControlTemplate x:Key="NoScroll">
+      <ItemsPresenter></ItemsPresenter>
+    </ControlTemplate>
+    
   </Application.Resources>
 </Application>

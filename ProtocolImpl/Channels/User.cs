@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace Protocol.Impl.Channels {
   class User {
@@ -23,10 +24,10 @@ namespace Protocol.Impl.Channels {
     #region methods
     public IBroadcastChannelResult Join() {
       _underlying.On("font:activation", (Payloads.FontId fid) => {
-        OnFontActivation?.Invoke(fid.UID);
+        OnFontActivation?.Invoke(fid);
       });
       _underlying.On("font:deactivation", (Payloads.FontId fid) => {
-        OnFontDeactivation?.Invoke(fid.UID);
+        OnFontDeactivation?.Invoke(fid);
       });
       _underlying.On("update:complete", () => {
         OnUpdateComplete?.Invoke();
@@ -52,8 +53,15 @@ namespace Protocol.Impl.Channels {
       }));
     }
 
-    public void SendUpdateRequest() {
-      _underlying.Send("update:request", null);
+    public void SendUpdateRequest(DateTime? lastUpdate) {
+      Payloads.UpdateRequest payload;
+      if (lastUpdate == null) {
+        payload = null;
+      } else {
+        payload = new Payloads.UpdateRequest() { LastUpdateDate = lastUpdate.Value.ToTimestamp() };
+      }
+
+      _underlying.Send("update:request", payload);
     }
 
     public void SendFontInstallationReport(string uid, bool succeed) {
@@ -76,8 +84,8 @@ namespace Protocol.Impl.Channels {
     #endregion
 
     #region delegates
-    public delegate void FontActivationHandler(string uid);
-    public delegate void FontDeactivationHandler(string uid);
+    public delegate void FontActivationHandler(Payloads.FontId fid);
+    public delegate void FontDeactivationHandler(Payloads.FontId fid);
     public delegate void UpdateCompleteHandler();
     public delegate void DisconnectionHandler(string reason);
     #endregion

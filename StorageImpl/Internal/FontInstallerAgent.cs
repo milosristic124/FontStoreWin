@@ -92,6 +92,7 @@ namespace Storage.Impl.Internal {
       return Task.Run(() => {
         MemoryStream res = new MemoryStream();
         data.CopyTo(res);
+        res.Seek(0, SeekOrigin.Begin);
         return res;
       });
     }
