@@ -9,12 +9,17 @@ namespace FontInstaller.Impl {
     #region private data
     private Dictionary<string, IntPtr> _privateFonts;
     private Dictionary<string, string> _userFonts;
+
+    private string _userFilesDir;
     #endregion
 
     #region ctor
     public FontInstaller() {
       _privateFonts = new Dictionary<string, IntPtr>();
       _userFonts = new Dictionary<string, string>();
+
+      _userFilesDir = Path.GetTempPath() + Guid.NewGuid().ToString();
+      Directory.CreateDirectory(_userFilesDir);
     }
     #endregion
 
@@ -63,15 +68,22 @@ namespace FontInstaller.Impl {
 
     public async Task UninstallAllFonts() {
       await Task.Run(delegate {
-        foreach(string path in _userFonts.Values) {
-          RemoveUserFont(path);
+        try {
+          foreach (string path in Directory.EnumerateFiles(_userFilesDir)) {
+            RemoveUserFont(path);
+          }
         }
+        catch (Exception) { }
         _userFonts.Clear();
       });
     }
     #endregion
 
     #region private methods
+    private string TempFilePath() {
+      return _userFilesDir + Guid.NewGuid().ToString();
+    }
+
     private FontAPIResult InstallPrivateFont(string uid, MemoryStream data) {
       if (_privateFonts.ContainsKey(uid)) {
         return FontAPIResult.Noop;
@@ -105,7 +117,7 @@ namespace FontInstaller.Impl {
       else {
         using (data) {
           data.Seek(0, SeekOrigin.Begin);
-          string tempFilePath = Path.GetTempPath() + Guid.NewGuid().ToString();
+          string tempFilePath = TempFilePath();
           try {
             using (FileStream fileStream = File.Create(tempFilePath)) {
               data.CopyTo(fileStream);

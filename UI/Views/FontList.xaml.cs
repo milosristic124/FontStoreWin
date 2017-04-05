@@ -62,7 +62,7 @@ namespace UI.Views {
 
     public void LoadingState(bool isLoading) {
       if (isLoading) {
-        LoadingBar.Visibility = Visibility.Visible;
+        Loader.Visibility = Visibility.Visible;
         InstalledCountLabel.Visibility = Visibility.Collapsed;
         NewCountLabel.Visibility = Visibility.Collapsed;
         AllCountLabel.Visibility = Visibility.Collapsed;
@@ -71,7 +71,7 @@ namespace UI.Views {
         FamilyTree.ItemsSource = null;
       }
       else {
-        LoadingBar.Visibility = Visibility.Collapsed;
+        Loader.Visibility = Visibility.Collapsed;
         InstalledCountLabel.Visibility = Visibility.Visible;
         NewCountLabel.Visibility = Visibility.Visible;
         AllCountLabel.Visibility = Visibility.Visible;

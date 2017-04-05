@@ -81,12 +81,12 @@ namespace UI.Views {
     public void ConnectionRequestStarted() {
       _connecting = true;
       DisableUserInputs();
-      ConnectingBar.Visibility = Visibility.Visible;
+      Loader.Visibility = Visibility.Visible;
     }
 
     public void ConnectionRequestFailed(string error) {
       _connecting = false;
-      ConnectingBar.Visibility = Visibility.Hidden;
+      Loader.Visibility = Visibility.Hidden;
       MessageBox.Show(error, "Fontstore - Connection failed", MessageBoxButton.OK);
       EnableUserInputs();
     }

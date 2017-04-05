@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UI.Views"
         xmlns:Controls="clr-namespace:UI.Controls"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
         x:Class="UI.Views.Login"
         mc:Ignorable="d"
         Title="Fontstore" Height="480" Width="330" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="Manual" MaxWidth="330" SizeToContent="WidthAndHeight" MinWidth="330" MinHeight="480" MaxHeight="480" ScrollViewer.VerticalScrollBarVisibility="Disabled" AllowsTransparency="True" Background="{x:Null}" Foreground="{x:Null}" ShowInTaskbar="False" Visibility="Visible">
@@ -59,11 +60,6 @@
         </Button>
       </StackPanel>
     </Grid>
-    <ProgressBar x:Name="ConnectingBar" Height="3" BorderBrush="{x:Null}" Background="{x:Null}" BorderThickness="0" IsTabStop="False" VerticalAlignment="Top" Margin="0,70,0,0" Value="50" IsIndeterminate="True" Visibility="Hidden">
-      <ProgressBar.Foreground>
-        <SolidColorBrush Color="{DynamicResource FSBlue}"/>
-      </ProgressBar.Foreground>
-    </ProgressBar>
     <StackPanel x:Name="ContentPanel" Margin="15,110,15,35">
       <Label x:Name="LoginLabel" Content="LOGIN" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Top" FontFamily="/UI;component/Fonts/#Litmus" FontWeight="Bold" Padding="0">
         <Label.Foreground>
@@ -112,5 +108,6 @@
       </Label>
       <TextBlock x:Name="SignupLink" HorizontalAlignment="Center" Margin="0,9,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="/UI;component/Fonts/#Litmus" FontWeight="Bold" TextAlignment="Center" Style="{DynamicResource HoverUnderlineStyle}" Foreground="{x:Null}"><Hyperlink NavigateUri="http://fontstore.com/sign-up" RequestNavigate="Hyperlink_RequestNavigate" Style="{DynamicResource HyperlinkBlack}" Focusable="False"><Run Text="SIGN UP"/></Hyperlink></TextBlock>
     </StackPanel>
+    <Image Name="Loader" gif:ImageBehavior.AnimatedSource="/UI;component/Resources/Loader.gif" Panel.ZIndex="1" Visibility="Hidden"/>
   </Grid>
 </Window>

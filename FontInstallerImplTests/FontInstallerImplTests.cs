@@ -17,26 +17,6 @@ namespace FontInstaller.Impl.Test {
     }
     #endregion
 
-    [TestInitialize]
-    public void Initialize() {
-      FontInstaller installer = new FontInstaller();
-      FontAPIResult res;
-      res = installer.UninstallFont(FontUID, InstallationScope.Process).Result;
-      Console.WriteLine("[TestInitialize] Process uninstall: {0}", res);
-      res = installer.UninstallFont(FontUID, InstallationScope.User).Result;
-      Console.WriteLine("[TestInitialize] User uninstall: {0}", res);
-    }
-
-    [TestCleanup]
-    public void TearDown() {
-      FontInstaller installer = new FontInstaller();
-      FontAPIResult res;
-      res = installer.UninstallFont(FontUID, InstallationScope.Process).Result;
-      Console.WriteLine("[TestCleanup] Process uninstall: {0}", res);
-      res = installer.UninstallFont(FontUID, InstallationScope.User).Result;
-      Console.WriteLine("[TestCleanup] User uninstall: {0}", res);
-    }
-
     [TestMethod]
     [TestCategory("FontInstaller.Behavior")]
     public void InstallFont_shouldSucceed_withProcessScope_whenFontIsNotInstalled() {
@@ -61,8 +41,10 @@ namespace FontInstaller.Impl.Test {
       InstalledFontCollection collection = new InstalledFontCollection();
       bool familyExists = collection.Families.Any(family => family.Name == FamilyName);
 
+      installer.UninstallAllFonts().Wait();
       Assert.AreEqual(FontAPIResult.Success, result, "Installing a font should succeed");
       Assert.IsTrue(familyExists, "Fonts installed in the User scope should be enumerable");
+
     }
 
     [TestMethod]
@@ -72,6 +54,8 @@ namespace FontInstaller.Impl.Test {
       installer.InstallFont(FontUID, InstallationScope.Process, FontData).Wait();
 
       FontAPIResult result = installer.InstallFont(FontUID, InstallationScope.Process, FontData).Result;
+
+      installer.UninstallAllFonts().Wait();
       Assert.AreEqual(FontAPIResult.Noop, result, "Installing an installed font should do nothing");
     }
 
@@ -82,6 +66,8 @@ namespace FontInstaller.Impl.Test {
       installer.InstallFont(FontUID, InstallationScope.User, FontData).Wait();
 
       FontAPIResult result = installer.InstallFont(FontUID, InstallationScope.User, FontData).Result;
+
+      installer.UninstallAllFonts().Wait();
       Assert.AreEqual(FontAPIResult.Noop, result, "Installing an installed font should do nothing");
     }
 
@@ -96,6 +82,7 @@ namespace FontInstaller.Impl.Test {
       InstalledFontCollection collection = new InstalledFontCollection();
       bool familyExists = collection.Families.Any(family => family.Name == FamilyName);
 
+      installer.UninstallAllFonts().Wait();
       Assert.AreEqual(FontAPIResult.Success, result, "Uninstalling a font should succeed");
       Assert.IsFalse(familyExists, "Uninstalled fonts should not be enumerable");
     }
@@ -111,6 +98,8 @@ namespace FontInstaller.Impl.Test {
       InstalledFontCollection collection = new InstalledFontCollection();
       bool familyExists = collection.Families.Any(family => family.Name == FamilyName);
 
+
+      installer.UninstallAllFonts().Wait();
       Assert.AreEqual(FontAPIResult.Success, result, "Uninstalling a font should succeed");
       Assert.IsFalse(familyExists, "Uninstalled fonts should not be enumerable");
     }
@@ -121,6 +110,8 @@ namespace FontInstaller.Impl.Test {
       FontInstaller installer = new FontInstaller();
 
       FontAPIResult result = installer.UninstallFont(FontUID, InstallationScope.Process).Result;
+
+      installer.UninstallAllFonts().Wait();
       Assert.AreEqual(FontAPIResult.Noop, result, "Uninstalling an uninstalled font should do nothing");
     }
 
@@ -130,6 +121,8 @@ namespace FontInstaller.Impl.Test {
       FontInstaller installer = new FontInstaller();
 
       FontAPIResult result = installer.UninstallFont(FontUID, InstallationScope.User).Result;
+
+      installer.UninstallAllFonts().Wait();
       Assert.AreEqual(FontAPIResult.Noop, result, "Uninstalling an uninstalled font should do nothing");
     }
   }

@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:UI.Views"
         xmlns:dev="clr-namespace:UI.Dev"
         xmlns:vm="clr-namespace:UI.ViewModels"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
         xmlns:Controls="clr-namespace:UI.Controls" x:Class="UI.Views.FontList"
         mc:Ignorable="d"
         Title="FontList" Height="480" Foreground="{x:Null}" AllowsTransparency="True" WindowStyle="None" Background="{x:Null}" Width="330">
@@ -16,7 +17,7 @@
     </Grid.OpacityMask>
     <Border x:Name="border" BorderThickness="0" CornerRadius="12" Margin="0" Background="White"/>
     <StackPanel Margin="0,0,0,40">
-      <Grid x:Name="HeaderGrid" Height="70" VerticalAlignment="Top" d:IsLocked="True">
+      <Grid x:Name="HeaderGrid" Height="70" VerticalAlignment="Top">
         <Grid.Background>
           <SolidColorBrush Color="{DynamicResource FSBlue}"/>
         </Grid.Background>
@@ -117,11 +118,6 @@
             <SolidColorBrush Color="{DynamicResource FSGrey}"/>
           </Separator.Background>
         </Separator>
-        <ProgressBar x:Name="LoadingBar" Height="3" IsIndeterminate="True" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" Visibility="Collapsed" d:IsLocked="True">
-          <ProgressBar.Foreground>
-            <SolidColorBrush Color="{DynamicResource FSBlue}"/>
-          </ProgressBar.Foreground>
-        </ProgressBar>
 
         <ListBox x:Name="FamilyTree"
                  Background="{x:Null}"
@@ -310,5 +306,6 @@
         
       </StackPanel>
     </StackPanel>
+    <Image Name="Loader" gif:ImageBehavior.AnimatedSource="/UI;component/Resources/Loader.gif" Panel.ZIndex="1" Visibility="Hidden"/>
   </Grid>
 </Window>
