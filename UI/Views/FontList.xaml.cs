@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using UI.Utilities;
 
 namespace UI.Views {
@@ -13,9 +15,9 @@ namespace UI.Views {
   public partial class FontList : Window, IView {
     #region data
     private Protocol.Payloads.UserData _userData;
-    private IStorage _storage;
 
     private ViewModels.FamilyCollectionVM _collectionVM;
+    private ICollectionView _collectionView;
     #endregion
 
     #region properties
@@ -70,6 +72,13 @@ namespace UI.Views {
 
         FamilyTree.Visibility = Visibility.Hidden;
         FamilyTree.ItemsSource = null;
+
+        if (_collectionVM != null) {
+          UnregisterCollectionEvents();
+          _collectionVM.Dispose();
+          _collectionVM = null;
+          _collectionView = null;
+        }
       }
       else {
         Loader.Visibility = Visibility.Collapsed;
@@ -80,7 +89,13 @@ namespace UI.Views {
         UpdateCounters();
 
         _collectionVM = new ViewModels.FamilyCollectionVM(Storage.FamilyCollection);
-        FamilyTree.ItemsSource = _collectionVM.Families;
+        RegisterCollectionEvents();
+        _collectionView = CollectionViewSource.GetDefaultView(_collectionVM.Families);
+        _collectionView.Filter = CurrentFilter();
+        if (_collectionView.Filter != null)
+          _collectionView.Refresh();
+
+        FamilyTree.ItemsSource = _collectionView;
         FamilyTree.Visibility = Visibility.Visible;
       }
     }
@@ -95,6 +110,26 @@ namespace UI.Views {
                           "Fontstore - Connection lost",
                           MessageBoxButton.OKCancel) == MessageBoxResult.Cancel) {
         OnLogout?.Invoke();
+      }
+    }
+    #endregion
+
+    #region private methods
+    private void RegisterCollectionEvents() {
+      if (_collectionVM != null) {
+        _collectionVM.OnFontActivationChanged += RefreshFiltering;
+        _collectionVM.OnFontAdded += RefreshFiltering;
+        _collectionVM.OnFontRemoved += RefreshFiltering;
+        _collectionVM.OnFontReplaced += RefreshFiltering;
+      }
+    }
+
+    private void UnregisterCollectionEvents() {
+      if (_collectionVM != null) {
+        _collectionVM.OnFontActivationChanged -= RefreshFiltering;
+        _collectionVM.OnFontAdded -= RefreshFiltering;
+        _collectionVM.OnFontRemoved -= RefreshFiltering;
+        _collectionVM.OnFontReplaced -= RefreshFiltering;
       }
     }
     #endregion
@@ -137,6 +172,53 @@ namespace UI.Views {
 
     private void Quit_Click(object sender, RoutedEventArgs e) {
       OnExit?.Invoke();
+    }
+    #endregion
+
+    #region filtering event handling
+    private void InstalledButton_Checked(object sender, RoutedEventArgs e) {
+      if (_collectionView != null) {
+        _collectionView.Filter = InstalledFilter;
+        _collectionView.Refresh();
+      }
+    }
+
+    private void NewButton_Checked(object sender, RoutedEventArgs e) {
+      if (_collectionView != null) {
+        _collectionView.Filter = NewFilter;
+        _collectionView.Refresh();
+      }
+    }
+
+    private void AllButton_Checked(object sender, RoutedEventArgs e) {
+      if (_collectionView != null) {
+        _collectionView.Filter = null;
+        _collectionView.Refresh();
+      }
+    }
+    #endregion
+
+    #region filtering methods
+    private bool InstalledFilter(object item) {
+      ViewModels.FamilyVM fam = item as ViewModels.FamilyVM;
+      return fam.HasActivatedFont;
+    }
+
+    private bool NewFilter(object item) {
+      ViewModels.FamilyVM fam = item as ViewModels.FamilyVM;
+      return fam.HasNewFont;
+    }
+
+    private Predicate<object> CurrentFilter() {
+      if (InstalledButton.IsChecked ?? false) return InstalledFilter;
+      else if (NewButton.IsChecked ?? false) return NewFilter;
+      return null;
+    }
+
+    private void RefreshFiltering() {
+      if (_collectionView != null && _collectionView.Filter != null) {
+        _collectionView.Refresh();
+      }
     }
     #endregion
   }

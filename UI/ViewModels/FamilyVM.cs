@@ -17,6 +17,14 @@ namespace UI.ViewModels {
         return _model.Name;
       }
     }
+
+    public bool HasNewFont {
+      get { return _model.HasNewFont; }
+    }
+
+    public bool HasActivatedFont {
+      get { return _model.HasActivatedFont; }
+    }
     #endregion
 
     #region observable properties
