@@ -39,8 +39,6 @@ namespace Protocol.Impl {
     #region methods
     public override void Connect(string email, string password) {
       if (CanTransition<Authenticating>()) {
-        Transport.Closed += Transport_Closed;
-
         // All the FSM states lives in their Start method.
         // We must ensure that the calling thread is never blocked (most likely the UI thread)
         Task.Run(() => {
@@ -76,6 +74,7 @@ namespace Protocol.Impl {
       UserChannel = new Channels.User(this);
 
       UserChannel.OnDisconnection += UserChannel_OnDisconnection;
+      Transport.Closed += Transport_Closed;
 
       OnEstablished?.Invoke(userData);
     }
@@ -89,13 +88,27 @@ namespace Protocol.Impl {
     }
 
     internal void TriggerConnectionClosed() { // disconnection caused by user
-      UserChannel.OnDisconnection -= UserChannel_OnDisconnection;
+      if (UserChannel != null) {
+        UserChannel.OnDisconnection -= UserChannel_OnDisconnection;
+      }
 
       CatalogChannel = null;
       UserChannel = null;
       _fsm.State = new Idle(this);
 
       OnConnectionClosed?.Invoke();
+    }
+
+    internal void TransportReconnectionStarted() {
+      if (UserChannel != null) {
+        UserChannel.Leave();
+        UserChannel.OnDisconnection -= UserChannel_OnDisconnection;
+        UserChannel = null;
+      }
+      if (CatalogChannel != null) {
+        CatalogChannel.Leave();
+        CatalogChannel = null;
+      }
     }
     #endregion
 
@@ -113,9 +126,8 @@ namespace Protocol.Impl {
 
     #region event handling
     private void UserChannel_OnDisconnection(string reason) { // disconnection caused by server
-      UserChannel.OnDisconnection -= UserChannel_OnDisconnection;
-      OnDisconnected?.Invoke(reason);
-      StartTransportReconnection();
+      //UserChannel.OnDisconnection -= UserChannel_OnDisconnection;
+      //OnDisconnected?.Invoke(reason);
     }
 
     private void Transport_Closed() { // disconnection caused by error
@@ -127,15 +139,6 @@ namespace Protocol.Impl {
 
     #region private methods
     private async void StartTransportReconnection() {
-      if (UserChannel != null) {
-        UserChannel.Leave();
-        UserChannel = null;
-      }
-      if (CatalogChannel != null) {
-        CatalogChannel.Leave();
-        CatalogChannel = null;
-      }
-
       await Task.Run(delegate {
         _fsm.State = new Reconnecting(this);
       });

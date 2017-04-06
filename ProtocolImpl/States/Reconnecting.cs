@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Protocol.Impl.States {
+﻿namespace Protocol.Impl.States {
   class Reconnecting : ConnectionState {
     #region ctor
     public Reconnecting(Connection connection): base("Reconnecting", connection) {
@@ -26,6 +20,7 @@ namespace Protocol.Impl.States {
 
     protected override void Start() {
       _context.Transport.Opened += Transport_Opened;
+      _context.TransportReconnectionStarted();
     }
 
     private void Transport_Opened() {

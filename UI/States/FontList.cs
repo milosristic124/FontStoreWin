@@ -65,8 +65,8 @@ namespace UI.States {
     #endregion
 
     #region private methods
-    private async Task LoadContent() {
-      if (!Application.Context.Storage.Loaded) {
+    private async Task LoadContent(bool reload = false) {
+      if (reload || !Application.Context.Storage.Loaded) {
         ShowLoadingState();
         try {
           await Application.Context.Storage.Load();
@@ -122,10 +122,8 @@ namespace UI.States {
       });
     }
 
-    private void Connection_OnEstablished(Protocol.Payloads.UserData userData) {
-      _view.InvokeOnUIThread(async delegate {
-        await LoadContent();
-      });
+    private async void Connection_OnEstablished(Protocol.Payloads.UserData userData) {
+      await LoadContent(true);
     }
 
     private void Storage_OnFontUninstall(Storage.Data.Font font, FontInstaller.InstallationScope scope, bool succeed) {
