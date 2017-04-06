@@ -9,7 +9,7 @@ namespace Protocol {
     #region properties
     public IHttpTransport HttpTransport { get; private set; }
     public IConnectionTransport Transport { get; private set; }
-    public IFontStorage Storage { get; private set; }
+    public IStorage Storage { get; private set; }
     public UserData UserData { get; protected set; }
 
     public TimeSpan AuthenticationRetryInterval { get; protected set; }
@@ -23,7 +23,7 @@ namespace Protocol {
     #endregion
 
     #region ctor
-    public AConnection(IConnectionTransport transport, IHttpTransport http, IFontStorage storage) {
+    public AConnection(IConnectionTransport transport, IHttpTransport http, IStorage storage) {
       Transport = transport;
       HttpTransport = http;
       Storage = storage;
@@ -32,6 +32,7 @@ namespace Protocol {
 
     #region methods
     public abstract void Connect(string email, string password);
+    public abstract void AutoConnect(string authToken);
     public abstract void Disconnect(DisconnectReason reason, string error = null);
     public abstract void UpdateCatalog();
     #endregion

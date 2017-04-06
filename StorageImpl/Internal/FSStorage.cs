@@ -16,12 +16,11 @@ namespace Storage.Impl.Internal {
     // storage root directory
     private string _storageRootPath;
 
+    // credentials save file
+    private string _credFilePath;
+
     // font files
     private string _fontRootPath;
-
-    // db files
-    //private string _metadataFilePath;
-    //private string _fontDBPath;
 
     private string _sessionID;
     private string _sessionPath;
@@ -31,23 +30,12 @@ namespace Storage.Impl.Internal {
     private string _fontDBPath {
       get {
         return _sessionPath + "fnt.db";
-
-        //if (SessionID != null) {
-        //  return string.Format("{0}{1}\\fnt.db", _storageRootPath, _sessionID);
-        //} else {
-        //  return _storageRootPath + "fnt.db";
-        //}
       }
     }
 
     private string _metadataFilePath {
       get {
         return _sessionPath + "mta.db";
-        //if (SessionID != null) {
-        //  return string.Format("{0}{1}\\mta.db", _storageRootPath, _sessionID);
-        //} else {
-        //  return _storageRootPath + "mta.db";
-        //}
       }
     }
     #endregion
@@ -92,6 +80,8 @@ namespace Storage.Impl.Internal {
       }
       _sessionPath = _storageRootPath;
       _sessionID = null;
+
+      _credFilePath = _storageRootPath + "creds";
 
       if (!Directory.Exists(_storageRootPath)) {
         Directory.CreateDirectory(_storageRootPath);
@@ -175,6 +165,40 @@ namespace Storage.Impl.Internal {
       return Task.WhenAll(metadataSaving, fontSaving);
     }
 
+    public Task<string> ReadCredentials() {
+      return ReadData(_credFilePath).ContinueWith(stream => {
+        using(Stream fileData = stream.Result) {
+          if (fileData.Length <= 0) {
+            return null;
+          }
+
+          using (MemoryStream buffer = new MemoryStream()) {
+            fileData.CopyTo(buffer);
+
+            string data = Encoding.UTF8.GetString(buffer.ToArray());
+            CredentialsData creds = JsonConvert.DeserializeObject<CredentialsData>(data);
+            return creds.Token;
+          }
+        }
+      }, TaskContinuationOptions.OnlyOnRanToCompletion);
+    }
+
+    public Task WriteCredential(string token) {
+      CredentialsData creds = new CredentialsData() {
+        Token = token
+      };
+      string serializedCreds = JsonConvert.SerializeObject(creds);
+      MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(serializedCreds));
+      if (stream.CanSeek) // just in case
+        stream.Seek(0, SeekOrigin.Begin);
+
+      return WriteData(_credFilePath, stream);
+    }
+
+    public Task RemoveCredentials() {
+      return RemoveFile(_credFilePath);
+    }
+
     public Task<Stream> ReadFontFile(string uid) {
       return ReadData(FontFilePath(uid));
     }
@@ -216,8 +240,10 @@ namespace Storage.Impl.Internal {
 
     private Task WriteData(string path, Stream data) {
       return Task.Run(delegate {
-        using (FileStream fileStream = File.Create(path)) {
-          data.CopyTo(fileStream);
+        using (data) {
+          using (FileStream fileStream = File.Create(path)) {
+            data.CopyTo(fileStream);
+          }
         }
       });
     }
@@ -230,6 +256,11 @@ namespace Storage.Impl.Internal {
     #endregion
 
     #region private type
+    private class CredentialsData {
+      [JsonProperty("auth_token")]
+      public string Token { get; set; }
+    }
+
     private class StorageData {
       [JsonProperty("last_catalog_update")]
       public DateTime LastCatalogUpdate { get; set; }

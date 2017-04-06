@@ -71,7 +71,7 @@ namespace UI.States {
       if (reload || !Application.Context.Storage.Loaded) {
         ShowLoadingState();
         try {
-          await Application.Context.Storage.Load();
+          await Application.Context.Storage.LoadFonts();
         } catch (Exception e) {
           Console.WriteLine(string.Format("Catalog loading failed: {0}", e.Message));
         }
@@ -96,8 +96,11 @@ namespace UI.States {
     #endregion
 
     #region action handling
-    private void _view_OnLogout() {
+    private async void _view_OnLogout() {
       Application.Context.Connection.Disconnect(Protocol.DisconnectReason.Logout);
+      await Application.Context.Storage.CleanCredentials();
+      Console.WriteLine("Credentials cleaned");
+
       _view.InvokeOnUIThread(() => {
         WillTransition = true;
         FSM.State = new Login(Application, WindowPosition.FromWindow(_view));
@@ -124,7 +127,7 @@ namespace UI.States {
     }
 
     private async void Connection_OnCatalogUpdateFinished() {
-      await Application.Context.Storage.Save();
+      await Application.Context.Storage.SaveFonts();
       ShowLoadedState();
     }
 

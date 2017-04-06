@@ -27,7 +27,7 @@ namespace Protocol.Impl.Tests {
     #region ctor
     public TestConnection(MockedTransport transport,
                           MockedHttpTransport http,
-                          IFontStorage storage,
+                          IStorage storage,
                           int authInterval = 1000,
                           int connInterval = 1000) : base(transport, http, storage) {
       AuthenticationRetryInterval = TimeSpan.FromMilliseconds(authInterval);

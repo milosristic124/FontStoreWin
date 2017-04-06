@@ -17,7 +17,7 @@ namespace Storage.Impl.Tests {
     public void FontStorage_shouldBeEmpty_whenCreated() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
+      Storage storage = new Storage(transport, installer, TestPath);
       Assert.IsTrue(storage.FamilyCollection.Families.Count == 0, "FontStorage has no data when created");
     }
 
@@ -26,7 +26,7 @@ namespace Storage.Impl.Tests {
     public void FindFont_shouldReturnNull_whenTheFontDoesNotExist() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
+      Storage storage = new Storage(transport, installer, TestPath);
       Assert.IsNull(storage.FindFont(TestData.Font1_Description.UID), "FindFont return null for unexisting fonts");
     }
 
@@ -35,8 +35,8 @@ namespace Storage.Impl.Tests {
     public void FindFont_shouldReturnTheSearchedFont() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
-      storage.Load().Wait();
+      Storage storage = new Storage(transport, installer, TestPath);
+      storage.LoadFonts().Wait();
 
       storage.AddFont(TestData.Font1_Description);
 
@@ -48,8 +48,8 @@ namespace Storage.Impl.Tests {
     public void AddFont_shouldUpdateFontStorage() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
-      storage.Load().Wait();
+      Storage storage = new Storage(transport, installer, TestPath);
+      storage.LoadFonts().Wait();
 
       storage.AddFont(TestData.Font1_Description);
 
@@ -61,8 +61,8 @@ namespace Storage.Impl.Tests {
     public void AddFont_shouldReplaceObsoleteData() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
-      storage.Load().Wait();
+      Storage storage = new Storage(transport, installer, TestPath);
+      storage.LoadFonts().Wait();
 
       storage.AddFont(TestData.Font1_Description);
       storage.AddFont(TestData.Font1_Description2);
@@ -76,8 +76,8 @@ namespace Storage.Impl.Tests {
     public void RemoveFont_shouldUpdateFontStorage() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
-      storage.Load().Wait();
+      Storage storage = new Storage(transport, installer, TestPath);
+      storage.LoadFonts().Wait();
 
       storage.AddFont(TestData.Font1_Description);
       storage.RemoveFont(TestData.Font1_Id);
@@ -90,8 +90,8 @@ namespace Storage.Impl.Tests {
     public void ActivateFont_shouldActivateFont() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
-      storage.Load().Wait();
+      Storage storage = new Storage(transport, installer, TestPath);
+      storage.LoadFonts().Wait();
 
       storage.AddFont(TestData.Font1_Description);
       storage.ActivateFont(TestData.Font1_Id);
@@ -104,8 +104,8 @@ namespace Storage.Impl.Tests {
     public void DeactivateFont_shouldDeactivateFont() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
-      storage.Load().Wait();
+      Storage storage = new Storage(transport, installer, TestPath);
+      storage.LoadFonts().Wait();
 
       storage.AddFont(TestData.Font1_Description);
       storage.ActivateFont(TestData.Font1_Id);
@@ -120,19 +120,19 @@ namespace Storage.Impl.Tests {
       string storagePath = TestPath;
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, storagePath);
+      Storage storage = new Storage(transport, installer, storagePath);
       storage.SessionID = "session1";
 
-      storage.Load().Wait();
+      storage.LoadFonts().Wait();
       storage.AddFont(TestData.Font1_Description);
       storage.ActivateFont(TestData.Font1_Id);
-      storage.Save().Wait();
+      storage.SaveFonts().Wait();
 
-      storage = new FontStorage(transport, installer, storagePath);
+      storage = new Storage(transport, installer, storagePath);
       storage.SessionID = "session1";
 
       int timeout = 5000;
-      bool signaled = storage.Load().Wait(timeout);
+      bool signaled = storage.LoadFonts().Wait(timeout);
 
       Assert.IsTrue(signaled, "Load should not timeout during tests...");
       Assert.IsTrue(storage.FamilyCollection.Families.Count == 1, "Load should load saved catalog data from file system");
@@ -145,19 +145,19 @@ namespace Storage.Impl.Tests {
       string storagePath = TestPath;
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, storagePath);
+      Storage storage = new Storage(transport, installer, storagePath);
       storage.SessionID = "session1";
 
-      storage.Load().Wait();
+      storage.LoadFonts().Wait();
       storage.AddFont(TestData.Font1_Description);
       storage.ActivateFont(TestData.Font1_Id);
-      storage.Save().Wait();
+      storage.SaveFonts().Wait();
 
-      storage = new FontStorage(transport, installer, storagePath);
+      storage = new Storage(transport, installer, storagePath);
       storage.SessionID = "session2";
 
       int timeout = 5000;
-      bool signaled = storage.Load().Wait(timeout);
+      bool signaled = storage.LoadFonts().Wait(timeout);
 
       Assert.IsTrue(signaled, "Load should not timeout during tests...");
       Assert.IsTrue(storage.FamilyCollection.Families.Count == 0, "Load should not load saved catalog data of another user");
@@ -168,7 +168,7 @@ namespace Storage.Impl.Tests {
     public void SynchronizeWithSystem_shouldDownloadAndInstallFonts() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
+      Storage storage = new Storage(transport, installer, TestPath);
 
       storage.AddFont(TestData.Font1_Description);
       storage.AddFont(TestData.Font2_Description);
@@ -211,7 +211,7 @@ namespace Storage.Impl.Tests {
     public void SynchronizeWithSystem_shouldNotReactToRealTimeEventsAfterward() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
+      Storage storage = new Storage(transport, installer, TestPath);
 
       storage.AddFont(TestData.Font1_Description);
 
@@ -248,7 +248,7 @@ namespace Storage.Impl.Tests {
     public void SynchronizeWithSystem_shouldExecuteCallbackImmediately_whenNoActionsAreQueued() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
+      Storage storage = new Storage(transport, installer, TestPath);
 
       bool callbackExecuted = false;
       storage.SynchronizeWithSystem(delegate {
@@ -263,7 +263,7 @@ namespace Storage.Impl.Tests {
     public void BeginSynchronization_shouldDownloadAndInstallFonts() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
+      Storage storage = new Storage(transport, installer, TestPath);
 
       storage.AddFont(TestData.Font1_Description);
       storage.AddFont(TestData.Font2_Description);
@@ -304,7 +304,7 @@ namespace Storage.Impl.Tests {
     public void BeginSynchronization_shouldReactToRealTimeEvents() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
+      Storage storage = new Storage(transport, installer, TestPath);
 
       int downloadCount = 0;
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
@@ -347,7 +347,7 @@ namespace Storage.Impl.Tests {
     public void EndSynchronization_shouldNotReactToRealTimeEventsAfterward() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
+      Storage storage = new Storage(transport, installer, TestPath);
 
       int downloadCount = 0;
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
@@ -385,7 +385,7 @@ namespace Storage.Impl.Tests {
     public void ActivateFont_shouldTriggerUserScopeInstallationEvent() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
+      Storage storage = new Storage(transport, installer, TestPath);
 
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
         return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
@@ -416,7 +416,7 @@ namespace Storage.Impl.Tests {
     public void DeactivateFont_shouldTriggerUserScopeUninstallationEvent() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
+      Storage storage = new Storage(transport, installer, TestPath);
 
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
         return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
@@ -448,7 +448,7 @@ namespace Storage.Impl.Tests {
     public void RemoveFont_shouldTriggerAllScopeUninstallationEvent() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
+      Storage storage = new Storage(transport, installer, TestPath);
 
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
         return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
@@ -484,7 +484,7 @@ namespace Storage.Impl.Tests {
     public void AddFont_shouldTriggerProcessScopeInstallationEvent() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
+      Storage storage = new Storage(transport, installer, TestPath);
 
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
         return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
@@ -514,7 +514,7 @@ namespace Storage.Impl.Tests {
     public void AddFont_shouldTriggerProcessScopeInstallationEvents_whenFontIsUpdated_andWasDeactivated() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
+      Storage storage = new Storage(transport, installer, TestPath);
 
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
         return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
@@ -568,7 +568,7 @@ namespace Storage.Impl.Tests {
     public void AddFont_shouldTriggerAllScopeInstallationEvents_whenFontIdUpdated_andWasActivated() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      FontStorage storage = new FontStorage(transport, installer, TestPath);
+      Storage storage = new Storage(transport, installer, TestPath);
 
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
         return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
@@ -619,6 +619,48 @@ namespace Storage.Impl.Tests {
       Assert.IsTrue(userUninstall, "Updating an activated font should trigger a User scope uninstall");
       Assert.IsTrue(userInstall, "Updating an activated font should trigger a User scope install");
     }
+
+    [TestMethod]
+    [TestCategory("Storage.Credentials")]
+    public void SaveCredentials_shouldCreateCredentialFile() {
+      MockedHttpTransport transport = new MockedHttpTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      string storagePath = TestPath;
+      Storage storage = new Storage(transport, installer, storagePath);
+
+      storage.SaveCredentials("creds").Wait();
+
+      Assert.IsTrue(File.Exists(storagePath + "creds"), "SaveCredentials should create credentials file on file system");
+    }
+
+    [TestMethod]
+    [TestCategory("Storage.Credentials")]
+    public void LoadCredentials_shouldLoadSavedCredentials() {
+      MockedHttpTransport transport = new MockedHttpTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      Storage storage = new Storage(transport, installer, TestPath);
+
+      string savedCreds = "creds";
+      storage.SaveCredentials(savedCreds).Wait();
+
+      string creds = storage.LoadCredentials().Result;
+      Assert.AreEqual(savedCreds, creds, "LoadCredentials should load saved credentials");
+    }
+
+    [TestMethod]
+    [TestCategory("Storage.Credentials")]
+    public void CleanSavedCredentials_shouldRemoveCredentialsFile() {
+      MockedHttpTransport transport = new MockedHttpTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      string storagePath = TestPath;
+      Storage storage = new Storage(transport, installer, storagePath);
+
+      storage.SaveCredentials("creds").Wait();
+      storage.CleanCredentials().Wait();
+
+      Assert.IsFalse(File.Exists(storagePath + "creds"), "CleanCredentials should remove credentials file from file system");
+    }
+
 
     private string TestPath {
       get {

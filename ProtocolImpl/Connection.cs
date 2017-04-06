@@ -27,7 +27,7 @@ namespace Protocol.Impl {
     #endregion
 
     #region ctor
-    public Connection(IConnectionTransport transport, IHttpTransport http, IFontStorage storage): base(transport, http, storage) {
+    public Connection(IConnectionTransport transport, IHttpTransport http, IStorage storage): base(transport, http, storage) {
       AuthenticationRetryInterval = TimeSpan.FromSeconds(10);
       ConnectionRetryInterval = TimeSpan.FromSeconds(10);
       HttpTransport.DownloadParallelism = 3;
@@ -44,6 +44,14 @@ namespace Protocol.Impl {
         // We must ensure that the calling thread is never blocked (most likely the UI thread)
         Task.Run(() => {
           _fsm.State = new Authenticating(this, email, password);
+        });
+      }
+    }
+
+    public override void AutoConnect(string authToken) {
+      if (CanTransition<Authenticating>()) {
+        Task.Run(() => {
+          _fsm.State = new Authenticating(this, authToken);
         });
       }
     }

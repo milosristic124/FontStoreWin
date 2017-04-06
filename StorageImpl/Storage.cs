@@ -13,7 +13,7 @@ using Utilities;
 using Utilities.Extensions;
 
 namespace Storage.Impl {
-  public class FontStorage : IFontStorage {
+  public class Storage : IStorage {
     #region private data
     private FSStorage _HDDStorage;
     private FSSynchronizationAgent _fsAgent;
@@ -70,11 +70,11 @@ namespace Storage.Impl {
     #endregion
 
     #region ctor
-    public FontStorage(IHttpTransport transport, IFontInstaller installer) :
+    public Storage(IHttpTransport transport, IFontInstaller installer) :
       this(transport, installer, Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/Fontstore") {
     }
 
-    public FontStorage(IHttpTransport transport, IFontInstaller installer, string rootPath) {
+    public Storage(IHttpTransport transport, IFontInstaller installer, string rootPath) {
       Installer = installer;
       FamilyCollection = new FamilyCollection();
       RegisterCollectionEvents();
@@ -91,7 +91,19 @@ namespace Storage.Impl {
     #endregion
 
     #region methods
-    public Task Load() {
+    public Task SaveCredentials(string token) {
+      return _HDDStorage.WriteCredential(token);
+    }
+
+    public Task<string> LoadCredentials() {
+      return _HDDStorage.ReadCredentials();
+    }
+
+    public Task CleanCredentials() {
+      return _HDDStorage.RemoveCredentials();
+    }
+
+    public Task LoadFonts() {
       if (Loaded) {
         return Task.Run(() => { });
       }
@@ -109,7 +121,7 @@ namespace Storage.Impl {
         }, TaskContinuationOptions.OnlyOnRanToCompletion);
     }
 
-    public Task Save() {
+    public Task SaveFonts() {
       if (!HasChanged) {
         return Task.Run(() => { });
       }

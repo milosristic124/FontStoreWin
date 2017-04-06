@@ -17,7 +17,7 @@ namespace ProtocolImplTests {
       MockedTransport transport = new MockedTransport();
       MockedHttpTransport http = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      IFontStorage storage = new FontStorage(http, installer);
+      IStorage storage = new Storage.Impl.Storage(http, installer);
       TestConnection connection = new TestConnection(transport, http, storage);
 
       connection.Updated(delegate {
@@ -46,7 +46,7 @@ namespace ProtocolImplTests {
       MockedTransport transport = new MockedTransport();
       MockedHttpTransport http = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      IFontStorage storage = new FontStorage(http, installer);
+      IStorage storage = new Storage.Impl.Storage(http, installer);
       TestConnection connection = new TestConnection(transport, http, storage);
 
       connection.Updated(delegate {
@@ -78,7 +78,7 @@ namespace ProtocolImplTests {
       MockedTransport transport = new MockedTransport();
       MockedHttpTransport http = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      IFontStorage storage = new FontStorage(http, installer);
+      IStorage storage = new Storage.Impl.Storage(http, installer);
       TestConnection connection = new TestConnection(transport, http, storage);
 
       connection.Updated(delegate {
@@ -107,7 +107,7 @@ namespace ProtocolImplTests {
       MockedTransport transport = new MockedTransport();
       MockedHttpTransport http = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      IFontStorage storage = new FontStorage(http, installer);
+      IStorage storage = new Storage.Impl.Storage(http, installer);
       TestConnection connection = new TestConnection(transport, http, storage);
 
       connection.Updated(delegate {
@@ -137,7 +137,7 @@ namespace ProtocolImplTests {
       MockedTransport transport = new MockedTransport();
       MockedHttpTransport http = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      IFontStorage storage = new FontStorage(http, installer);
+      IStorage storage = new Storage.Impl.Storage(http, installer);
       TestConnection connection = new TestConnection(transport, http, storage);
 
       connection.Updated(delegate {
@@ -170,7 +170,7 @@ namespace ProtocolImplTests {
       MockedTransport transport = new MockedTransport();
       MockedHttpTransport http = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      IFontStorage storage = new FontStorage(http, installer);
+      IStorage storage = new Storage.Impl.Storage(http, installer);
       TestConnection connection = new TestConnection(transport, http, storage);
 
       connection.Updated(delegate {
@@ -200,7 +200,7 @@ namespace ProtocolImplTests {
       MockedTransport transport = new MockedTransport();
       MockedHttpTransport http = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      IFontStorage storage = new FontStorage(http, installer);
+      IStorage storage = new Storage.Impl.Storage(http, installer);
       TestConnection connection = new TestConnection(transport, http, storage);
 
       connection.Updated(delegate {

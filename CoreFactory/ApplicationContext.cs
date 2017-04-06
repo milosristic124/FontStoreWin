@@ -10,7 +10,7 @@ namespace Core {
     public IFontInstaller FontInstaller { get; private set; }
     public IHttpTransport HttpTransport { get; private set; }
     public IConnectionTransport Transport { get; private set; }
-    public IFontStorage Storage { get; private set; }
+    public IStorage Storage { get; private set; }
     public IConnection Connection { get; private set; }
     #endregion
 

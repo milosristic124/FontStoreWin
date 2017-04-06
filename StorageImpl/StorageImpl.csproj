@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FontStorage.cs" />
+    <Compile Include="Storage.cs" />
     <Compile Include="Internal\FontInstallerAgent.cs" />
     <Compile Include="Internal\FSStorage.cs" />
     <Compile Include="Internal\FSSynchronizerAgent.cs" />

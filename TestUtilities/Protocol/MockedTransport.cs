@@ -141,12 +141,9 @@ namespace TestUtilities.Protocol {
     private async void TriggerDisconnectionAttempt() {
       await Task.Run(() => {
         bool? shouldDisconnect = _onDisconnectionAttempt?.Invoke();
-        if (shouldDisconnect.HasValue) {
+        if (!shouldDisconnect.HasValue || shouldDisconnect.Value) {
           _disconnecting = false;
-
-          if (shouldDisconnect.Value) {
-            _disconnectCallback?.Invoke();
-          }
+          _disconnectCallback?.Invoke();
         }
       });
     }

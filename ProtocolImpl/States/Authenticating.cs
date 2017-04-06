@@ -17,9 +17,19 @@ namespace Protocol.Impl.States {
 
     #region ctor
     public Authenticating(Connection connection, string email, string password) : this(connection) {
-      _authPayload = new Payloads.Authentication {
+      _authPayload = new Payloads.Connect {
         Login = email,
         Password = password,
+        ProtocolVersion = "0.2.8",
+        ApplicationVersion = "0.2",
+        Os = "Win",
+        OsVersion = Environment.OSVersion.VersionString
+      };
+    }
+
+    public Authenticating(Connection connection, string authToken) : this(connection) {
+      _authPayload = new Payloads.AutoConnect {
+        AuthToken = authToken,
         ProtocolVersion = "0.2.8",
         ApplicationVersion = "0.2",
         Os = "Win",
@@ -88,7 +98,7 @@ namespace Protocol.Impl.States {
         })
         .Recover(e => {
           WillTransition = true;
-          FSM.State = new RetryAuthenticating(_context, _authPayload.Login, _authPayload.Password);
+          FSM.State = new RetryAuthenticating(_context, _authPayload);
         });
     }
     #endregion

@@ -10,7 +10,7 @@ namespace Core {
       IConnectionTransport transport = new Protocol.Transport.Phoenix.ConnectionTransport();
       IHttpTransport http = new Protocol.Transport.Http.Impl.HttpTransport();
       IFontInstaller installer = new FontInstaller.Impl.FontInstaller();
-      IFontStorage storage = new Storage.Impl.FontStorage(http, installer);
+      IStorage storage = new Storage.Impl.Storage(http, installer);
       IConnection connection = new Protocol.Impl.Connection(transport, http, storage);
 
       return new ApplicationContext(connection);

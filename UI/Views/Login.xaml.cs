@@ -15,7 +15,6 @@ namespace UI.Views {
     #region private data
     private static readonly string EmailPlaceholder = "Email Address";
 
-    //private App _application;
     private bool _connecting;
 
     private bool LoginEnabled {
@@ -49,10 +48,12 @@ namespace UI.Views {
 
     #region delegates
     public delegate void OnConnectHandler(string email, string password, bool saveCredentials);
+    public delegate void OnConnectionCanceledHandler();
     #endregion
 
     #region events
     public event OnExitHandler OnExit;
+    public event OnConnectionCanceledHandler OnConnectionCanceled;
     public event OnConnectHandler OnConnect;
     #endregion
 
@@ -92,7 +93,9 @@ namespace UI.Views {
     }
 
     public void InvokeOnUIThread(Action action) {
-      Dispatcher.Invoke(action);
+      try {
+        Dispatcher.Invoke(action);
+      } catch (Exception) { }
     }
     #endregion
 

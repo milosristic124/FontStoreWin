@@ -31,6 +31,7 @@ namespace UI.States {
 
     public void Start(FiniteStateMachine<UIState> fsm) {
       FSM = fsm;
+      Start();
     }
 
     public virtual void Stop() {
@@ -52,6 +53,8 @@ namespace UI.States {
     #endregion
 
     #region internal methods
+    protected virtual void Start() { }
+
     protected void SetWindowPosition(Window window, WindowPosition previousPos = null, double bottomMargin = 10, double rightMargin = 10) {
       if (previousPos == null) {
         double left, top;

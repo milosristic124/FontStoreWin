@@ -11,7 +11,7 @@ using Utilities;
 using Utilities.Extensions;
 
 namespace TestUtilities.Storage {
-  public class MockedStorage : CallTracer, IFontStorage {
+  public class MockedStorage : CallTracer, IStorage {
     #region private data 
     private Queue<Action> _callbackBuffer;
     private bool _synchronizing;
@@ -75,6 +75,18 @@ namespace TestUtilities.Storage {
     #endregion
 
     #region methods
+    public Task CleanCredentials() {
+      return Task.Run(() => { });
+    }
+
+    public Task<string> LoadCredentials() {
+      return Task.Run(() => (string)null);
+    }
+
+    public Task SaveCredentials(string creds) {
+      return Task.Run(() => { });
+    }
+
     public Font AddFont(FontDescription description) {
       RegisterCall("AddFont");
       Font newFont = new Font(
@@ -124,14 +136,14 @@ namespace TestUtilities.Storage {
       return FamilyCollection.FindFont(uid);
     }
 
-    public Task Load() {
+    public Task LoadFonts() {
       RegisterCall("Load");
       return Task.Run(() => {
         Loaded = true;
       });
     }
 
-    public Task Save() {
+    public Task SaveFonts() {
       RegisterCall("Save");
       return Task.Run(() => {
         HasChanged = false;

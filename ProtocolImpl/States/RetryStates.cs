@@ -52,13 +52,30 @@ namespace Protocol.Impl.States {
   }
 
   class RetryAuthenticating : RetryAfterTimeInterval {
-    public RetryAuthenticating(Connection connection, string email, string password):
-      base("RetryAuthenticating", connection, connection.AuthenticationRetryInterval)
-    {
-      Callback = () => {
-        FSM.State = new Authenticating(connection, email, password);
-      };
+    public RetryAuthenticating(Connection connection, Payloads.Authentication payload) :
+      base("RetryAuthenticating", connection, connection.AuthenticationRetryInterval) {
+
+      Init(connection, payload as Payloads.Connect);
+      Init(connection, payload as Payloads.AutoConnect);
     }
+
+    #region private methods
+    private void Init(Connection connection, Payloads.AutoConnect payload) {
+      if (payload != null) {
+        Callback = () => {
+          FSM.State = new Authenticating(connection, payload.AuthToken);
+        };
+      }
+    }
+
+    private void Init(Connection connection, Payloads.Connect payload) {
+      if (payload != null) {
+        Callback = () => {
+          FSM.State = new Authenticating(connection, payload.Login, payload.Password);
+        };
+      }
+    }
+    #endregion
   }
 
   class RetryConnecting : RetryAfterTimeInterval {

@@ -13,7 +13,7 @@ namespace UI.Views {
   public partial class FontList : Window, IView {
     #region data
     private Protocol.Payloads.UserData _userData;
-    private IFontStorage _storage;
+    private IStorage _storage;
 
     private ViewModels.FamilyCollectionVM _collectionVM;
     #endregion
@@ -28,7 +28,7 @@ namespace UI.Views {
       }
     }
 
-    public IFontStorage Storage { get; set; }
+    public IStorage Storage { get; set; }
     #endregion
 
     #region delegate
@@ -51,7 +51,10 @@ namespace UI.Views {
 
     #region methods
     public void InvokeOnUIThread(Action action) {
-      Dispatcher.Invoke(action);
+      try {
+        Dispatcher.Invoke(action);
+      }
+      catch (Exception) { }
     }
 
     public void UpdateCounters() {

@@ -9,7 +9,7 @@ namespace Storage {
   public delegate void FontInstallationHandler(Font font, InstallationScope scope, bool succeed);
   public delegate void FontUninstallationHandler(Font font, InstallationScope scope, bool succeed);
 
-  public interface IFontStorage {
+  public interface IStorage {
     #region properties
     IFontInstaller Installer { get; }
     string SessionID { get; set; }
@@ -31,8 +31,12 @@ namespace Storage {
     #endregion
 
     #region methods
-    Task Load();
-    Task Save();
+    Task SaveCredentials(string token);
+    Task<string> LoadCredentials();
+    Task CleanCredentials();
+
+    Task LoadFonts();
+    Task SaveFonts();
 
     Font FindFont(string uid);
 

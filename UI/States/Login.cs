@@ -1,4 +1,6 @@
-﻿using UI.Utilities;
+﻿using System;
+using UI.Utilities;
+using Utilities.Extensions;
 
 namespace UI.States {
   class Login : UIState {
@@ -17,8 +19,6 @@ namespace UI.States {
 
     #region ctor
     public Login(App application, WindowPosition prevPos = null) : base(application, prevPos) {
-      Application.InitializeCore();
-
       _view = new Views.Login();
       Application.SetDragHandle(_view.DragHandle);
       Application.MainWindow = _view;
@@ -57,6 +57,21 @@ namespace UI.States {
     }
     #endregion
 
+    #region private methods
+    protected override async void Start() {
+      base.Start();
+
+      string savedCreds = await Application.Context.Storage.LoadCredentials();
+      if (savedCreds != null) {
+        Console.WriteLine("Credentials loaded");
+        _view.InvokeOnUIThread(() => {
+          _view.ConnectionRequestStarted();
+        });
+        Application.Context.Connection.AutoConnect(savedCreds);
+      }
+    }
+    #endregion
+
     #region action handling
     private void _view_OnConnect(string email, string password, bool saveCredentials) {
       _saveCredentials = saveCredentials;
@@ -71,7 +86,11 @@ namespace UI.States {
     #endregion
 
     #region connection event handling
-    private void Connection_OnEstablished(Protocol.Payloads.UserData userData) {
+    private async void Connection_OnEstablished(Protocol.Payloads.UserData userData) {
+      if (_saveCredentials) {
+        await Application.Context.Storage.SaveCredentials(userData.AuthToken);
+        Console.WriteLine("Credentials saved");
+      }
       _view.InvokeOnUIThread(() => {
         WillTransition = true;
         FSM.State = new FontList(Application, WindowPosition.FromWindow(_view));

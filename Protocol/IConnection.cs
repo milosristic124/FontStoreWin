@@ -15,7 +15,7 @@ namespace Protocol {
     #region properties
     IConnectionTransport Transport { get; }
     IHttpTransport HttpTransport { get; }
-    IFontStorage Storage { get; }
+    IStorage Storage { get; }
     UserData UserData { get; }
 
     TimeSpan AuthenticationRetryInterval { get; }
@@ -26,6 +26,7 @@ namespace Protocol {
 
     #region methods
     void Connect(string email, string password);
+    void AutoConnect(string authToken);
     void Disconnect(DisconnectReason reason, string error = null);
     void UpdateCatalog();
     #endregion

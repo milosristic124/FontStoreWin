@@ -38,13 +38,9 @@ namespace UI {
       };
 #endif
 
-      _ui.State = new States.Login(this);
-    }
-    #endregion
-
-    #region method
-    public void InitializeCore() {
       Context = Core.Factory.InitializeApplicationContext();
+      _ui.State = new States.Login(this);
+      _ui.State.Show();
     }
     #endregion
 
@@ -76,7 +72,9 @@ namespace UI {
 
     #region event handling
     private void App_Deactivated(object sender, EventArgs e) {
+#if DEBUG
       Console.WriteLine("App deactivated");
+#endif
       if (!_wasDragged) { // don't close the window when clicking outside if it was dragged elsewhere
         _ui.State.Hide();
       }

@@ -87,6 +87,14 @@
               <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Border>
             <ControlTemplate.Triggers>
+              <Trigger Property="Button.IsEnabled" Value="True">
+                <Setter Property="Button.Opacity" Value="1" />
+              </Trigger>
+
+              <Trigger Property="Button.IsEnabled" Value="False">
+                <Setter Property="Button.Opacity" Value="0.7" />
+              </Trigger>
+
               <Trigger Property="Button.IsMouseOver" Value="True">
                 <Setter Property="Button.Opacity" Value="0.8" />
               </Trigger>
