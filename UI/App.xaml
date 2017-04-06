@@ -168,6 +168,30 @@
       </Style.Resources>
     </Style>
 
+    <Style TargetType="{x:Type Button}" x:Key="FSSearchButton">
+      <Setter Property="OverridesDefaultStyle" Value="True"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type Button}">
+            <Border BorderThickness="0" BorderBrush="{x:Null}" Background="{x:Null}">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+
+      <Style.Resources>
+        <Style TargetType="{x:Type Border}">
+          <Style.Triggers>
+            <Trigger Property="Border.IsMouseOver" Value="True">
+              <Setter Property="Border.Background" Value="{StaticResource FSBlackBrush}" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </Style.Resources>
+    </Style>
+
     <ControlTemplate x:Key="NoScroll">
       <ItemsPresenter></ItemsPresenter>
     </ControlTemplate>

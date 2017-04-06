@@ -113,7 +113,57 @@
               </Label>
             </StackPanel>
           </RadioButton>
-          <Controls:SearchButton IsTabStop="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="3" Height="32" />
+
+          <RadioButton x:Name="SearchButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/UI;component/Fonts/#Litmus" Foreground="{x:Null}" HorizontalAlignment="Center" Margin="0" Grid.Column="3" Cursor="Hand" Checked="SearchButton_Checked" VerticalAlignment="Center" Unchecked="SearchButton_Unchecked">
+            <RadioButton.Template>
+              <ControlTemplate TargetType="{x:Type ButtonBase}">
+                <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                <ControlTemplate.Triggers>
+                  <Trigger Property="Button.IsDefaulted" Value="True"/>
+                  <Trigger Property="IsMouseOver" Value="True"/>
+                  <Trigger Property="IsPressed" Value="True"/>
+                  <Trigger Property="RadioButton.IsChecked" Value="True"/>
+                  <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="#FF838383"/>
+                  </Trigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </RadioButton.Template>
+            <RadioButton.Style>
+              <Style TargetType="{x:Type ToggleButton}">
+                <Setter Property="Content">
+                  <Setter.Value>
+                    <Border BorderThickness="0">
+                      <Image Stretch="None" Source="/UI;component/Resources/Search.png"  />
+                    </Border>
+                  </Setter.Value>
+                </Setter>
+
+                <Style.Triggers>
+                  <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Content">
+                      <Setter.Value>
+                        <Border BorderThickness="0">
+                          <Image Stretch="None" Source="/UI;component/Resources/Search_Active.png" />
+                        </Border>
+                      </Setter.Value>
+                    </Setter>
+                  </Trigger>
+
+                  <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.8" />
+                    <Setter Property="Cursor" Value="Hand" />
+                  </Trigger>
+
+                  <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.5" />
+                    <Setter Property="Cursor" Value="Arrow" />
+                  </Trigger>
+                </Style.Triggers>
+              </Style>
+            </RadioButton.Style>
+
+          </RadioButton>
         </Grid>
         <Separator Height="1" Margin="0" VerticalAlignment="Top" d:IsLocked="True">
           <Separator.Background>
@@ -142,7 +192,7 @@
                       Padding="0"
                       FontFamily="Litmus"
                       Focusable="False" 
-                      IsExpanded="True" 
+                      IsExpanded="False" 
                       HorizontalContentAlignment="Stretch" 
                       ScrollViewer.VerticalScrollBarVisibility="Disabled"
                       VerticalContentAlignment="Stretch"
@@ -197,7 +247,7 @@
                     </Grid>
                   </DataTemplate>
                 </Expander.HeaderTemplate>
-                
+
                 <ListBox Template="{StaticResource NoScroll}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" BorderThickness="0" ItemsSource="{Binding Fonts}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" Padding="0" Margin="0" Focusable="False" IsTextSearchEnabled="False" IsEnabled="True" ScrollViewer.CanContentScroll="False">
                   <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type vm:FontVM}">
@@ -271,7 +321,7 @@
                     </Style>
                   </ListBox.ItemContainerStyle>
                 </ListBox>
-                
+
               </Expander>
             </DataTemplate>
           </ListBox.ItemTemplate>
@@ -305,7 +355,235 @@
           </ListBox.ItemContainerStyle>
 
         </ListBox>
-        
+
+        <StackPanel x:Name="SearchPanel" Height="329" Visibility="Collapsed">
+          <StackPanel Height="124">
+            <StackPanel.Background>
+              <SolidColorBrush Color="{DynamicResource FSBackgroundGrey}"/>
+            </StackPanel.Background>
+
+            <Border CornerRadius="15" VerticalAlignment="Top" Margin="14,20,14,0" Background="White">
+              <TextBox x:Name="SearchInput" BorderThickness="0" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="/UI;component/Fonts/#Litmus" Height="30" Margin="14,0" VerticalContentAlignment="Center" Cursor="IBeam" KeyUp="SearchInput_KeyUp" >
+                <TextBox.SelectionBrush>
+                  <SolidColorBrush Color="{DynamicResource FSBlue}"/>
+                </TextBox.SelectionBrush>
+                <TextBox.Foreground>
+                  <SolidColorBrush Color="{DynamicResource FSBlack}"/>
+                </TextBox.Foreground>
+              </TextBox>
+            </Border>
+
+            <Button Style="{StaticResource FSSearchButton}" VerticalAlignment="Top" Margin="14,6,14,12" BorderBrush="{x:Null}" BorderThickness="0" Padding="0" FontFamily="/UI;component/Fonts/#Litmus" Click="Button_Click" Height="30">
+              <Border CornerRadius="15" Height="30" Width="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                <Border.Background>
+                  <SolidColorBrush Color="{DynamicResource FSButtonGrey}"/>
+                </Border.Background>
+
+                <Label Background="{x:Null}" Foreground="White" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">Search</Label>
+              </Border>
+            </Button>
+
+            <StackPanel x:Name="SearchResultArea"  Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
+              <Label x:Name="SearchResultCount" FontFamily="/UI;component/Fonts/#Litmus" Background="{x:Null}" Content="0" Padding="0" VerticalContentAlignment="Center">
+                <Label.Foreground>
+                  <SolidColorBrush Color="{DynamicResource FSBlue}"/>
+                </Label.Foreground>
+              </Label>
+              <Label Background="{x:Null}" FontFamily="/UI;component/Fonts/#Litmus" Padding="0" VerticalContentAlignment="Center" Content="Results" Margin="3,0,0,0">
+                <Label.Foreground>
+                  <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                </Label.Foreground>
+              </Label>
+            </StackPanel>
+          </StackPanel>
+
+          <ListBox x:Name="SearchFamilyTree"
+                 Background="{x:Null}"
+                 BorderBrush="{x:Null}"
+                 Foreground="{x:Null}"
+                 BorderThickness="0"
+                 HorizontalContentAlignment="Stretch"
+                 Height="205"
+                 d:DataContext="{d:DesignData Source=../Dev/SampleFamilyTree.xaml}"
+                 ItemsSource="{Binding}" Padding="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Focusable="False" IsTextSearchEnabled="False" ScrollViewer.CanContentScroll="False">
+            <ListBox.ItemTemplate>
+              <DataTemplate DataType="{x:Type vm:FamilyVM}">
+                <Expander Background="{x:Null}"
+                      BorderBrush="{x:Null}"
+                      Foreground="{x:Null}"
+                      BorderThickness="0"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center"
+                      Margin="0"
+                      Padding="0"
+                      FontFamily="Litmus"
+                      Focusable="False" 
+                      IsExpanded="False" 
+                      HorizontalContentAlignment="Stretch" 
+                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                      VerticalContentAlignment="Stretch"
+                      ScrollViewer.CanContentScroll="False"
+                      Width="Auto"
+                      Header="{Binding}" >
+                  <Expander.HeaderTemplate>
+                    <DataTemplate DataType="{x:Type vm:FamilyVM}">
+                      <Grid Height="40" FlowDirection="LeftToRight" Margin="0" HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition/>
+                          <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding Name}" Content="{Binding Name, Mode=OneWay}" >
+                          <Label.Foreground>
+                            <SolidColorBrush Color="{DynamicResource FSBlack}"/>
+                          </Label.Foreground>
+                        </Label>
+
+                        <StackPanel Orientation="Horizontal" Margin="5,0" HorizontalAlignment="Right" Grid.Column="1">
+                          <Label Background="{x:Null}" Padding="0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Right" Content="{Binding Fonts.Count, Mode=OneWay}">
+                            <Label.Foreground>
+                              <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                            </Label.Foreground>
+                          </Label>
+
+                          <Label Background="{x:Null}" Content=" Fonts" HorizontalAlignment="Right" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Padding="0" Margin="0,0,14,0">
+                            <Label.Foreground>
+                              <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                            </Label.Foreground>
+                          </Label>
+
+                          <ToggleButton BorderThickness="0"
+                                  BorderBrush="{x:Null}"
+                                  Background="{x:Null}"
+                                  Foreground="{x:Null}"
+                                  HorizontalAlignment="Right"
+                                  Width="80"
+                                  Height="30"
+                                  Margin="0"
+                                  FontFamily="/UI;component/Fonts/#Litmus"
+                                  FontSize="12"
+                                  FontWeight="Regular"
+                                  Padding="0"
+                                  IsChecked="{Binding FullyActivated}"
+                                  Style="{DynamicResource FSInstallButton}" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch">
+                            <Border BorderThickness="0" CornerRadius="15" Width="80" Height="30">
+                              <Label Content="Install" Foreground="White" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="{x:Null}"/>
+                            </Border>
+                          </ToggleButton>
+                        </StackPanel>
+                      </Grid>
+                    </DataTemplate>
+                  </Expander.HeaderTemplate>
+
+                  <ListBox Template="{StaticResource NoScroll}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" BorderThickness="0" ItemsSource="{Binding Fonts}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" Padding="0" Margin="0" Focusable="False" IsTextSearchEnabled="False" IsEnabled="True" ScrollViewer.CanContentScroll="False">
+                    <ListBox.ItemTemplate>
+                      <DataTemplate DataType="{x:Type vm:FontVM}">
+                        <ListBoxItem BorderBrush="{x:Null}" BorderThickness="0" Padding="22,0,5,0" Margin="0,0,0,1" VerticalContentAlignment="Center" VerticalAlignment="Top">
+                          <ListBoxItem.Background>
+                            <SolidColorBrush Color="{DynamicResource FSBackgroundGrey}"/>
+                          </ListBoxItem.Background>
+
+                          <Grid Height="40" HorizontalAlignment="Stretch" Margin="0" Background="{x:Null}">
+                            <Label Content="{Binding Name}" Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding Name}" >
+                              <Label.Foreground>
+                                <SolidColorBrush Color="{DynamicResource FSBlack}"/>
+                              </Label.Foreground>
+                            </Label>
+
+                            <ToggleButton BorderThickness="0"
+                                        BorderBrush="{x:Null}"
+                                        Background="{x:Null}"
+                                        Foreground="{x:Null}"
+                                        HorizontalAlignment="Right"
+                                        Width="80"
+                                        Height="30"
+                                        Margin="0"
+                                        FontFamily="/UI;component/Fonts/#Litmus"
+                                        FontSize="12"
+                                        FontWeight="Regular"
+                                        Padding="0"
+                                        IsChecked="{Binding Activated}"
+                                        Style="{DynamicResource FSInstallButton}"
+                                        HorizontalContentAlignment="Center"
+                                        VerticalContentAlignment="Stretch">
+                              <Border BorderThickness="0" CornerRadius="15" Width="80" Height="30">
+                                <Label Content="Install"
+                                     Foreground="White"
+                                     Padding="0"
+                                     VerticalContentAlignment="Center"
+                                     HorizontalContentAlignment="Center"
+                                     Background="{x:Null}"/>
+                              </Border>
+                            </ToggleButton>
+                          </Grid>
+                        </ListBoxItem>
+                      </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                    <ListBox.ItemContainerStyle>
+                      <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="Margin" Value="0" />
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Background" Value="Transparent" />
+
+                        <Setter Property="Template">
+                          <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                              <ContentPresenter />
+                            </ControlTemplate>
+                          </Setter.Value>
+                        </Setter>
+
+                        <Style.Triggers>
+                          <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush" Value="{x:Null}" />
+                            <Setter Property="Background" Value="Transparent" />
+                          </Trigger>
+
+                          <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="{x:Null}" />
+                          </Trigger>
+                        </Style.Triggers>
+                      </Style>
+                    </ListBox.ItemContainerStyle>
+                  </ListBox>
+
+                </Expander>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+
+            <ListBox.ItemContainerStyle>
+              <Style TargetType="{x:Type ListBoxItem}">
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Background" Value="Transparent" />
+
+                <Setter Property="Template">
+                  <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                      <ContentPresenter />
+                    </ControlTemplate>
+                  </Setter.Value>
+                </Setter>
+
+                <Style.Triggers>
+                  <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="{x:Null}" />
+                    <Setter Property="Background" Value="Transparent" />
+                  </Trigger>
+
+                  <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderBrush" Value="{x:Null}" />
+                  </Trigger>
+                </Style.Triggers>
+              </Style>
+            </ListBox.ItemContainerStyle>
+
+          </ListBox>
+
+        </StackPanel>
+
       </StackPanel>
     </StackPanel>
     <Grid Name="Loader" Panel.ZIndex="1" Margin="0,110,0,0" Visibility="Hidden" >

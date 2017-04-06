@@ -1,11 +1,10 @@
 ﻿using Storage;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Input;
 using UI.Utilities;
 
 namespace UI.Views {
@@ -17,7 +16,8 @@ namespace UI.Views {
     private Protocol.Payloads.UserData _userData;
 
     private ViewModels.FamilyCollectionVM _collectionVM;
-    private ICollectionView _collectionView;
+    private ListCollectionView _collectionView;
+    private ListCollectionView _searchCollection;
     #endregion
 
     #region properties
@@ -78,6 +78,7 @@ namespace UI.Views {
           _collectionVM.Dispose();
           _collectionVM = null;
           _collectionView = null;
+          _searchCollection = null;
         }
       }
       else {
@@ -90,13 +91,26 @@ namespace UI.Views {
 
         _collectionVM = new ViewModels.FamilyCollectionVM(Storage.FamilyCollection);
         RegisterCollectionEvents();
-        _collectionView = CollectionViewSource.GetDefaultView(_collectionVM.Families);
+        _collectionView = new ListCollectionView(_collectionVM.Families);
         _collectionView.Filter = CurrentFilter();
-        if (_collectionView.Filter != null)
-          _collectionView.Refresh();
 
+        _searchCollection = new ListCollectionView(_collectionVM.Families);
+        _searchCollection.Filter = SearchFilter;
+
+        RefreshFiltering();
+
+        SearchFamilyTree.ItemsSource = _searchCollection;
         FamilyTree.ItemsSource = _collectionView;
-        FamilyTree.Visibility = Visibility.Visible;
+
+        if (SearchButton.IsChecked ?? false) {
+          FamilyTree.Visibility = Visibility.Collapsed;
+          SearchPanel.Visibility = Visibility.Visible;
+          UpdateSearchResult();
+        } else {
+          FamilyTree.Visibility = Visibility.Visible;
+          SearchPanel.Visibility = Visibility.Collapsed;
+        }
+
       }
     }
 
@@ -210,14 +224,65 @@ namespace UI.Views {
     }
 
     private Predicate<object> CurrentFilter() {
-      if (InstalledButton.IsChecked ?? false) return InstalledFilter;
-      else if (NewButton.IsChecked ?? false) return NewFilter;
+      if (InstalledButton.IsChecked ?? false) {
+        return InstalledFilter;
+      }
+      else if (NewButton.IsChecked ?? false) {
+        return NewFilter;
+      }
       return null;
     }
 
     private void RefreshFiltering() {
-      if (_collectionView != null && _collectionView.Filter != null) {
-        _collectionView.Refresh();
+      _collectionView?.Refresh();
+      _searchCollection?.Refresh();
+    }
+    #endregion
+
+    #region search handling
+    private void SearchButton_Checked(object sender, RoutedEventArgs e) {
+      _searchCollection?.Refresh();
+      UpdateSearchResult();
+      FamilyTree.Visibility = Visibility.Collapsed;
+      SearchPanel.Visibility = Visibility.Visible;
+    }
+
+    private void SearchButton_Unchecked(object sender, RoutedEventArgs e) {
+      FamilyTree.Visibility = Visibility.Visible;
+      SearchPanel.Visibility = Visibility.Collapsed;
+      SearchInput.Text = null;
+    }
+
+    private void Button_Click(object sender, RoutedEventArgs e) {
+      _searchCollection?.Refresh();
+      UpdateSearchResult();
+    }
+
+    private bool SearchFilter(object item) {
+      ViewModels.FamilyVM fam = item as ViewModels.FamilyVM;
+
+      string searchedTxt = SearchInput.Text?.Trim()?.ToLower();
+      if (searchedTxt == null || searchedTxt == "") {
+        return true;
+      } else {
+        return fam.Name.ToLower().Contains(searchedTxt);
+      }
+    }
+
+    private void SearchInput_KeyUp(object sender, KeyEventArgs e) {
+      if (e.Key == Key.Enter) {
+        e.Handled = true;
+        _searchCollection?.Refresh();
+        UpdateSearchResult();
+      }
+    }
+
+    private void UpdateSearchResult() {
+      if (_searchCollection?.IsEmpty ?? true) {
+        SearchResultArea.Visibility = Visibility.Hidden;
+      } else {
+        SearchResultArea.Visibility = Visibility.Visible;
+        SearchResultCount.Content = _searchCollection.Count;
       }
     }
     #endregion
