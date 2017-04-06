@@ -42,6 +42,7 @@ namespace Protocol {
     public abstract event CatalogUpdateFinishedHandler OnCatalogUpdateFinished;
     public abstract event ConnectionClosedHandler OnConnectionClosed;
     public abstract event DisconnectionHandler OnDisconnected;
+    public abstract event ConnectionTerminatedHandler OnConnectionTerminated;
     #endregion
   }
 }

@@ -528,7 +528,7 @@ namespace Protocol.Impl.Tests {
 
     [TestMethod]
     [TestCategory("Protocol.Disconnect")]
-    public void DisconnectReception_shouldDisconnectTriggerDisconnectedEvent_andStopUpdatingFontStorage() {
+    public void DisconnectReception_shouldTriggerTerminationEvent_andStopUpdatingFontStorage() {
       MockedTransport transport = new MockedTransport();
       MockedHttpTransport http = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
@@ -538,7 +538,7 @@ namespace Protocol.Impl.Tests {
       string reason = null;
       connection.Updated(delegate {
         AutoResetEvent disconnected = new AutoResetEvent(false);
-        connection.OnDisconnected += (r) => {
+        connection.OnConnectionTerminated += (r) => {
           reason = r;
           disconnected.Set();
         };
@@ -547,8 +547,8 @@ namespace Protocol.Impl.Tests {
 
         int timeout = 500;
         bool signaled = disconnected.WaitOne(timeout);
-        Assert.IsTrue(signaled, "Server disconnection should trigger a disconnected event");
-        Assert.AreEqual(TestData.DisconnectReason.Reason, reason, "Disconnected event reason should be the reason the server sent");
+        Assert.IsTrue(signaled, "Server disconnection should trigger a connection termination event");
+        Assert.AreEqual(TestData.DisconnectReason.Reason, reason, "Termination event reason should be the reason the server sent");
       });
     }
 
@@ -563,7 +563,7 @@ namespace Protocol.Impl.Tests {
 
       connection.Updated(delegate {
         AutoResetEvent disconnected = new AutoResetEvent(false);
-        connection.OnDisconnected += (r) => {
+        connection.OnDisconnected += delegate {
           disconnected.Set();
         };
 

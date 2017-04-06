@@ -84,9 +84,15 @@ namespace UI.Views {
       }
     }
 
-    public void Disconnected(string message) {
+    public void Terminated(string message) {
+      MessageBox.Show(this, message, "Fontstore - Connection closed", MessageBoxButton.OK);
+    }
+
+    public void Disconnected() {
       Loader.Visibility = Visibility.Visible;
-      if (MessageBox.Show(message, "Fontstore - Connection lost", MessageBoxButton.OKCancel) == MessageBoxResult.Cancel) {
+      if (MessageBox.Show(this, "The application has been disconnected.\nFontstore will try to reconnect automatically.",
+                          "Fontstore - Connection lost",
+                          MessageBoxButton.OKCancel) == MessageBoxResult.Cancel) {
         OnLogout?.Invoke();
       }
     }

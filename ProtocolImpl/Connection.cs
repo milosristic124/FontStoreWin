@@ -23,6 +23,7 @@ namespace Protocol.Impl {
     public override event CatalogUpdateFinishedHandler OnCatalogUpdateFinished;
     public override event ConnectionClosedHandler OnConnectionClosed;
     public override event DisconnectionHandler OnDisconnected;
+    public override event ConnectionTerminatedHandler OnConnectionTerminated;
     #endregion
 
     #region ctor
@@ -126,13 +127,25 @@ namespace Protocol.Impl {
 
     #region event handling
     private void UserChannel_OnDisconnection(string reason) { // disconnection caused by server
-      //UserChannel.OnDisconnection -= UserChannel_OnDisconnection;
-      //OnDisconnected?.Invoke(reason);
+      Transport.Closed -= Transport_Closed;
+
+      Transport.Disconnect(delegate {
+        if (UserChannel != null) {
+          UserChannel.OnDisconnection -= UserChannel_OnDisconnection;
+        }
+
+        _fsm.State = new Idle(this);
+
+        UserChannel = null;
+        CatalogChannel = null;
+
+        OnConnectionTerminated?.Invoke(reason);
+      });
     }
 
     private void Transport_Closed() { // disconnection caused by error
       Transport.Closed -= Transport_Closed;
-      OnDisconnected?.Invoke("The application has been disconnected.\nFontstore will try to reconnect automatically.");
+      OnDisconnected?.Invoke();
       StartTransportReconnection();
     }
     #endregion

@@ -31,7 +31,8 @@ namespace UI.States {
 
       Application.Context.Connection.OnCatalogUpdateFinished += Connection_OnCatalogUpdateFinished;
       Application.Context.Connection.OnDisconnected += Connection_Disconnected;
-      Application.Context.Connection.OnEstablished += Connection_OnEstablished; ;
+      Application.Context.Connection.OnEstablished += Connection_OnEstablished;
+      Application.Context.Connection.OnConnectionTerminated += Connection_Terminated;
       Application.Context.Storage.OnFontInstall += Storage_OnFontInstall;
       Application.Context.Storage.OnFontUninstall += Storage_OnFontUninstall;
     }
@@ -59,6 +60,7 @@ namespace UI.States {
       _view.OnLogout -= _view_OnLogout;
       Application.Context.Connection.OnCatalogUpdateFinished -= Connection_OnCatalogUpdateFinished;
       Application.Context.Connection.OnDisconnected -= Connection_Disconnected;
+      Application.Context.Connection.OnConnectionTerminated -= Connection_Terminated;
       Application.Context.Storage.OnFontInstall -= Storage_OnFontInstall;
       Application.Context.Storage.OnFontUninstall -= Storage_OnFontUninstall;
     }
@@ -111,14 +113,24 @@ namespace UI.States {
     #endregion
 
     #region event handling
+    private void Connection_Terminated(string reason) {
+      _view.InvokeOnUIThread(() => {
+        _view.Terminated(reason);
+        WillTransition = true;
+        FSM.State = new Login(Application, WindowPosition.FromWindow(_view));
+        FSM.State.Show();
+        Dispose();
+      });
+    }
+
     private async void Connection_OnCatalogUpdateFinished() {
       await Application.Context.Storage.Save();
       ShowLoadedState();
     }
 
-    private void Connection_Disconnected(string reason) {
+    private void Connection_Disconnected() {
       _view.InvokeOnUIThread(delegate {
-        _view.Disconnected(reason);
+        _view.Disconnected();
       });
     }
 

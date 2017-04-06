@@ -87,7 +87,7 @@ namespace UI.Views {
     public void ConnectionRequestFailed(string error) {
       _connecting = false;
       Loader.Visibility = Visibility.Hidden;
-      MessageBox.Show(error, "Fontstore - Connection failed", MessageBoxButton.OK);
+      MessageBox.Show(this, error, "Fontstore - Connection failed", MessageBoxButton.OK);
       EnableUserInputs();
     }
 
