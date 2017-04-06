@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using UI.Utilities;
 using Utilities.Extensions;
 
@@ -29,6 +30,8 @@ namespace UI.States {
       _view.OnLogout += _view_OnLogout;
 
       Application.Context.Connection.OnCatalogUpdateFinished += Connection_OnCatalogUpdateFinished;
+      Application.Context.Connection.OnDisconnected += Connection_Disconnected;
+      Application.Context.Connection.OnEstablished += Connection_OnEstablished; ;
       Application.Context.Storage.OnFontInstall += Storage_OnFontInstall;
       Application.Context.Storage.OnFontUninstall += Storage_OnFontUninstall;
     }
@@ -47,18 +50,7 @@ namespace UI.States {
         _view.Activate();
         _view.Show();
 
-        if (!Application.Context.Storage.Loaded) {
-          ShowLoadingState();
-          await Application.Context.Storage.Load()
-            .Then(() => {
-              Application.Context.Connection.UpdateCatalog();
-            })
-            .Recover(e => {
-              Console.WriteLine(string.Format("Catalog loading failed: {0}", e.Message));
-            });
-        } else {
-          ShowLoadedState();
-        }
+        await LoadContent();
       }
     }
 
@@ -66,12 +58,28 @@ namespace UI.States {
       _view.OnExit -= _view_OnExit;
       _view.OnLogout -= _view_OnLogout;
       Application.Context.Connection.OnCatalogUpdateFinished -= Connection_OnCatalogUpdateFinished;
+      Application.Context.Connection.OnDisconnected -= Connection_Disconnected;
       Application.Context.Storage.OnFontInstall -= Storage_OnFontInstall;
       Application.Context.Storage.OnFontUninstall -= Storage_OnFontUninstall;
     }
     #endregion
 
     #region private methods
+    private async Task LoadContent() {
+      if (!Application.Context.Storage.Loaded) {
+        ShowLoadingState();
+        try {
+          await Application.Context.Storage.Load();
+        } catch (Exception e) {
+          Console.WriteLine(string.Format("Catalog loading failed: {0}", e.Message));
+        }
+        Application.Context.Connection.UpdateCatalog();
+      }
+      else {
+        ShowLoadedState();
+      }
+    }
+
     private void ShowLoadingState() {
       _view.InvokeOnUIThread(() => {
         _view.LoadingState(true);
@@ -106,6 +114,18 @@ namespace UI.States {
     private async void Connection_OnCatalogUpdateFinished() {
       await Application.Context.Storage.Save();
       ShowLoadedState();
+    }
+
+    private void Connection_Disconnected(string reason) {
+      _view.InvokeOnUIThread(delegate {
+        _view.Disconnected(reason);
+      });
+    }
+
+    private void Connection_OnEstablished(Protocol.Payloads.UserData userData) {
+      _view.InvokeOnUIThread(async delegate {
+        await LoadContent();
+      });
     }
 
     private void Storage_OnFontUninstall(Storage.Data.Font font, FontInstaller.InstallationScope scope, bool succeed) {

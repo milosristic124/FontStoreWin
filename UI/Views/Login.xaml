@@ -8,6 +8,7 @@
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         x:Class="UI.Views.Login"
         mc:Ignorable="d"
+        gif:ImageBehavior.AnimateInDesignMode="True"
         Title="Fontstore" Height="480" Width="330" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="Manual" MaxWidth="330" SizeToContent="WidthAndHeight" MinWidth="330" MinHeight="480" MaxHeight="480" ScrollViewer.VerticalScrollBarVisibility="Disabled" AllowsTransparency="True" Background="{x:Null}" Foreground="{x:Null}" ShowInTaskbar="False" Visibility="Visible">
 
   <Grid x:Name="WindowGrid" ScrollViewer.VerticalScrollBarVisibility="Auto">
@@ -108,6 +109,11 @@
       </Label>
       <TextBlock x:Name="SignupLink" HorizontalAlignment="Center" Margin="0,9,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="/UI;component/Fonts/#Litmus" FontWeight="Bold" TextAlignment="Center" Style="{DynamicResource HoverUnderlineStyle}" Foreground="{x:Null}"><Hyperlink NavigateUri="http://fontstore.com/sign-up" RequestNavigate="Hyperlink_RequestNavigate" Style="{DynamicResource HyperlinkBlack}" Focusable="False"><Run Text="SIGN UP"/></Hyperlink></TextBlock>
     </StackPanel>
-    <Image Name="Loader" gif:ImageBehavior.AnimatedSource="/UI;component/Resources/Loader.gif" Panel.ZIndex="1" Visibility="Hidden"/>
+    <Grid Name="Loader" Panel.ZIndex="1" Margin="0,70,0,0" Visibility="Hidden" >
+      <Grid.Background>
+        <SolidColorBrush Color="White" Opacity="0.9"/>
+      </Grid.Background>
+      <Image gif:ImageBehavior.AnimatedSource="/UI;component/Resources/Loader.gif" gif:ImageBehavior.RepeatBehavior="Forever"/>
+    </Grid>
   </Grid>
 </Window>

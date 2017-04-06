@@ -88,7 +88,7 @@ namespace Protocol.Impl {
       OnCatalogUpdateFinished?.Invoke();
     }
 
-    internal void TriggerConnectionClosed() {
+    internal void TriggerConnectionClosed() { // disconnection caused by user
       UserChannel.OnDisconnection -= UserChannel_OnDisconnection;
 
       CatalogChannel = null;
@@ -112,12 +112,33 @@ namespace Protocol.Impl {
     #endregion
 
     #region event handling
-    private void UserChannel_OnDisconnection(string reason) {
+    private void UserChannel_OnDisconnection(string reason) { // disconnection caused by server
+      UserChannel.OnDisconnection -= UserChannel_OnDisconnection;
       OnDisconnected?.Invoke(reason);
+      StartTransportReconnection();
     }
 
-    private void Transport_Closed() {
-      OnDisconnected?.Invoke("");
+    private void Transport_Closed() { // disconnection caused by error
+      Transport.Closed -= Transport_Closed;
+      OnDisconnected?.Invoke("The application has been disconnected.\nFontstore will try to reconnect automatically.");
+      StartTransportReconnection();
+    }
+    #endregion
+
+    #region private methods
+    private async void StartTransportReconnection() {
+      if (UserChannel != null) {
+        UserChannel.Leave();
+        UserChannel = null;
+      }
+      if (CatalogChannel != null) {
+        CatalogChannel.Leave();
+        CatalogChannel = null;
+      }
+
+      await Task.Run(delegate {
+        _fsm.State = new Reconnecting(this);
+      });
     }
     #endregion
   }

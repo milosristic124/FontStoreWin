@@ -97,11 +97,16 @@ namespace Storage.Impl {
       }
 
       UnregisterCollectionEvents();
-      return _HDDStorage.Load().ContinueWith(loadTask => {
-        FamilyCollection = loadTask.Result;
-        RegisterCollectionEvents();
-        Loaded = true;
-      }, TaskContinuationOptions.OnlyOnRanToCompletion);
+
+      return Installer.UninstallAllFonts()
+        .ContinueWith(t => {
+          return _HDDStorage.Load().Result;
+        }, TaskContinuationOptions.OnlyOnRanToCompletion)
+        .ContinueWith(loadTask => {
+          FamilyCollection = loadTask.Result;
+          RegisterCollectionEvents();
+          Loaded = true;
+        }, TaskContinuationOptions.OnlyOnRanToCompletion);
     }
 
     public Task Save() {

@@ -83,9 +83,13 @@ namespace UI.Views {
         FamilyTree.Visibility = Visibility.Visible;
       }
     }
-    #endregion
 
-    #region private methods
+    public void Disconnected(string message) {
+      Loader.Visibility = Visibility.Visible;
+      if (MessageBox.Show(message, "Fontstore - Connection lost", MessageBoxButton.OKCancel) == MessageBoxResult.Cancel) {
+        OnLogout?.Invoke();
+      }
+    }
     #endregion
 
     #region UI event handling

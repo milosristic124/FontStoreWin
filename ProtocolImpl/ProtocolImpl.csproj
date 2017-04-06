@@ -55,6 +55,7 @@
     <Compile Include="States\ConnectionState.cs" />
     <Compile Include="States\Disconnecting.cs" />
     <Compile Include="States\Installing.cs" />
+    <Compile Include="States\Reconnecting.cs" />
     <Compile Include="States\RetryStates.cs" />
     <Compile Include="States\Running.cs" />
     <Compile Include="States\UpdatingCatalog.cs" />
