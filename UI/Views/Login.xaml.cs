@@ -182,7 +182,7 @@ namespace UI.Views {
 
     private void Connect() {
       if (LoginEnabled && !_connecting) {
-        OnConnect?.Invoke(Email, Password, RememberCheck.Checked);
+        OnConnect?.Invoke(Email, Password, RememberCheck.IsChecked);
       }
     }
 

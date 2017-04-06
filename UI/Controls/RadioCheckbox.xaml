@@ -5,18 +5,54 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UI.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" Width="20" Height="20" Foreground="{x:Null}" MinWidth="10" MinHeight="10" MaxWidth="20" MaxHeight="20" MouseLeftButtonUp="UserControl_MouseLeftButtonUp" Cursor="Hand">
-  <Grid>
-    <Border x:Name="Border" BorderThickness="1" CornerRadius="1000" Padding="2" Background="White">
-      <Border.BorderBrush>
-        <SolidColorBrush Color="{DynamicResource FSBlack}"/>
-      </Border.BorderBrush>
-      <Ellipse x:Name="Tick">
-        <Ellipse.Fill>
-          <SolidColorBrush Color="{DynamicResource FSGrey}"/>
-        </Ellipse.Fill>
-      </Ellipse>
-    </Border>
+             d:DesignHeight="21" d:DesignWidth="21" Foreground="{x:Null}" Width="21" Height="21" Cursor="Hand">
 
-  </Grid>
+  <ToggleButton Margin="0" Background="{x:Null}" Padding="0"  Focusable="false" BorderBrush="{x:Null}" Foreground="{x:Null}" BorderThickness="0" IsChecked="{Binding IsChecked, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+    <ToggleButton.Template>
+      <ControlTemplate TargetType="{x:Type ButtonBase}">
+        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+        <ControlTemplate.Triggers>
+          <Trigger Property="Button.IsDefaulted" Value="True"/>
+          <Trigger Property="IsMouseOver" Value="True"/>
+          <Trigger Property="IsPressed" Value="True"/>
+          <Trigger Property="ToggleButton.IsChecked" Value="True"/>
+          <Trigger Property="IsEnabled" Value="False">
+            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="#FF838383"/>
+          </Trigger>
+        </ControlTemplate.Triggers>
+      </ControlTemplate>
+    </ToggleButton.Template>
+    <ToggleButton.Style>
+      <Style TargetType="{x:Type ToggleButton}">
+        <Setter Property="Content">
+          <Setter.Value>
+            <Border BorderThickness="0"  >
+              <Image Source="/UI;component/Resources/CheckBox.png" Stretch="None"  />
+            </Border>
+          </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+          <Trigger Property="IsMouseOver" Value="True">
+            <Setter Property="Opacity" Value="0.8" />
+            <Setter Property="Cursor" Value="Hand" />
+          </Trigger>
+          <Trigger Property="IsEnabled" Value="False">
+            <Setter Property="Opacity" Value="0.5" />
+            <Setter Property="Cursor" Value="Arrow" />
+          </Trigger>
+          
+          <Trigger Property="IsChecked" Value="True">
+            <Setter Property="Content">
+              <Setter.Value>
+                <Border  BorderThickness="0" >
+                  <Image Source="/UI;component/Resources/CheckBox_Active.png" Stretch="None" />
+                </Border>
+              </Setter.Value>
+            </Setter>
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+    </ToggleButton.Style>
+
+  </ToggleButton>
 </UserControl>

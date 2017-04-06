@@ -222,6 +222,16 @@
   <ItemGroup>
     <Resource Include="Resources\Loader.gif" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\CheckBox_Active.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\CheckBox.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Search.png" />
+    <Resource Include="Resources\Search_Active.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
