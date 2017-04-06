@@ -28,6 +28,7 @@ namespace UI.States {
 
       _view.OnExit += _view_OnExit;
       _view.OnLogout += _view_OnLogout;
+      _view.OnAboutClicked += _view_OnAboutClicked;
 
       Application.Context.Connection.OnCatalogUpdateFinished += Connection_OnCatalogUpdateFinished;
       Application.Context.Connection.OnDisconnected += Connection_Disconnected;
@@ -58,6 +59,7 @@ namespace UI.States {
     public override void Dispose() {
       _view.OnExit -= _view_OnExit;
       _view.OnLogout -= _view_OnLogout;
+      _view.OnAboutClicked -= _view_OnAboutClicked;
       Application.Context.Connection.OnCatalogUpdateFinished -= Connection_OnCatalogUpdateFinished;
       Application.Context.Connection.OnDisconnected -= Connection_Disconnected;
       Application.Context.Connection.OnConnectionTerminated -= Connection_Terminated;
@@ -112,6 +114,12 @@ namespace UI.States {
     private void _view_OnExit() {
       Application.Context.Connection.Disconnect(Protocol.DisconnectReason.Quit);
       Application.Shutdown();
+    }
+
+    private void _view_OnAboutClicked() {
+      _view.InvokeOnUIThread(delegate {
+        Application.ShowAboutPopup(_view);
+      });
     }
     #endregion
 

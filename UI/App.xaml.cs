@@ -2,6 +2,7 @@
 using System;
 using System.Windows;
 using System.Windows.Input;
+using Utilities;
 using Utilities.FSM;
 
 namespace UI {
@@ -41,6 +42,14 @@ namespace UI {
       Context = Core.Factory.InitializeApplicationContext();
       _ui.State = new States.Login(this);
       _ui.State.Show();
+    }
+    #endregion
+
+    #region about popup
+    public void ShowAboutPopup(Window parent) {
+      string aboutTxt = $"Fontstore v{Constants.App.ApplicationVersion}\n" +
+        $"Indian Type Foundry all rights reserved - © 2017";
+      MessageBox.Show(parent, aboutTxt, "About Fontstore", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
     }
     #endregion
 

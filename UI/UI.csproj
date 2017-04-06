@@ -83,6 +83,9 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Controls\SearchButton.xaml.cs">
+      <DependentUpon>SearchButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dev\DesignFamily.cs" />
     <Compile Include="Dev\TriggerTracing.cs" />
     <Compile Include="Utilities\ViewsUtility.cs" />
@@ -91,7 +94,7 @@
     <Compile Include="ViewModels\FamilyVM.cs" />
     <Compile Include="ViewModels\FontVM.cs" />
     <Compile Include="Views\IView.cs" />
-    <Page Include="Controls\RadioCheckbox.xaml">
+    <Page Include="Controls\RememberMeButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -101,6 +104,10 @@
     <DesignDataWithDesignTimeCreatableTypes Include="Dev\SampleFamily.xaml">
       <SubType>Designer</SubType>
     </DesignDataWithDesignTimeCreatableTypes>
+    <Page Include="Controls\SearchButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -117,8 +124,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Controls\RadioCheckbox.xaml.cs">
-      <DependentUpon>RadioCheckbox.xaml</DependentUpon>
+    <Compile Include="Controls\RememberMeButton.xaml.cs">
+      <DependentUpon>RememberMeButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="States\FontList.cs" />
     <Compile Include="States\Login.cs" />

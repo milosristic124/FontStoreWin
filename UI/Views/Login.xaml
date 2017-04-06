@@ -87,7 +87,7 @@
           <SolidColorBrush Color="{DynamicResource FSBlack}"/>
         </PasswordBox.Foreground>
       </PasswordBox>
-      <Controls:RadioCheckbox x:Name="RememberCheck" VerticalAlignment="Top" HorizontalAlignment="Center" Background="White" Margin="0,22,0,0" TabIndex="3" IsTabStop="True" Width="Auto" Height="Auto"/>
+      <Controls:RememberMeButton x:Name="RememberCheck" VerticalAlignment="Top" HorizontalAlignment="Center" Background="White" Margin="0,22,0,0" TabIndex="3" IsTabStop="True" Width="Auto" Height="Auto"/>
       <Label x:Name="RememberLabel" Content="Remember me" FontFamily="/UI;component/Fonts/#Litmus" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="0" Margin="0,11,0,0">
         <Label.Foreground>
           <SolidColorBrush Color="{DynamicResource FSBlack}"/>

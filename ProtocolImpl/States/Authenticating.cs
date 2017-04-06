@@ -20,9 +20,9 @@ namespace Protocol.Impl.States {
       _authPayload = new Payloads.Connect {
         Login = email,
         Password = password,
-        ProtocolVersion = "0.2.8",
-        ApplicationVersion = "0.2",
-        Os = "Win",
+        ProtocolVersion = Constants.App.ProtocolVersion,
+        ApplicationVersion = Constants.App.ApplicationVersion,
+        Os = Constants.App.OSType,
         OsVersion = Environment.OSVersion.VersionString
       };
     }
@@ -30,9 +30,9 @@ namespace Protocol.Impl.States {
     public Authenticating(Connection connection, string authToken) : this(connection) {
       _authPayload = new Payloads.AutoConnect {
         AuthToken = authToken,
-        ProtocolVersion = "0.2.8",
-        ApplicationVersion = "0.2",
-        Os = "Win",
+        ProtocolVersion = Constants.App.ProtocolVersion,
+        ApplicationVersion = Constants.App.ApplicationVersion,
+        Os = Constants.App.OSType,
         OsVersion = Environment.OSVersion.VersionString
       };
     }
@@ -54,7 +54,7 @@ namespace Protocol.Impl.States {
     }
 
     protected override async void Start() {
-      _authRequest = _context.HttpTransport.CreateHttpRequest(Urls.Authentication);
+      _authRequest = _context.HttpTransport.CreateHttpRequest(Constants.Urls.Authentication);
 
       _authRequest.Method = WebRequestMethods.Http.Post;
       _authRequest.ContentType = "application/json";

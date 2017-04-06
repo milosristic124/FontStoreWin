@@ -1,20 +1,21 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace UI.Controls {
   /// <summary>
-  /// Interaction logic for RadioCheckbox.xaml
+  /// Interaction logic for SearchButton.xaml
   /// </summary>
-  public partial class RadioCheckbox : UserControl {
-    public RadioCheckbox() {
+  public partial class SearchButton : UserControl {
+    public SearchButton() {
       InitializeComponent();
     }
 
     public static readonly DependencyProperty IsCheckedProperty =
             DependencyProperty.Register(
-            "IsChecked",
+            "SearchButton.IsChecked",
             typeof(bool),
-            typeof(RadioCheckbox));
+            typeof(RememberMeButton));
 
     public bool IsChecked {
       get { return (bool)GetValue(IsCheckedProperty); }

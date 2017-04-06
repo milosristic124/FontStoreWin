@@ -11,7 +11,7 @@ namespace Protocol.Impl.States {
     #region ctor
     public Connecting(Connection connection, Payloads.UserData userData) : this(connection) {
       _userData = userData;
-      _context.Transport.EndPoint = Urls.Connection;
+      _context.Transport.EndPoint = Constants.Urls.Connection;
       _context.Transport.UrlParams["reuse_token"] = _userData.AuthToken;
     }
 

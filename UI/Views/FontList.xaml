@@ -113,6 +113,7 @@
               </Label>
             </StackPanel>
           </RadioButton>
+          <Controls:SearchButton IsTabStop="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Grid.Column="3" Height="32" />
         </Grid>
         <Separator Height="1" Margin="0" VerticalAlignment="Top" d:IsLocked="True">
           <Separator.Background>

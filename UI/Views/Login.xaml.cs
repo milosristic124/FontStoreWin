@@ -48,13 +48,12 @@ namespace UI.Views {
 
     #region delegates
     public delegate void OnConnectHandler(string email, string password, bool saveCredentials);
-    public delegate void OnConnectionCanceledHandler();
     #endregion
 
     #region events
     public event OnExitHandler OnExit;
-    public event OnConnectionCanceledHandler OnConnectionCanceled;
     public event OnConnectHandler OnConnect;
+    public event OnAboutClickedHandler OnAboutClicked;
     #endregion
 
     #region properties
@@ -169,6 +168,7 @@ namespace UI.Views {
     }
 
     private void About_Click(object sender, RoutedEventArgs e) {
+      OnAboutClicked?.Invoke();
     }
     #endregion
 

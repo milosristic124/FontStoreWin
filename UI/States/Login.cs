@@ -27,6 +27,7 @@ namespace UI.States {
 
       _view.OnConnect += _view_OnConnect;
       _view.OnExit += _view_OnExit;
+      _view.OnAboutClicked += _view_OnAboutClicked;
 
       Application.Context.Connection.OnValidationFailure += Connection_OnValidationFailure;
       Application.Context.Connection.OnEstablished += Connection_OnEstablished;
@@ -54,6 +55,7 @@ namespace UI.States {
 
       _view.OnConnect -= _view_OnConnect;
       _view.OnExit -= _view_OnExit;
+      _view.OnAboutClicked -= _view_OnAboutClicked;
     }
     #endregion
 
@@ -82,6 +84,12 @@ namespace UI.States {
     private void _view_OnExit() {
       Application.Context.Connection.Disconnect(Protocol.DisconnectReason.Quit);
       Application.Shutdown();
+    }
+
+    private void _view_OnAboutClicked() {
+      _view.InvokeOnUIThread(delegate {
+        Application.ShowAboutPopup(_view);
+      });
     }
     #endregion
 

@@ -31,12 +31,10 @@ namespace UI.Views {
     public IStorage Storage { get; set; }
     #endregion
 
-    #region delegate
-    #endregion
-
     #region events
     public event OnExitHandler OnExit;
     public event OnLogoutHandler OnLogout;
+    public event OnAboutClickedHandler OnAboutClicked;
     #endregion
 
     #region ctor
@@ -130,6 +128,7 @@ namespace UI.Views {
     }
 
     private void About_Click(object sender, RoutedEventArgs e) {
+      OnAboutClicked?.Invoke();
     }
 
     private void Logout_Click(object sender, RoutedEventArgs e) {
