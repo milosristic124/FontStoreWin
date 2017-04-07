@@ -67,6 +67,8 @@ namespace Storage.Impl {
     #region events
     public event FontInstallationHandler OnFontInstall;
     public event FontUninstallationHandler OnFontUninstall;
+    public event FontActivationRequestHandler OnFontActivationRequest;
+    public event FontDeactivationRequestHandler OnFontDeactivationRequest;
     #endregion
 
     #region ctor
@@ -131,6 +133,21 @@ namespace Storage.Impl {
       }, TaskContinuationOptions.OnlyOnRanToCompletion);
     }
 
+    public void Clear() {
+      UnregisterCollectionEvents();
+      FamilyCollection = new FamilyCollection();
+      RegisterCollectionEvents();
+
+      _HDDStorage = new FSStorage(_HDDStorage);
+      _fsAgent = new FSSynchronizationAgent(_fsAgent);
+      _installAgent = new FontInstallerAgent(_HDDStorage, Installer);
+
+      Loaded = false;
+      HasChanged = false;
+
+      _synchronizationCallback = null;
+    }
+
     public Font AddFont(FontDescription description) {
       Font newFont = new Font(
         uid: description.UID,
@@ -144,12 +161,12 @@ namespace Storage.Impl {
       return newFont;
     }
 
-    public void RemoveFont(FontId fid) {
+    public void RemoveFont(TimestampedFontId fid) {
       FamilyCollection.RemoveFont(fid.UID);
       _HDDStorage.LastCatalogUpdate = DateTimeHelper.FromTimestamp(fid.TransmittedAt);
     }
 
-    public void ActivateFont(FontId fid) {
+    public void ActivateFont(TimestampedFontId fid) {
       Font font = FindFont(fid.UID);
       if (font != null) {
         font.Activated = true;
@@ -157,7 +174,7 @@ namespace Storage.Impl {
       _HDDStorage.LastFontStatusUpdate = DateTimeHelper.FromTimestamp(fid.TransmittedAt);
     }
 
-    public void DeactivateFont(FontId fid) {
+    public void DeactivateFont(TimestampedFontId fid) {
       Font font = FindFont(fid.UID);
       if (font != null) {
         font.Activated = false;
@@ -193,6 +210,26 @@ namespace Storage.Impl {
     public void AbortSynchronization() {
       _fsAgent.AbortProcessing();
       _installAgent.AbortProcessing();
+    }
+    #endregion
+
+    #region private methods
+    private void RegisterCollectionEvents() {
+      FamilyCollection.OnActivationChanged += FamilyCollection_OnActivationChanged;
+      FamilyCollection.OnFontAdded += FamilyCollection_OnFontAdded;
+      FamilyCollection.OnFontRemoved += FamilyCollection_OnFontRemoved;
+      FamilyCollection.OnFontUpdated += FamilyCollection_OnFontUpdated;
+      FamilyCollection.OnActivationRequest += FamilyCollection_OnActivationRequest;
+      FamilyCollection.OnDeactivationRequest += FamilyCollection_OnDeactivationRequest;
+    }
+
+    private void UnregisterCollectionEvents() {
+      FamilyCollection.OnActivationChanged -= FamilyCollection_OnActivationChanged;
+      FamilyCollection.OnFontAdded -= FamilyCollection_OnFontAdded;
+      FamilyCollection.OnFontRemoved -= FamilyCollection_OnFontRemoved;
+      FamilyCollection.OnFontUpdated -= FamilyCollection_OnFontUpdated;
+      FamilyCollection.OnActivationRequest -= FamilyCollection_OnActivationRequest;
+      FamilyCollection.OnDeactivationRequest -= FamilyCollection_OnDeactivationRequest;
     }
     #endregion
 
@@ -320,21 +357,13 @@ namespace Storage.Impl {
       });
       HasChanged = true;
     }
-    #endregion
 
-    #region private methods
-    private void RegisterCollectionEvents() {
-      FamilyCollection.OnActivationChanged += FamilyCollection_OnActivationChanged;
-      FamilyCollection.OnFontAdded += FamilyCollection_OnFontAdded;
-      FamilyCollection.OnFontRemoved += FamilyCollection_OnFontRemoved;
-      FamilyCollection.OnFontUpdated += FamilyCollection_OnFontUpdated;
+    private void FamilyCollection_OnActivationRequest(FamilyCollection sender, Family family, Font target) {
+      OnFontActivationRequest?.Invoke(target);
     }
 
-    private void UnregisterCollectionEvents() {
-      FamilyCollection.OnActivationChanged -= FamilyCollection_OnActivationChanged;
-      FamilyCollection.OnFontAdded -= FamilyCollection_OnFontAdded;
-      FamilyCollection.OnFontRemoved -= FamilyCollection_OnFontRemoved;
-      FamilyCollection.OnFontUpdated -= FamilyCollection_OnFontUpdated;
+    private void FamilyCollection_OnDeactivationRequest(FamilyCollection sender, Family family, Font target) {
+      OnFontDeactivationRequest?.Invoke(target);
     }
     #endregion
   }

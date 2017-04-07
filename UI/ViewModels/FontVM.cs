@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Input;
 
 namespace UI.ViewModels {
   class FontVM : INotifyPropertyChanged {
@@ -28,7 +29,12 @@ namespace UI.ViewModels {
         return _model.Activated;
       }
       set {
-        _model.Activated = value;
+        if (!value && _model.Activated) {
+          _model.RequestDeactivation();
+        }
+        else if (value && !_model.Activated) {
+          _model.RequestActivation();
+        }
       }
     }
     #endregion

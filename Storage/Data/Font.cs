@@ -49,11 +49,17 @@ namespace Storage.Data {
     #region delegates
     public delegate void FontActivationEventHandler(Font sender);
     public delegate void FontInstallationEventhandler(Font sender);
+
+    public delegate void FontActivationRequestedHandler(Font sender);
+    public delegate void FontDeactivationRequestedHandler(Font sender);
     #endregion
 
     #region events
     public event FontActivationEventHandler OnActivationChanged;
     public event FontInstallationEventhandler OnInstallationChanged;
+
+    public event FontActivationRequestedHandler OnActivationRequest;
+    public event FontDeactivationRequestedHandler OnDeactivationRequest;
     #endregion
 
     #region ctor
@@ -65,6 +71,16 @@ namespace Storage.Data {
       CreatedAt = DateTimeHelper.FromTimestamp(timestamp);
       _activated = false;
       _installed = false;
+    }
+    #endregion
+
+    #region methods
+    public void RequestDeactivation() {
+      OnDeactivationRequest?.Invoke(this);
+    }
+
+    public void RequestActivation() {
+      OnActivationRequest?.Invoke(this);
     }
     #endregion
   }

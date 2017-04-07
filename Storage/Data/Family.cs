@@ -45,6 +45,9 @@ namespace Storage.Data {
     public delegate void FontActivationChangedHandler(Family sender, Font target);
     public delegate void FontInstallationChangedHandler(Family sender, Font target);
     public delegate void FullyActivatedChangedHandler(Family sender);
+
+    public delegate void FontActivationRequestHandler(Family sender, Font target);
+    public delegate void FontDeactivationRequestHandler(Family sender, Font target);
     #endregion
 
     #region events
@@ -55,6 +58,9 @@ namespace Storage.Data {
     public event FontActivationChangedHandler OnActivationChanged;
     public event FontInstallationChangedHandler OnInstallationChanged;
     public event FullyActivatedChangedHandler OnFullyActivatedChanged;
+
+    public event FontActivationRequestHandler OnActivationRequest;
+    public event FontDeactivationRequestHandler OnDeactivationRequest;
     #endregion
 
     #region ctor
@@ -125,17 +131,25 @@ namespace Storage.Data {
     private void RegisterFontEvents(Font font) {
       font.OnActivationChanged += FontActivationChanged;
       font.OnInstallationChanged += FontInstallationChanged;
+      font.OnActivationRequest += FontActivationRequest;
+      font.OnDeactivationRequest += FontDeactivationRequest;
     }
 
     private void UnregisterFontEvents(Font font) {
       font.OnActivationChanged -= FontActivationChanged;
       font.OnInstallationChanged -= FontInstallationChanged;
+      font.OnActivationRequest -= FontActivationRequest;
+      font.OnDeactivationRequest -= FontDeactivationRequest;
     }
 
     private void ToggleFullFamilyActivation(bool newValue) {
       _batchActivation = true;
       foreach (Font font in Fonts) {
-        font.Activated = newValue;
+        if (newValue) {
+          font.RequestActivation();
+        } else {
+          font.RequestDeactivation();
+        }
       }
       _batchActivation = false;
       UpdateFamilyActivationStatus();
@@ -184,6 +198,14 @@ namespace Storage.Data {
       else if (!FullyActivated && sender.Activated) { // case 3
         UpdateFamilyActivationStatus();
       }
+    }
+
+    private void FontActivationRequest(Font sender) {
+      OnActivationRequest?.Invoke(this, sender);
+    }
+
+    private void FontDeactivationRequest(Font sender) {
+      OnDeactivationRequest?.Invoke(this, sender);
     }
     #endregion
   }

@@ -36,11 +36,11 @@ namespace Protocol.Impl.States {
       FSM.State = new Installing(_context);
     }
 
-    private void UserChannel_OnFontDeactivation(Payloads.FontId fid) {
+    private void UserChannel_OnFontDeactivation(Payloads.TimestampedFontId fid) {
       _context.Storage.DeactivateFont(fid);
     }
 
-    private void UserChannel_OnFontActivation(Payloads.FontId fid) {
+    private void UserChannel_OnFontActivation(Payloads.TimestampedFontId fid) {
       _context.Storage.ActivateFont(fid);
     }
     #endregion

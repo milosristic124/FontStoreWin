@@ -94,6 +94,9 @@ namespace Storage.Impl.Internal {
       }
 
     }
+
+    internal FSStorage(FSStorage other): this(other._storageRootPath) {
+    }
     #endregion
 
     #region methods

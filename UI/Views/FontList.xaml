@@ -275,7 +275,7 @@
                                         FontSize="12"
                                         FontWeight="Regular"
                                         Padding="0"
-                                        IsChecked="{Binding Activated}"
+                                        IsChecked="{Binding Activated, Mode=TwoWay}"
                                         Style="{DynamicResource FSInstallButton}"
                                         HorizontalContentAlignment="Center"
                                         VerticalContentAlignment="Stretch">

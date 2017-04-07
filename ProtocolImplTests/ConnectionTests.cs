@@ -499,6 +499,58 @@ namespace Protocol.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Protocol.Running")]
+    public void FontActivationRequest_shouldSendFontActivationRequest() {
+      MockedTransport transport = new MockedTransport();
+      MockedHttpTransport http = new MockedHttpTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      MockedStorage storage = new MockedStorage(installer);
+      TestConnection connection = new TestConnection(transport, http, storage);
+
+      connection.Updated(delegate {
+        bool requestSent = false;
+        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+          if (evt == connection.UserTopicEvent("font:activation-request")) {
+            requestSent = true;
+          }
+        };
+
+        Task asyncEvents = Task.Run(delegate {
+          storage.FindFont(TestData.Font1_Description.UID)?.RequestActivation();
+        });
+        asyncEvents.Wait();
+
+        Assert.IsTrue(requestSent, "Requesting font activation should send activation request to server");
+      });
+    }
+
+    [TestMethod]
+    [TestCategory("Protocol.Running")]
+    public void FontDeactivationRequest_shouldSendFontDeactivationRequest() {
+      MockedTransport transport = new MockedTransport();
+      MockedHttpTransport http = new MockedHttpTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      MockedStorage storage = new MockedStorage(installer);
+      TestConnection connection = new TestConnection(transport, http, storage);
+
+      connection.Updated(delegate {
+        bool requestSent = false;
+        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+          if (evt == connection.UserTopicEvent("font:deactivation-request")) {
+            requestSent = true;
+          }
+        };
+
+        Task asyncEvents = Task.Run(delegate {
+          storage.FindFont(TestData.Font1_Description.UID)?.RequestDeactivation();
+        });
+        asyncEvents.Wait();
+
+        Assert.IsTrue(requestSent, "Requesting font deactivation should send deactivation request to server");
+      });
+    }
+
+    [TestMethod]
     [TestCategory("Protocol.Disconnect")]
     public void Disconnect_shouldDisconnectTheTransport_andStopUpdatingFontStorage() {
       MockedTransport transport = new MockedTransport();

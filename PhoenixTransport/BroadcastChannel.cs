@@ -8,6 +8,12 @@ namespace Protocol.Transport.Phoenix {
     protected Channel _channel;
     #endregion
 
+    #region properties
+    public bool IsJoined {
+      get { return _channel?.IsJoined() ?? false; }
+    }
+    #endregion
+
     #region ctor
     private BroadcastChannel() {
       throw new InvalidOperationException("A BroadcastChannel can only be instanciated via AConnectionTransport.Channel");

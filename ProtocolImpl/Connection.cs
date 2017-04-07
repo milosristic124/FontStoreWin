@@ -131,6 +131,12 @@ namespace Protocol.Impl {
     private bool CanTransition<T>() where T: ConnectionState {
       return _fsm.State.CanTransitionTo<T>();
     }
+
+    private async void StartTransportReconnection() {
+      await Task.Run(delegate {
+        _fsm.State = new Reconnecting(this);
+      });
+    }
     #endregion
 
     #region event handling
@@ -155,14 +161,6 @@ namespace Protocol.Impl {
       Transport.Closed -= Transport_Closed;
       OnDisconnected?.Invoke();
       StartTransportReconnection();
-    }
-    #endregion
-
-    #region private methods
-    private async void StartTransportReconnection() {
-      await Task.Run(delegate {
-        _fsm.State = new Reconnecting(this);
-      });
     }
     #endregion
   }

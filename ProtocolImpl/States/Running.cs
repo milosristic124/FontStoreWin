@@ -42,6 +42,9 @@ namespace Protocol.Impl.States {
 
       _context.Storage.OnFontInstall += Storage_OnFontInstall;
       _context.Storage.OnFontUninstall += Storage_OnFontUninstall;
+
+      _context.Storage.OnFontActivationRequest += Storage_OnFontActivationRequest;
+      _context.Storage.OnFontDeactivationRequest += Storage_OnFontDeactivationRequest;
     }
 
     private void UnregisterEvents() {
@@ -57,15 +60,15 @@ namespace Protocol.Impl.States {
     #endregion
 
     #region event handling
-    private void UserChannel_OnFontDeactivation(Payloads.FontId fid) {
+    private void UserChannel_OnFontDeactivation(Payloads.TimestampedFontId fid) {
       _context.Storage.DeactivateFont(fid);
     }
 
-    private void UserChannel_OnFontActivation(Payloads.FontId fid) {
+    private void UserChannel_OnFontActivation(Payloads.TimestampedFontId fid) { // activation from server
       _context.Storage.ActivateFont(fid);
     }
 
-    private void CatalogChannel_OnFontDeletion(Payloads.FontId fid) {
+    private void CatalogChannel_OnFontDeletion(Payloads.TimestampedFontId fid) {
       _context.Storage.RemoveFont(fid);
     }
 
@@ -74,14 +77,24 @@ namespace Protocol.Impl.States {
     }
     #endregion
 
+    #region activation requests handling
+    private void Storage_OnFontDeactivationRequest(Font font) {
+      _context.UserChannel.RequestFontDeactivation(font.UID);
+    }
+
+    private void Storage_OnFontActivationRequest(Font font) {
+      _context.UserChannel.RequestFontActivation(font.UID);
+    }
+    #endregion
+
     #region installation events handling
-    private void Storage_OnFontUninstall(Storage.Data.Font font, InstallationScope scope, bool succeed) {
+    private void Storage_OnFontUninstall(Font font, InstallationScope scope, bool succeed) {
       if (scope.HasFlag(InstallationScope.User)) {
         _context.UserChannel.SendFontUninstallationReport(font.UID, succeed);
       }
     }
 
-    private void Storage_OnFontInstall(Storage.Data.Font font, InstallationScope scope, bool succeed) {
+    private void Storage_OnFontInstall(Font font, InstallationScope scope, bool succeed) {
       if (scope.HasFlag(InstallationScope.User)) {
         _context.UserChannel.SendFontInstallationReport(font.UID, succeed);
       }

@@ -7,6 +7,8 @@ namespace UI.States {
   class FontList : UIState {
     #region data
     private Views.FontList _view = null;
+    private bool _reconnecting = false;
+    private bool _loading = false;
     #endregion
 
     #region properties
@@ -52,7 +54,12 @@ namespace UI.States {
         _view.Activate();
         _view.Show();
 
-        await LoadContent();
+        if (_reconnecting) {
+          ShowLoadingState();
+        }
+        else {
+          await LoadContent();
+        }
       }
     }
 
@@ -69,8 +76,11 @@ namespace UI.States {
     #endregion
 
     #region private methods
-    private async Task LoadContent(bool reload = false) {
-      if (reload || !Application.Context.Storage.Loaded) {
+    private async Task LoadContent(bool force = false) {
+      if (_loading) {
+        ShowLoadingState();
+      } else if (force || !Application.Context.Storage.Loaded) {
+        _loading = true;
         ShowLoadingState();
         try {
           await Application.Context.Storage.LoadFonts();
@@ -100,8 +110,9 @@ namespace UI.States {
     #region action handling
     private async void _view_OnLogout() {
       Application.Context.Connection.Disconnect(Protocol.DisconnectReason.Logout);
+      await Application.Context.Storage.SaveFonts();
       await Application.Context.Storage.CleanCredentials();
-      Console.WriteLine("Credentials cleaned");
+      Application.Context.Storage.Clear();
 
       _view.InvokeOnUIThread(() => {
         WillTransition = true;
@@ -137,16 +148,21 @@ namespace UI.States {
     private async void Connection_OnCatalogUpdateFinished() {
       await Application.Context.Storage.SaveFonts();
       ShowLoadedState();
+      _loading = false;
     }
 
     private void Connection_Disconnected() {
+      _reconnecting = true;
       _view.InvokeOnUIThread(delegate {
         _view.Disconnected();
       });
     }
 
     private async void Connection_OnEstablished(Protocol.Payloads.UserData userData) {
-      await LoadContent(true);
+      if (_reconnecting) { // we should only be called if we reconnect after having lost the connection
+        _reconnecting = false;
+        await LoadContent(true);
+      }
     }
 
     private void Storage_OnFontUninstall(Storage.Data.Font font, FontInstaller.InstallationScope scope, bool succeed) {

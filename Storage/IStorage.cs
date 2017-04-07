@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 namespace Storage {
   public delegate void FontInstallationHandler(Font font, InstallationScope scope, bool succeed);
   public delegate void FontUninstallationHandler(Font font, InstallationScope scope, bool succeed);
+  public delegate void FontActivationRequestHandler(Font font);
+  public delegate void FontDeactivationRequestHandler(Font font);
 
   public interface IStorage {
     #region properties
@@ -28,6 +30,8 @@ namespace Storage {
     #region events
     event FontInstallationHandler OnFontInstall;
     event FontUninstallationHandler OnFontUninstall;
+    event FontActivationRequestHandler OnFontActivationRequest;
+    event FontDeactivationRequestHandler OnFontDeactivationRequest;
     #endregion
 
     #region methods
@@ -37,13 +41,14 @@ namespace Storage {
 
     Task LoadFonts();
     Task SaveFonts();
+    void Clear();
 
     Font FindFont(string uid);
 
     Font AddFont(FontDescription description);
-    void RemoveFont(FontId fid);
-    void ActivateFont(FontId fid);
-    void DeactivateFont(FontId fid);
+    void RemoveFont(TimestampedFontId fid);
+    void ActivateFont(TimestampedFontId fid);
+    void DeactivateFont(TimestampedFontId fid);
 
     void DeactivateAllFonts(Action then = null);
 

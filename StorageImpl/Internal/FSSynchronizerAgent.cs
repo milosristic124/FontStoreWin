@@ -46,6 +46,9 @@ namespace Storage.Impl.Internal {
       _agent.OnProcessingFinished += _agent_OnProcessingFinished;
       _agent.OnProcessingStarted += _agent_OnProcessingStarted;
     }
+
+    internal FSSynchronizationAgent(FSSynchronizationAgent other): this(other._transport, other._storage) {
+    }
     #endregion
 
     #region methods

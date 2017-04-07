@@ -53,7 +53,7 @@ namespace TestUtilities {
       TransmittedAt = 0
     };
 
-    public static FontId Font1_Id = new FontId {
+    public static TimestampedFontId Font1_Id = new TimestampedFontId {
       UID = Font1_Description.UID,
       TransmittedAt = 0
     };
@@ -67,7 +67,7 @@ namespace TestUtilities {
       TransmittedAt = 0
     };
 
-    public static FontId Font3_Id = new FontId {
+    public static TimestampedFontId Font3_Id = new TimestampedFontId {
       UID = Font3_Description.UID,
       TransmittedAt = 0
     };
@@ -82,7 +82,7 @@ namespace TestUtilities {
       TransmittedAt = 0
     };
 
-    public static FontId Font2_Id = new FontId {
+    public static TimestampedFontId Font2_Id = new TimestampedFontId {
       UID = Font2_Description.UID,
       TransmittedAt = 0
     };

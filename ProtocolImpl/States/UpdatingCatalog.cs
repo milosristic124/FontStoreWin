@@ -37,7 +37,7 @@ namespace Protocol.Impl.States {
       FSM.State = new UpdatingFonts(_context);
     }
 
-    private void _chan_OnFontDeletion(Payloads.FontId fid) {
+    private void _chan_OnFontDeletion(Payloads.TimestampedFontId fid) {
       _context.Storage.RemoveFont(fid);
     }
 

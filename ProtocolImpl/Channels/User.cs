@@ -14,6 +14,12 @@ namespace Protocol.Impl.Channels {
     private IBroadcastChannel _underlying;
     #endregion
 
+    #region properties
+    public bool IsJoined {
+      get { return _underlying.IsJoined; }
+    }
+    #endregion
+
     #region ctor
     public User(IConnection connection) {
       _connection = connection;
@@ -23,10 +29,10 @@ namespace Protocol.Impl.Channels {
 
     #region methods
     public IBroadcastChannelResult Join() {
-      _underlying.On("font:activation", (Payloads.FontId fid) => {
+      _underlying.On("font:activation", (Payloads.TimestampedFontId fid) => {
         OnFontActivation?.Invoke(fid);
       });
-      _underlying.On("font:deactivation", (Payloads.FontId fid) => {
+      _underlying.On("font:deactivation", (Payloads.TimestampedFontId fid) => {
         OnFontDeactivation?.Invoke(fid);
       });
       _underlying.On("update:complete", () => {
@@ -64,6 +70,18 @@ namespace Protocol.Impl.Channels {
       _underlying.Send("update:request", payload);
     }
 
+    public void RequestFontActivation(string uid) {
+      _underlying.Send("font:activation-request", JsonConvert.SerializeObject(new Payloads.FontId {
+        UID = uid
+      }));
+    }
+
+    public void RequestFontDeactivation(string uid) {
+      _underlying.Send("font:deactivation-request", JsonConvert.SerializeObject(new Payloads.FontId {
+        UID = uid
+      }));
+    }
+
     public void SendFontInstallationReport(string uid, bool succeed) {
       string evt = succeed ? "font:installation-success" : "font:installation-failure";
       _underlying.Send(evt, JsonConvert.SerializeObject(new Payloads.FontId() {
@@ -84,8 +102,8 @@ namespace Protocol.Impl.Channels {
     #endregion
 
     #region delegates
-    public delegate void FontActivationHandler(Payloads.FontId fid);
-    public delegate void FontDeactivationHandler(Payloads.FontId fid);
+    public delegate void FontActivationHandler(Payloads.TimestampedFontId fid);
+    public delegate void FontDeactivationHandler(Payloads.TimestampedFontId fid);
     public delegate void UpdateCompleteHandler();
     public delegate void DisconnectionHandler(string reason);
     #endregion

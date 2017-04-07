@@ -9,6 +9,12 @@ namespace Protocol.Impl.Channels {
     private IBroadcastChannel _underlying;
     #endregion
 
+    #region properties
+    public bool IsJoined {
+      get { return _underlying.IsJoined; }
+    }
+    #endregion
+
     #region ctor
     public Catalog(IConnection connection) {
       _connection = connection;
@@ -21,7 +27,7 @@ namespace Protocol.Impl.Channels {
       _underlying.On("font:description", (Payloads.FontDescription desc) => {
         OnFontDescription?.Invoke(desc);
       });
-      _underlying.On("font:deletion", (Payloads.FontId del) => {
+      _underlying.On("font:deletion", (Payloads.TimestampedFontId del) => {
         OnFontDeletion?.Invoke(del);
       });
       _underlying.On("update:complete", () => {
@@ -53,7 +59,7 @@ namespace Protocol.Impl.Channels {
 
     #region delegates
     public delegate void FontDescriptionHandler(Payloads.FontDescription desc);
-    public delegate void FontDeletionHandler(Payloads.FontId fid);
+    public delegate void FontDeletionHandler(Payloads.TimestampedFontId fid);
     public delegate void UpdateCompleteHandler();
     #endregion
 

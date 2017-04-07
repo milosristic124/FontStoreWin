@@ -2,6 +2,8 @@
 
 namespace Protocol.Transport {
   public interface IBroadcastChannel {
+    bool IsJoined { get; }
+
     IBroadcastChannelResult Join();
     IBroadcastChannelResult Leave();
 

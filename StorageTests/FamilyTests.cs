@@ -181,37 +181,33 @@ namespace Storage.Impl.Tests {
 
     [TestMethod]
     [TestCategory("Family.Behavior")]
-    public void FamilyFullyActivatedSet_shouldSetAllFontsActivatedState() {
+    public void FamilyFullyActivatedSet_shouldTriggerRequestActivationForAllChildFonts() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
       Font font1 = Factory.CreateFont(TestData.Font1_Description);
       Font font2 = Factory.CreateFont(TestData.Font2_Description);
       family.Add(font1);
       family.Add(font2);
 
-      family.FullyActivated = true;
-      Assert.IsTrue(font1.Activated && font2.Activated, "Family.FullyActivated set to True should activate all fonts");
-
-      family.FullyActivated = false;
-      Assert.IsTrue(!font1.Activated && !font2.Activated, "Family.FullyActivated set to False should deactivate all fonts");
-    }
-
-    [TestMethod]
-    [TestCategory("Family.Events")]
-    public void Family_shouldTriggerFullyActivatedEvent_whenAllFontsBecomeActivated() {
-      Family family = new Family(TestData.Font1_Description.FamilyName);
-      Font font1 = Factory.CreateFont(TestData.Font1_Description);
-      Font font2 = Factory.CreateFont(TestData.Font2_Description);
-      family.Add(font1);
-      family.Add(font2);
-
-      bool eventTriggered = false;
-      family.OnFullyActivatedChanged += delegate {
-        eventTriggered = true;
+      int activationRequests = 0;
+      font1.OnActivationRequest += delegate {
+        activationRequests += 1;
+      };
+      font2.OnActivationRequest += delegate {
+        activationRequests += 1;
+      };
+      int deactivationRequests = 0;
+      font1.OnDeactivationRequest += delegate {
+        deactivationRequests += 1;
+      };
+      font2.OnDeactivationRequest += delegate {
+        deactivationRequests += 1;
       };
 
       family.FullyActivated = true;
+      Assert.AreEqual(family.Fonts.Count, activationRequests, "Family.FullyActivated set should request fonts activation");
 
-      Assert.IsTrue(eventTriggered, "Family.FullyActivated should trigger a fully activated change event when set to True");
+      family.FullyActivated = false;
+      Assert.AreEqual(family.Fonts.Count, deactivationRequests, "Family.FullyActivated unset should request fonts deactivation");
     }
 
     [TestMethod]
@@ -265,6 +261,38 @@ namespace Storage.Impl.Tests {
 
       font.IsInstalled = true;
       Assert.IsTrue(eventTriggered, "Family should trigger font installation events when font installation status change");
+    }
+
+    [TestMethod]
+    [TestCategory("Family.Events")]
+    public void Family_shouldTriggerFontActivationRequest_whenChildFontTriggerActivationRequest() {
+      Family family = new Family(TestData.Font1_Description.FamilyName);
+      Font font = Factory.CreateFont(TestData.Font1_Description);
+      family.Add(font);
+
+      bool eventTriggered = false;
+      family.OnActivationRequest += delegate {
+        eventTriggered = true;
+      };
+
+      font.RequestActivation();
+      Assert.IsTrue(eventTriggered, "Family should trigger font activation request events when font request activation event is triggered");
+    }
+
+    [TestMethod]
+    [TestCategory("Family.Events")]
+    public void Family_shouldTriggerFontDeactivationRequest_whenChildFontTriggerDeactivationRequest() {
+      Family family = new Family(TestData.Font1_Description.FamilyName);
+      Font font = Factory.CreateFont(TestData.Font1_Description);
+      family.Add(font);
+
+      bool eventTriggered = false;
+      family.OnDeactivationRequest += delegate {
+        eventTriggered = true;
+      };
+
+      font.RequestDeactivation();
+      Assert.IsTrue(eventTriggered, "Family should trigger font deactivation request events when font request deactivation event is triggered");
     }
   }
 }

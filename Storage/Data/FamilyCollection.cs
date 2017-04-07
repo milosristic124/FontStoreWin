@@ -20,6 +20,9 @@ namespace Storage.Data {
 
     public delegate void FontActivationChangedHandler(FamilyCollection sender, Family fontFamily, Font target);
     public delegate void FontInstallationChangedHandler(FamilyCollection sender, Family fontFamily, Font target);
+
+    public delegate void FontActivationRequestHandler(FamilyCollection sender, Family fontFamily, Font target);
+    public delegate void FontDeactivationRequestHandler(FamilyCollection sender, Family fontFamily, Font target);
     #endregion
 
     #region events
@@ -31,6 +34,8 @@ namespace Storage.Data {
     public event FontUpdatedHandler OnFontUpdated;
     public event FontActivationChangedHandler OnActivationChanged;
     public event FontInstallationChangedHandler OnInstallationChanged;
+    public event FontActivationRequestHandler OnActivationRequest;
+    public event FontDeactivationRequestHandler OnDeactivationRequest;
     #endregion
 
     #region ctor
@@ -103,6 +108,8 @@ namespace Storage.Data {
       family.OnFontUpdated += Family_OnFontUpdated;
       family.OnActivationChanged += Family_OnFontActivationChanged;
       family.OnInstallationChanged += Family_OnFontInstallationChanged;
+      family.OnActivationRequest += Family_OnActivationRequest;
+      family.OnDeactivationRequest += Family_OnDeactivationRequest;
     }
 
     private void UnregisterFamilyEvents(Family family) {
@@ -111,6 +118,8 @@ namespace Storage.Data {
       family.OnFontUpdated -= Family_OnFontUpdated;
       family.OnActivationChanged -= Family_OnFontActivationChanged;
       family.OnInstallationChanged -= Family_OnFontInstallationChanged;
+      family.OnActivationRequest -= Family_OnActivationRequest;
+      family.OnDeactivationRequest -= Family_OnDeactivationRequest;
     }
     #endregion
 
@@ -133,6 +142,14 @@ namespace Storage.Data {
 
     private void Family_OnFontRemoved(Family sender, Font removedFont) {
       OnFontRemoved?.Invoke(this, sender, removedFont);
+    }
+
+    private void Family_OnActivationRequest(Family sender, Font target) {
+      OnActivationRequest?.Invoke(this, sender, target);
+    }
+
+    private void Family_OnDeactivationRequest(Family sender, Font target) {
+      OnDeactivationRequest?.Invoke(this, sender, target);
     }
     #endregion
   }

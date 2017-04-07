@@ -621,6 +621,46 @@ namespace Storage.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Storage.Events")]
+    public void FontRequestActivation_shouldTriggerFontActivationRequestEvent() {
+      MockedHttpTransport transport = new MockedHttpTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      Storage storage = new Storage(transport, installer, TestPath);
+
+      storage.AddFont(TestData.Font1_Description);
+      Font font = storage.FindFont(TestData.Font1_Description.UID);
+
+      bool eventTriggered = false;
+      storage.OnFontActivationRequest += delegate {
+        eventTriggered = true;
+      };
+
+      font.RequestActivation();
+
+      Assert.IsTrue(eventTriggered, "Storage should trigger font activation request event when font activation is requested");
+    }
+
+    [TestMethod]
+    [TestCategory("Storage.Events")]
+    public void FontRequestDeactivation_shouldTriggerFontDeactivationRequestEvent() {
+      MockedHttpTransport transport = new MockedHttpTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      Storage storage = new Storage(transport, installer, TestPath);
+
+      storage.AddFont(TestData.Font1_Description);
+      Font font = storage.FindFont(TestData.Font1_Description.UID);
+
+      bool eventTriggered = false;
+      storage.OnFontDeactivationRequest += delegate {
+        eventTriggered = true;
+      };
+
+      font.RequestDeactivation();
+
+      Assert.IsTrue(eventTriggered, "Storage should trigger font deactivation request event when font deactivation is requested");
+    }
+
+    [TestMethod]
     [TestCategory("Storage.Credentials")]
     public void SaveCredentials_shouldCreateCredentialFile() {
       MockedHttpTransport transport = new MockedHttpTransport();

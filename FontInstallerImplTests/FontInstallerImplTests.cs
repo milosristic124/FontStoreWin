@@ -93,7 +93,8 @@ namespace FontInstaller.Impl.Test {
       FontInstaller installer = new FontInstaller();
       installer.InstallFont(FontUID, InstallationScope.User, FontData).Wait();
 
-      FontAPIResult result = installer.UninstallFont(FontUID, InstallationScope.User).Result;
+      FontAPIResult result = FontAPIResult.Failure;
+      result = installer.UninstallFont(FontUID, InstallationScope.User).Result;
 
       InstalledFontCollection collection = new InstalledFontCollection();
       bool familyExists = collection.Families.Any(family => family.Name == FamilyName);
