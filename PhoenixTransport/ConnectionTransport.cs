@@ -22,8 +22,8 @@ namespace Protocol.Transport.Phoenix {
         throw new Exception("An EndPoint must be defined in order to connect the connection's transport");
       }
 #if DEBUG
-      _socket = new Socket(EndPoint, logger: (string s1, string s2, object _) => {
-        Console.WriteLine(string.Format("Socket log: [{0}] [{1}]", s1, s2));
+      _socket = new Socket(EndPoint, logger: (string s1, string s2, object o) => {
+        Console.WriteLine(string.Format("[{0}] [{1}] [{2}] -> {3}", DateTime.Now.ToString("hh:mm:ss.fff"), s1, s2, o));
       }, urlparams: UrlParams);
 #else
       _socket = new Socket(EndPoint, urlparams: UrlParams);

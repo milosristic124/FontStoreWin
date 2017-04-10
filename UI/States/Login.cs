@@ -65,7 +65,7 @@ namespace UI.States {
 
       string savedCreds = await Application.Context.Storage.LoadCredentials();
       if (savedCreds != null) {
-        Console.WriteLine("Credentials loaded");
+        Console.WriteLine("[{0}] Credentials loaded", DateTime.Now.ToString("hh:mm:ss.fff"));
         _view.InvokeOnUIThread(() => {
           _view.ConnectionRequestStarted();
         });
@@ -97,7 +97,7 @@ namespace UI.States {
     private async void Connection_OnEstablished(Protocol.Payloads.UserData userData) {
       if (_saveCredentials) {
         await Application.Context.Storage.SaveCredentials(userData.AuthToken);
-        Console.WriteLine("Credentials saved");
+        Console.WriteLine("[{0}] Credentials saved", DateTime.Now.ToString("hh:mm:ss.fff"));
       }
       _view.InvokeOnUIThread(() => {
         WillTransition = true;

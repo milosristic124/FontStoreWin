@@ -22,12 +22,12 @@
         <Grid.Background>
           <SolidColorBrush Color="{DynamicResource FSBlue}"/>
         </Grid.Background>
-        <Label x:Name="LogoLabel" Content="Hontstore" HorizontalAlignment="Left" Margin="14,0,0,13" VerticalAlignment="Bottom" Background="{x:Null}" Foreground="White" Padding="0" FontFamily="/UI;component/Fonts/#Fontstore Final" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Label x:Name="LogoLabel" Content="Hontstore" HorizontalAlignment="Left" Margin="14,0,0,13" VerticalAlignment="Bottom" Background="{x:Null}" Foreground="White" Padding="0" FontFamily="/Fontstore;component/Fonts/#Fontstore Final" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
         <StackPanel x:Name="RightPanel" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,14,13" Orientation="Horizontal">
-          <Label x:Name="NameLabel" Content="Firstname Lastname" Background="{x:Null}" Foreground="White" Padding="0" VerticalContentAlignment="Center" Margin="0,0,7,0" FontFamily="/UI;component/Fonts/#Litmus" MaxWidth="150" HorizontalAlignment="Right"/>
+          <Label x:Name="NameLabel" Content="Firstname Lastname" Background="{x:Null}" Foreground="White" Padding="0" VerticalContentAlignment="Center" Margin="0,0,7,0" FontFamily="/Fontstore;component/Fonts/#Litmus" MaxWidth="150" HorizontalAlignment="Right"/>
           <Button x:Name="MenuButton" Content="" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Focusable="False" HorizontalAlignment="Right" Padding="0" Height="5" Foreground="{x:Null}" Width="10" VerticalAlignment="Center" Style="{DynamicResource FSButton}" Click="MenuButton_Click">
             <Button.ContextMenu>
-              <ContextMenu BorderThickness="0" FontFamily="/UI;component/Fonts/#Litmus" Padding="7,7,7,6" Background="#FFD2D2D2">
+              <ContextMenu BorderThickness="0" FontFamily="/Fontstore;component/Fonts/#Litmus" Padding="7,7,7,6" Background="#FFD2D2D2">
                 <ContextMenu.Foreground>
                   <SolidColorBrush Color="{DynamicResource FSBlack}"/>
                 </ContextMenu.Foreground>
@@ -70,7 +70,7 @@
               </ContextMenu>
             </Button.ContextMenu>
             <Button.Background>
-              <ImageBrush ImageSource="/UI;component/Resources/BlackTriangle.png" Stretch="None"/>
+              <ImageBrush ImageSource="/Fontstore;component/Resources/BlackTriangle.png" Stretch="None"/>
             </Button.Background>
           </Button>
         </StackPanel>
@@ -83,7 +83,7 @@
             <ColumnDefinition/>
             <ColumnDefinition Width="50"/>
           </Grid.ColumnDefinitions>
-          <RadioButton x:Name="InstalledButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/UI;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Center" IsChecked="True" Cursor="Hand" Checked="InstalledButton_Checked">
+          <RadioButton x:Name="InstalledButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/Fontstore;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Center" IsChecked="True" Cursor="Hand" Checked="InstalledButton_Checked">
             <StackPanel Orientation="Horizontal">
               <Label Background="{x:Null}" Padding="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Installed" Margin="0,0,4,0"/>
               <Label Name="InstalledCountLabel" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(0)">
@@ -93,7 +93,7 @@
               </Label>
             </StackPanel>
           </RadioButton>
-          <RadioButton x:Name="NewButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/UI;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Center" Margin="0" Grid.Column="1" Cursor="Hand" Checked="NewButton_Checked">
+          <RadioButton x:Name="NewButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/Fontstore;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Center" Margin="0" Grid.Column="1" Cursor="Hand" Checked="NewButton_Checked">
             <StackPanel Orientation="Horizontal">
               <Label Background="{x:Null}" Padding="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Content="New" Margin="0,0,4,0"/>
               <Label x:Name="NewCountLabel" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(0)">
@@ -103,7 +103,7 @@
               </Label>
             </StackPanel>
           </RadioButton>
-          <RadioButton x:Name="AllButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/UI;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Center" Margin="0" Grid.Column="2" Cursor="Hand" Checked="AllButton_Checked">
+          <RadioButton x:Name="AllButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/Fontstore;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Center" Margin="0" Grid.Column="2" Cursor="Hand" Checked="AllButton_Checked">
             <StackPanel Orientation="Horizontal">
               <Label Background="{x:Null}" Padding="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Content="All Fonts" Margin="0,0,4,0"/>
               <Label x:Name="AllCountLabel" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(0)">
@@ -114,7 +114,7 @@
             </StackPanel>
           </RadioButton>
 
-          <RadioButton x:Name="SearchButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/UI;component/Fonts/#Litmus" Foreground="{x:Null}" HorizontalAlignment="Center" Margin="0" Grid.Column="3" Cursor="Hand" Checked="SearchButton_Checked" VerticalAlignment="Center" Unchecked="SearchButton_Unchecked">
+          <RadioButton x:Name="SearchButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/Fontstore;component/Fonts/#Litmus" Foreground="{x:Null}" HorizontalAlignment="Center" Margin="0" Grid.Column="3" Cursor="Hand" Checked="SearchButton_Checked" VerticalAlignment="Center" Unchecked="SearchButton_Unchecked">
             <RadioButton.Template>
               <ControlTemplate TargetType="{x:Type ButtonBase}">
                 <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
@@ -134,7 +134,7 @@
                 <Setter Property="Content">
                   <Setter.Value>
                     <Border BorderThickness="0">
-                      <Image Stretch="None" Source="/UI;component/Resources/Search.png"  />
+                      <Image Stretch="None" Source="/Fontstore;component/Resources/Search.png"  />
                     </Border>
                   </Setter.Value>
                 </Setter>
@@ -144,7 +144,7 @@
                     <Setter Property="Content">
                       <Setter.Value>
                         <Border BorderThickness="0">
-                          <Image Stretch="None" Source="/UI;component/Resources/Search_Active.png" />
+                          <Image Stretch="None" Source="/Fontstore;component/Resources/Search_Active.png" />
                         </Border>
                       </Setter.Value>
                     </Setter>
@@ -233,7 +233,7 @@
                                   Width="80"
                                   Height="30"
                                   Margin="0"
-                                  FontFamily="/UI;component/Fonts/#Litmus"
+                                  FontFamily="/Fontstore;component/Fonts/#Litmus"
                                   FontSize="12"
                                   FontWeight="Regular"
                                   Padding="0"
@@ -271,7 +271,7 @@
                                         Width="80"
                                         Height="30"
                                         Margin="0"
-                                        FontFamily="/UI;component/Fonts/#Litmus"
+                                        FontFamily="/Fontstore;component/Fonts/#Litmus"
                                         FontSize="12"
                                         FontWeight="Regular"
                                         Padding="0"
@@ -363,7 +363,7 @@
             </StackPanel.Background>
 
             <Border CornerRadius="15" VerticalAlignment="Top" Margin="14,20,14,0" Background="White">
-              <TextBox x:Name="SearchInput" BorderThickness="0" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="/UI;component/Fonts/#Litmus" Height="30" Margin="14,0" VerticalContentAlignment="Center" Cursor="IBeam" KeyUp="SearchInput_KeyUp" >
+              <TextBox x:Name="SearchInput" BorderThickness="0" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="/Fontstore;component/Fonts/#Litmus" Height="30" Margin="14,0" VerticalContentAlignment="Center" Cursor="IBeam" KeyUp="SearchInput_KeyUp" >
                 <TextBox.SelectionBrush>
                   <SolidColorBrush Color="{DynamicResource FSBlue}"/>
                 </TextBox.SelectionBrush>
@@ -373,7 +373,7 @@
               </TextBox>
             </Border>
 
-            <Button Style="{StaticResource FSSearchButton}" VerticalAlignment="Top" Margin="14,6,14,12" BorderBrush="{x:Null}" BorderThickness="0" Padding="0" FontFamily="/UI;component/Fonts/#Litmus" Click="Button_Click" Height="30">
+            <Button Style="{StaticResource FSSearchButton}" VerticalAlignment="Top" Margin="14,6,14,12" BorderBrush="{x:Null}" BorderThickness="0" Padding="0" FontFamily="/Fontstore;component/Fonts/#Litmus" Click="Button_Click" Height="30">
               <Border CornerRadius="15" Height="30" Width="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
                 <Border.Background>
                   <SolidColorBrush Color="{DynamicResource FSButtonGrey}"/>
@@ -384,12 +384,12 @@
             </Button>
 
             <StackPanel x:Name="SearchResultArea"  Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
-              <Label x:Name="SearchResultCount" FontFamily="/UI;component/Fonts/#Litmus" Background="{x:Null}" Content="0" Padding="0" VerticalContentAlignment="Center">
+              <Label x:Name="SearchResultCount" FontFamily="/Fontstore;component/Fonts/#Litmus" Background="{x:Null}" Content="0" Padding="0" VerticalContentAlignment="Center">
                 <Label.Foreground>
                   <SolidColorBrush Color="{DynamicResource FSBlue}"/>
                 </Label.Foreground>
               </Label>
-              <Label Background="{x:Null}" FontFamily="/UI;component/Fonts/#Litmus" Padding="0" VerticalContentAlignment="Center" Content="Results" Margin="3,0,0,0">
+              <Label Background="{x:Null}" FontFamily="/Fontstore;component/Fonts/#Litmus" Padding="0" VerticalContentAlignment="Center" Content="Results" Margin="3,0,0,0">
                 <Label.Foreground>
                   <SolidColorBrush Color="{DynamicResource FSGrey}"/>
                 </Label.Foreground>
@@ -459,7 +459,7 @@
                                   Width="80"
                                   Height="30"
                                   Margin="0"
-                                  FontFamily="/UI;component/Fonts/#Litmus"
+                                  FontFamily="/Fontstore;component/Fonts/#Litmus"
                                   FontSize="12"
                                   FontWeight="Regular"
                                   Padding="0"
@@ -497,7 +497,7 @@
                                         Width="80"
                                         Height="30"
                                         Margin="0"
-                                        FontFamily="/UI;component/Fonts/#Litmus"
+                                        FontFamily="/Fontstore;component/Fonts/#Litmus"
                                         FontSize="12"
                                         FontWeight="Regular"
                                         Padding="0"
@@ -590,7 +590,7 @@
       <Grid.Background>
         <SolidColorBrush Color="White" Opacity="0.9"/>
       </Grid.Background>
-      <Image gif:ImageBehavior.AnimatedSource="/UI;component/Resources/Loader.gif" gif:ImageBehavior.RepeatBehavior="Forever"/>
+      <Image gif:ImageBehavior.AnimatedSource="/Fontstore;component/Resources/Loader.gif" gif:ImageBehavior.RepeatBehavior="Forever"/>
     </Grid>
   </Grid>
 </Window>

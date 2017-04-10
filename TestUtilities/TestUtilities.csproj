@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CallTracer.cs" />
+    <Compile Include="Encryption\MockedCypher.cs" />
     <Compile Include="FontManager\MockedFontInstaller.cs" />
     <Compile Include="Protocol\MockedBroadcastChannel.cs" />
     <Compile Include="Protocol\MockedBroadcastChannelResult.cs" />
@@ -59,6 +60,10 @@
     <Compile Include="TestData.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FontEncryption\FontEncryption.csproj">
+      <Project>{ACC76FE8-B6EC-4925-BA91-F7D70AE18B3E}</Project>
+      <Name>FontEncryption</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FontInstaller\FontInstaller.csproj">
       <Project>{7D9852A5-6911-478F-B863-C31FBCDD8065}</Project>
       <Name>FontInstaller</Name>

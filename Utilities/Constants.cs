@@ -4,7 +4,10 @@
       #region private constants
 #if DEBUG
       private static readonly string WS = "ws";
+      //private static readonly string WS = "wss";
       private static readonly string HTTP = "http";
+      //private static readonly string HTTP = "https";
+      //private static readonly string Host = "api.staging.fontstore.com";
       private static readonly string Host = "localhost:3000";
 #else
     private static readonly string WS = "wss://";
@@ -25,6 +28,12 @@
       public static readonly string OSType = "Win";
       public static readonly string ProtocolVersion = "0.5.0";
       public static readonly string ApplicationVersion = "1.0.0";
+      #endregion
+    }
+
+    public static class Security {
+      #region constants
+      public static readonly string FontCypherKey = "secret";
       #endregion
     }
   }

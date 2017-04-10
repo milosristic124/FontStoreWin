@@ -47,15 +47,11 @@ namespace UI.ViewModels {
     public FontVM(Font model) {
       _model = model;
       _model.OnActivationChanged += _model_OnActivationChanged;
-      _model.OnInstallationChanged += _model_OnInstallationChanged;
     }
     #endregion
 
     #region event handling
     private void _model_OnActivationChanged(Font sender) {
-      TriggerPropertyChange("Activated");
-    }
-    private void _model_OnInstallationChanged(Font sender) {
       TriggerPropertyChange("Activated");
     }
     #endregion

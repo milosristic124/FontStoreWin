@@ -5,6 +5,7 @@ using Storage.Impl;
 using System.Threading;
 using System.Threading.Tasks;
 using TestUtilities;
+using TestUtilities.Encryption;
 using TestUtilities.FontManager;
 using TestUtilities.Protocol;
 
@@ -17,7 +18,8 @@ namespace ProtocolImplTests {
       MockedTransport transport = new MockedTransport();
       MockedHttpTransport http = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      IStorage storage = new Storage.Impl.Storage(http, installer);
+      MockedCypher cypher = new MockedCypher();
+      IStorage storage = new Storage.Impl.Storage(http, installer, cypher);
       TestConnection connection = new TestConnection(transport, http, storage);
 
       connection.Updated(delegate {
@@ -46,7 +48,8 @@ namespace ProtocolImplTests {
       MockedTransport transport = new MockedTransport();
       MockedHttpTransport http = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      IStorage storage = new Storage.Impl.Storage(http, installer);
+      MockedCypher cypher = new MockedCypher();
+      IStorage storage = new Storage.Impl.Storage(http, installer, cypher);
       TestConnection connection = new TestConnection(transport, http, storage);
 
       connection.Updated(delegate {
@@ -78,7 +81,8 @@ namespace ProtocolImplTests {
       MockedTransport transport = new MockedTransport();
       MockedHttpTransport http = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      IStorage storage = new Storage.Impl.Storage(http, installer);
+      MockedCypher cypher = new MockedCypher();
+      IStorage storage = new Storage.Impl.Storage(http, installer, cypher);
       TestConnection connection = new TestConnection(transport, http, storage);
 
       connection.Updated(delegate {
@@ -107,7 +111,8 @@ namespace ProtocolImplTests {
       MockedTransport transport = new MockedTransport();
       MockedHttpTransport http = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      IStorage storage = new Storage.Impl.Storage(http, installer);
+      MockedCypher cypher = new MockedCypher();
+      IStorage storage = new Storage.Impl.Storage(http, installer, cypher);
       TestConnection connection = new TestConnection(transport, http, storage);
 
       connection.Updated(delegate {
@@ -137,7 +142,8 @@ namespace ProtocolImplTests {
       MockedTransport transport = new MockedTransport();
       MockedHttpTransport http = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      IStorage storage = new Storage.Impl.Storage(http, installer);
+      MockedCypher cypher = new MockedCypher();
+      IStorage storage = new Storage.Impl.Storage(http, installer, cypher);
       TestConnection connection = new TestConnection(transport, http, storage);
 
       connection.Updated(delegate {
@@ -170,7 +176,8 @@ namespace ProtocolImplTests {
       MockedTransport transport = new MockedTransport();
       MockedHttpTransport http = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      IStorage storage = new Storage.Impl.Storage(http, installer);
+      MockedCypher cypher = new MockedCypher();
+      IStorage storage = new Storage.Impl.Storage(http, installer, cypher);
       TestConnection connection = new TestConnection(transport, http, storage);
 
       connection.Updated(delegate {
@@ -200,7 +207,8 @@ namespace ProtocolImplTests {
       MockedTransport transport = new MockedTransport();
       MockedHttpTransport http = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      IStorage storage = new Storage.Impl.Storage(http, installer);
+      MockedCypher cypher = new MockedCypher();
+      IStorage storage = new Storage.Impl.Storage(http, installer, cypher);
       TestConnection connection = new TestConnection(transport, http, storage);
 
       connection.Updated(delegate {

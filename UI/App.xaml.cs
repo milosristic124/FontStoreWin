@@ -35,7 +35,7 @@ namespace UI {
       Deactivated += App_Deactivated;
 #if DEBUG
       Activated += delegate {
-        Console.WriteLine("App activated");
+        Console.WriteLine("[{0}] App activated", DateTime.Now.ToString("hh:mm:ss.fff"));
       };
 #endif
 
@@ -82,7 +82,7 @@ namespace UI {
     #region event handling
     private void App_Deactivated(object sender, EventArgs e) {
 #if DEBUG
-      Console.WriteLine("App deactivated");
+      Console.WriteLine("[{0}] App deactivated", DateTime.Now.ToString("hh:mm:ss.fff"));
 #endif
       if (!_wasDragged) { // don't close the window when clicking outside if it was dragged elsewhere
         _ui.State.Hide();

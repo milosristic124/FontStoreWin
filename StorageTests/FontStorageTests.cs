@@ -6,6 +6,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using TestUtilities;
+using TestUtilities.Encryption;
 using TestUtilities.FontManager;
 using TestUtilities.Protocol;
 
@@ -17,7 +18,8 @@ namespace Storage.Impl.Tests {
     public void FontStorage_shouldBeEmpty_whenCreated() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
       Assert.IsTrue(storage.FamilyCollection.Families.Count == 0, "FontStorage has no data when created");
     }
 
@@ -26,7 +28,8 @@ namespace Storage.Impl.Tests {
     public void FindFont_shouldReturnNull_whenTheFontDoesNotExist() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
       Assert.IsNull(storage.FindFont(TestData.Font1_Description.UID), "FindFont return null for unexisting fonts");
     }
 
@@ -35,7 +38,8 @@ namespace Storage.Impl.Tests {
     public void FindFont_shouldReturnTheSearchedFont() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
       storage.LoadFonts().Wait();
 
       storage.AddFont(TestData.Font1_Description);
@@ -48,7 +52,8 @@ namespace Storage.Impl.Tests {
     public void AddFont_shouldUpdateFontStorage() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
       storage.LoadFonts().Wait();
 
       storage.AddFont(TestData.Font1_Description);
@@ -61,7 +66,8 @@ namespace Storage.Impl.Tests {
     public void AddFont_shouldReplaceObsoleteData() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
       storage.LoadFonts().Wait();
 
       storage.AddFont(TestData.Font1_Description);
@@ -76,7 +82,8 @@ namespace Storage.Impl.Tests {
     public void RemoveFont_shouldUpdateFontStorage() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
       storage.LoadFonts().Wait();
 
       storage.AddFont(TestData.Font1_Description);
@@ -90,7 +97,8 @@ namespace Storage.Impl.Tests {
     public void ActivateFont_shouldActivateFont() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
       storage.LoadFonts().Wait();
 
       storage.AddFont(TestData.Font1_Description);
@@ -104,7 +112,8 @@ namespace Storage.Impl.Tests {
     public void DeactivateFont_shouldDeactivateFont() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
       storage.LoadFonts().Wait();
 
       storage.AddFont(TestData.Font1_Description);
@@ -120,7 +129,8 @@ namespace Storage.Impl.Tests {
       string storagePath = TestPath;
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, storagePath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, storagePath);
       storage.SessionID = "session1";
 
       storage.LoadFonts().Wait();
@@ -128,7 +138,7 @@ namespace Storage.Impl.Tests {
       storage.ActivateFont(TestData.Font1_Id);
       storage.SaveFonts().Wait();
 
-      storage = new Storage(transport, installer, storagePath);
+      storage = new Storage(transport, installer, cypher, storagePath);
       storage.SessionID = "session1";
 
       int timeout = 5000;
@@ -145,7 +155,8 @@ namespace Storage.Impl.Tests {
       string storagePath = TestPath;
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, storagePath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, storagePath);
       storage.SessionID = "session1";
 
       storage.LoadFonts().Wait();
@@ -153,7 +164,7 @@ namespace Storage.Impl.Tests {
       storage.ActivateFont(TestData.Font1_Id);
       storage.SaveFonts().Wait();
 
-      storage = new Storage(transport, installer, storagePath);
+      storage = new Storage(transport, installer, cypher, storagePath);
       storage.SessionID = "session2";
 
       int timeout = 5000;
@@ -168,7 +179,8 @@ namespace Storage.Impl.Tests {
     public void SynchronizeWithSystem_shouldDownloadAndInstallFonts() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
 
       storage.AddFont(TestData.Font1_Description);
       storage.AddFont(TestData.Font2_Description);
@@ -211,7 +223,8 @@ namespace Storage.Impl.Tests {
     public void SynchronizeWithSystem_shouldNotReactToRealTimeEventsAfterward() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
 
       storage.AddFont(TestData.Font1_Description);
 
@@ -248,7 +261,8 @@ namespace Storage.Impl.Tests {
     public void SynchronizeWithSystem_shouldExecuteCallbackImmediately_whenNoActionsAreQueued() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
 
       bool callbackExecuted = false;
       storage.SynchronizeWithSystem(delegate {
@@ -263,7 +277,8 @@ namespace Storage.Impl.Tests {
     public void BeginSynchronization_shouldDownloadAndInstallFonts() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
 
       storage.AddFont(TestData.Font1_Description);
       storage.AddFont(TestData.Font2_Description);
@@ -304,7 +319,8 @@ namespace Storage.Impl.Tests {
     public void BeginSynchronization_shouldReactToRealTimeEvents() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
 
       int downloadCount = 0;
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
@@ -347,7 +363,8 @@ namespace Storage.Impl.Tests {
     public void EndSynchronization_shouldNotReactToRealTimeEventsAfterward() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
 
       int downloadCount = 0;
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
@@ -385,7 +402,8 @@ namespace Storage.Impl.Tests {
     public void ActivateFont_shouldTriggerUserScopeInstallationEvent() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
 
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
         return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
@@ -416,7 +434,8 @@ namespace Storage.Impl.Tests {
     public void DeactivateFont_shouldTriggerUserScopeUninstallationEvent() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
 
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
         return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
@@ -448,7 +467,8 @@ namespace Storage.Impl.Tests {
     public void RemoveFont_shouldTriggerAllScopeUninstallationEvent() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
 
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
         return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
@@ -484,7 +504,8 @@ namespace Storage.Impl.Tests {
     public void AddFont_shouldTriggerProcessScopeInstallationEvent() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
 
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
         return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
@@ -514,7 +535,8 @@ namespace Storage.Impl.Tests {
     public void AddFont_shouldTriggerProcessScopeInstallationEvents_whenFontIsUpdated_andWasDeactivated() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
 
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
         return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
@@ -568,7 +590,8 @@ namespace Storage.Impl.Tests {
     public void AddFont_shouldTriggerAllScopeInstallationEvents_whenFontIdUpdated_andWasActivated() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
 
       transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
         return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
@@ -625,7 +648,8 @@ namespace Storage.Impl.Tests {
     public void FontRequestActivation_shouldTriggerFontActivationRequestEvent() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
 
       storage.AddFont(TestData.Font1_Description);
       Font font = storage.FindFont(TestData.Font1_Description.UID);
@@ -645,7 +669,8 @@ namespace Storage.Impl.Tests {
     public void FontRequestDeactivation_shouldTriggerFontDeactivationRequestEvent() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
 
       storage.AddFont(TestData.Font1_Description);
       Font font = storage.FindFont(TestData.Font1_Description.UID);
@@ -666,7 +691,8 @@ namespace Storage.Impl.Tests {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
       string storagePath = TestPath;
-      Storage storage = new Storage(transport, installer, storagePath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, storagePath);
 
       storage.SaveCredentials("creds").Wait();
 
@@ -678,7 +704,8 @@ namespace Storage.Impl.Tests {
     public void LoadCredentials_shouldLoadSavedCredentials() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
-      Storage storage = new Storage(transport, installer, TestPath);
+      MockedCypher cypher = new MockedCypher();
+      Storage storage = new Storage(transport, installer, cypher, TestPath);
 
       string savedCreds = "creds";
       storage.SaveCredentials(savedCreds).Wait();
@@ -692,8 +719,9 @@ namespace Storage.Impl.Tests {
     public void CleanSavedCredentials_shouldRemoveCredentialsFile() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
+      MockedCypher cypher = new MockedCypher();
       string storagePath = TestPath;
-      Storage storage = new Storage(transport, installer, storagePath);
+      Storage storage = new Storage(transport, installer, cypher, storagePath);
 
       storage.SaveCredentials("creds").Wait();
       storage.CleanCredentials().Wait();

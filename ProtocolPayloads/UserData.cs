@@ -8,7 +8,7 @@ namespace Protocol.Payloads {
     public string FirstName { get; set; }
     [JsonProperty("last_name")]
     public string LastName { get; set; }
-    [JsonProperty("reuse_token")]
+    [JsonProperty("reusable_token")]
     public string AuthToken { get; set; }
 
     [JsonProperty("urls")]

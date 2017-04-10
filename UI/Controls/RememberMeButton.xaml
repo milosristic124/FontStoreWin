@@ -27,7 +27,7 @@
         <Setter Property="Content">
           <Setter.Value>
             <Border BorderThickness="0">
-              <Image Stretch="None" Source="/UI;component/Resources/CheckBox.png"  />
+              <Image Stretch="None" Source="/Fontstore;component/Resources/CheckBox.png"  />
             </Border>
           </Setter.Value>
         </Setter>
@@ -37,7 +37,7 @@
             <Setter Property="Content">
               <Setter.Value>
                 <Border BorderThickness="0">
-                  <Image Stretch="None" Source="/UI;component/Resources/CheckBox_Active.png" />
+                  <Image Stretch="None" Source="/Fontstore;component/Resources/CheckBox_Active.png" />
                 </Border>
               </Setter.Value>
             </Setter>

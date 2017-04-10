@@ -79,27 +79,29 @@ namespace Protocol.Impl.States {
         return;
       }
 
-      await _authRequest.Response
-        .Then(response => {
-          using (StreamReader body = new StreamReader(response.ResponseStream)) {
-            string data = body.ReadToEnd();
+      try {
+        IHttpResponse response = await _authRequest.Response;
+        using (StreamReader body = new StreamReader(response.ResponseStream)) {
+          string data = body.ReadToEnd();
 
-            if (response.StatusCode != HttpStatusCode.OK) {
-              WillTransition = true;
-              FSM.State = new Idle(_context);
-              _context.TriggerValidationFailure(data);
-            }
-            else {
-              Payloads.UserData userData = JsonConvert.DeserializeObject<Payloads.UserData>(data);
-              WillTransition = true;
-              FSM.State = new Connecting(_context, userData);
-            }
+          if (response.StatusCode != HttpStatusCode.OK) {
+            WillTransition = true;
+            FSM.State = new Idle(_context);
+            _context.TriggerValidationFailure(data);
           }
-        })
-        .Recover(e => {
-          WillTransition = true;
-          FSM.State = new RetryAuthenticating(_context, _authPayload);
-        });
+          else {
+            Payloads.UserData userData = JsonConvert.DeserializeObject<Payloads.UserData>(data);
+            WillTransition = true;
+            FSM.State = new Connecting(_context, userData);
+          }
+        }
+      } catch (Exception e) {
+#if DEBUG
+        Console.WriteLine("[{0}] Authentication failed: {1}", DateTime.Now.ToString("hh:mm:ss.fff"), e);
+#endif
+        WillTransition = true;
+        FSM.State = new RetryAuthenticating(_context, _authPayload);
+      }
     }
     #endregion
   }

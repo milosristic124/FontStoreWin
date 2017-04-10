@@ -1,4 +1,5 @@
-﻿using FontInstaller;
+﻿using Encryption;
+using FontInstaller;
 using Storage.Data;
 using System;
 using System.IO;
@@ -10,6 +11,7 @@ namespace Storage.Impl.Internal {
   internal class FontInstallerAgent {
     #region private data
     private IFontInstaller _installer;
+    private ICypher _cypher;
     private FSStorage _storage;
     private CancellationTokenSource _cancelSource;
     private ProcessingAgent _agent;
@@ -34,14 +36,18 @@ namespace Storage.Impl.Internal {
     #endregion
 
     #region ctor
-    public FontInstallerAgent(FSStorage storage, IFontInstaller installer) {
+    public FontInstallerAgent(FSStorage storage, IFontInstaller installer, ICypher cypher) {
       _storage = storage;
       _installer = installer;
+      _cypher = cypher;
       _cancelSource = new CancellationTokenSource();
       _agent = new ProcessingAgent(1, _cancelSource);
 
       _agent.OnProcessingFinished += _agent_OnProcessingFinished;
       _agent.OnProcessingStarted += _agent_OnProcessingStarted;
+    }
+
+    public FontInstallerAgent(FontInstallerAgent other): this(other._storage, other._installer, other._cypher) {
     }
     #endregion
 
@@ -69,9 +75,6 @@ namespace Storage.Impl.Internal {
           }
         }
 
-        if (result != FontAPIResult.Failure) {
-          font.IsInstalled = true;
-        }
         then?.Invoke(result);
       });
     }
@@ -79,9 +82,6 @@ namespace Storage.Impl.Internal {
     public void QueueUninstall(Font font, InstallationScope scope, Action<FontAPIResult> then = null) {
       _agent.Enqueue(delegate {
         FontAPIResult result = _installer.UninstallFont(font.UID, scope).Result;
-        if (result != FontAPIResult.Failure) {
-          font.IsInstalled = false;
-        }
         then?.Invoke(result);
       });
     }
@@ -90,10 +90,7 @@ namespace Storage.Impl.Internal {
     #region private methods
     private Task<MemoryStream> DecryptFontData(Stream data) {
       return Task.Run(() => {
-        MemoryStream res = new MemoryStream();
-        data.CopyTo(res);
-        res.Seek(0, SeekOrigin.Begin);
-        return res;
+        return _cypher.Decrypt(data);
       });
     }
     #endregion

@@ -1,4 +1,5 @@
-﻿using FontInstaller;
+﻿using Encryption;
+using FontInstaller;
 using Protocol.Payloads;
 using Protocol.Transport;
 using Protocol.Transport.Http;
@@ -72,18 +73,18 @@ namespace Storage.Impl {
     #endregion
 
     #region ctor
-    public Storage(IHttpTransport transport, IFontInstaller installer) :
-      this(transport, installer, Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/Fontstore") {
+    public Storage(IHttpTransport transport, IFontInstaller installer, ICypher cypher) :
+      this(transport, installer, cypher, Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/Fontstore") {
     }
 
-    public Storage(IHttpTransport transport, IFontInstaller installer, string rootPath) {
+    public Storage(IHttpTransport transport, IFontInstaller installer, ICypher cypher, string rootPath) {
       Installer = installer;
       FamilyCollection = new FamilyCollection();
       RegisterCollectionEvents();
 
       _HDDStorage = new FSStorage(rootPath);
       _fsAgent = new FSSynchronizationAgent(transport, _HDDStorage);
-      _installAgent = new FontInstallerAgent(_HDDStorage, Installer);
+      _installAgent = new FontInstallerAgent(_HDDStorage, Installer, cypher);
 
       Loaded = false;
       HasChanged = false;
@@ -140,7 +141,7 @@ namespace Storage.Impl {
 
       _HDDStorage = new FSStorage(_HDDStorage);
       _fsAgent = new FSSynchronizationAgent(_fsAgent);
-      _installAgent = new FontInstallerAgent(_HDDStorage, Installer);
+      _installAgent = new FontInstallerAgent(_installAgent);
 
       Loaded = false;
       HasChanged = false;

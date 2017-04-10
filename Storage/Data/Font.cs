@@ -8,7 +8,6 @@ namespace Storage.Data {
   public class Font {
     #region private data
     private bool _activated;
-    private bool _installed;
     #endregion
 
     #region properties
@@ -33,31 +32,16 @@ namespace Storage.Data {
         }
       }
     }
-    public bool IsInstalled {
-      get {
-        return _installed;
-      }
-      set {
-        if (_installed != value) {
-          _installed = value;
-          OnInstallationChanged?.Invoke(this);
-        }
-      }
-    }
     #endregion
 
     #region delegates
     public delegate void FontActivationEventHandler(Font sender);
-    public delegate void FontInstallationEventhandler(Font sender);
-
     public delegate void FontActivationRequestedHandler(Font sender);
     public delegate void FontDeactivationRequestedHandler(Font sender);
     #endregion
 
     #region events
     public event FontActivationEventHandler OnActivationChanged;
-    public event FontInstallationEventhandler OnInstallationChanged;
-
     public event FontActivationRequestedHandler OnActivationRequest;
     public event FontDeactivationRequestedHandler OnDeactivationRequest;
     #endregion
@@ -70,7 +54,6 @@ namespace Storage.Data {
       DownloadUrl = new Uri(downloadUrl);
       CreatedAt = DateTimeHelper.FromTimestamp(timestamp);
       _activated = false;
-      _installed = false;
     }
     #endregion
 

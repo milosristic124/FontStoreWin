@@ -49,6 +49,10 @@
       <Project>{79871541-3A7D-4FB6-83CF-E585DB53E403}</Project>
       <Name>ConnectionTestUtilities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FontEncryption\FontEncryption.csproj">
+      <Project>{acc76fe8-b6ec-4925-ba91-f7d70ae18b3e}</Project>
+      <Name>FontEncryption</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FontInstaller\FontInstaller.csproj">
       <Project>{7d9852a5-6911-478f-b863-c31fbcdd8065}</Project>
       <Name>FontInstaller</Name>

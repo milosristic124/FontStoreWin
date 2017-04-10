@@ -12,7 +12,7 @@ namespace Protocol.Impl.States {
     public Connecting(Connection connection, Payloads.UserData userData) : this(connection) {
       _userData = userData;
       _context.Transport.EndPoint = Constants.Urls.Connection;
-      _context.Transport.UrlParams["reuse_token"] = _userData.AuthToken;
+      _context.Transport.UrlParams["reusable_token"] = _userData.AuthToken;
     }
 
     private Connecting(Connection connection) : base("Connecting", connection) {
@@ -47,6 +47,9 @@ namespace Protocol.Impl.States {
 
     private void _transport_Error(Exception exception) {
       WillTransition = true;
+#if DEBUG
+      Console.WriteLine("[{0}] Connection failed: {1}", DateTime.Now.ToString("hh:mm:ss.fff"), exception);
+#endif
       FSM.State = new RetryConnecting(_context, _userData);
     }
     #endregion

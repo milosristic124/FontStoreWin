@@ -25,6 +25,10 @@ namespace Utilities.FSM {
             _state = newState;
           }
 
+#if DEBUG
+          Console.WriteLine("[{0}] [FSM] {1} -> {2}", DateTime.Now.ToString("hh:mm:ss.fff"), oldState.GetType().Name, newState.GetType().Name);
+#endif
+
           if (_startBeforeStop) {
             StartState(newState, this);
             StopState(oldState);
@@ -67,10 +71,12 @@ namespace Utilities.FSM {
 
     #region private methods
     private static void StopState(T state) {
-      if (state.WillTransition)
+      if (state.WillTransition) {
         state.Stop();
-      else // the state is not ready for transition
+      }
+      else {// the state is not ready for transition
         state.Abort();
+      }
     }
 
     private static void StartState(T state, FiniteStateMachine<T> context) {

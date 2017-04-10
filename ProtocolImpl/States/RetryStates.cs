@@ -86,5 +86,10 @@ namespace Protocol.Impl.States {
         FSM.State = new Connecting(connection, userData);
       };
     }
+
+    protected override void Start() {
+      base.Start();
+      _context.Transport.Disconnect();
+    }
   }
 }

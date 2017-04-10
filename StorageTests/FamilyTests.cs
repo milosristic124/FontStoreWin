@@ -249,22 +249,6 @@ namespace Storage.Impl.Tests {
 
     [TestMethod]
     [TestCategory("Family.Events")]
-    public void Family_shouldtriggerFontInstallationEvent_whenChildFontInstallationStatusChange() {
-      Family family = new Family(TestData.Font1_Description.FamilyName);
-      Font font = Factory.CreateFont(TestData.Font1_Description);
-      family.Add(font);
-
-      bool eventTriggered = false;
-      family.OnInstallationChanged += delegate {
-        eventTriggered = true;
-      };
-
-      font.IsInstalled = true;
-      Assert.IsTrue(eventTriggered, "Family should trigger font installation events when font installation status change");
-    }
-
-    [TestMethod]
-    [TestCategory("Family.Events")]
     public void Family_shouldTriggerFontActivationRequest_whenChildFontTriggerActivationRequest() {
       Family family = new Family(TestData.Font1_Description.FamilyName);
       Font font = Factory.CreateFont(TestData.Font1_Description);

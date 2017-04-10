@@ -2,10 +2,6 @@
 
 namespace Protocol.Payloads {
   public class Authentication {
-    //[JsonProperty("login")]
-    //public string Login { get; set; }
-    //[JsonProperty("password")]
-    //public string Password { get; set; }
     [JsonProperty("protocol_version")]
     public string ProtocolVersion { get; set; }
     [JsonProperty("application_version")]
