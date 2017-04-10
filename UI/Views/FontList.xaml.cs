@@ -12,8 +12,17 @@ namespace UI.Views {
   /// Interaction logic for FontList.xaml
   /// </summary>
   public partial class FontList : Window, IView {
+    #region private type
+    private enum FilterMode {
+      None,
+      Installed,
+      New
+    }
+    #endregion
+
     #region data
     private Protocol.Payloads.UserData _userData;
+    private FilterMode _filterMode;
 
     private ViewModels.FamilyCollectionVM _collectionVM;
     private ListCollectionView _collectionView;
@@ -89,15 +98,17 @@ namespace UI.Views {
 
         UpdateCounters();
 
+        _filterMode = CurrentFilterMode();
+
         _collectionVM = new ViewModels.FamilyCollectionVM(Storage.FamilyCollection);
         RegisterCollectionEvents();
         _collectionView = new ListCollectionView(_collectionVM.Families);
-        _collectionView.Filter = CurrentFilter();
+        _collectionView.Filter = GetFilter(_filterMode);
 
         _searchCollection = new ListCollectionView(_collectionVM.Families);
         _searchCollection.Filter = SearchFilter;
 
-        RefreshFiltering();
+        RefreshAllResults();
 
         SearchFamilyTree.ItemsSource = _searchCollection;
         FamilyTree.ItemsSource = _collectionView;
@@ -131,21 +142,24 @@ namespace UI.Views {
     #region private methods
     private void RegisterCollectionEvents() {
       if (_collectionVM != null) {
-        _collectionVM.OnFontActivationChanged += RefreshFiltering;
-        _collectionVM.OnFontAdded += RefreshFiltering;
-        _collectionVM.OnFontRemoved += RefreshFiltering;
-        _collectionVM.OnFontReplaced += RefreshFiltering;
+        _collectionVM.OnFontActivationChanged += RefreshAllResults;
+        _collectionVM.OnFontAdded += RefreshAllResults;
+        _collectionVM.OnFontRemoved += RefreshAllResults;
+        _collectionVM.OnFontReplaced += RefreshAllResults;
       }
     }
 
     private void UnregisterCollectionEvents() {
       if (_collectionVM != null) {
-        _collectionVM.OnFontActivationChanged -= RefreshFiltering;
-        _collectionVM.OnFontAdded -= RefreshFiltering;
-        _collectionVM.OnFontRemoved -= RefreshFiltering;
-        _collectionVM.OnFontReplaced -= RefreshFiltering;
+        _collectionVM.OnFontActivationChanged -= RefreshAllResults;
+        _collectionVM.OnFontAdded -= RefreshAllResults;
+        _collectionVM.OnFontRemoved -= RefreshAllResults;
+        _collectionVM.OnFontReplaced -= RefreshAllResults;
       }
     }
+    #endregion
+
+    #region event handling
     #endregion
 
     #region UI event handling
@@ -192,6 +206,7 @@ namespace UI.Views {
     #region filtering event handling
     private void InstalledButton_Checked(object sender, RoutedEventArgs e) {
       if (_collectionView != null) {
+        _filterMode = FilterMode.Installed;
         _collectionView.Filter = InstalledFilter;
         _collectionView.Refresh();
       }
@@ -199,6 +214,7 @@ namespace UI.Views {
 
     private void NewButton_Checked(object sender, RoutedEventArgs e) {
       if (_collectionView != null) {
+        _filterMode = FilterMode.New;
         _collectionView.Filter = NewFilter;
         _collectionView.Refresh();
       }
@@ -206,6 +222,7 @@ namespace UI.Views {
 
     private void AllButton_Checked(object sender, RoutedEventArgs e) {
       if (_collectionView != null) {
+        _filterMode = FilterMode.None;
         _collectionView.Filter = null;
         _collectionView.Refresh();
       }
@@ -223,19 +240,41 @@ namespace UI.Views {
       return fam.HasNewFont;
     }
 
-    private Predicate<object> CurrentFilter() {
+    private FilterMode CurrentFilterMode() {
       if (InstalledButton.IsChecked ?? false) {
-        return InstalledFilter;
+        return FilterMode.Installed;
       }
       else if (NewButton.IsChecked ?? false) {
-        return NewFilter;
+        return FilterMode.New;
       }
-      return null;
+      return FilterMode.None;
     }
 
-    private void RefreshFiltering() {
+    private Predicate<object> GetFilter(FilterMode mode) {
+      switch(mode) {
+        case FilterMode.Installed:
+          return InstalledFilter;
+
+        case FilterMode.New:
+          return NewFilter;
+
+        case FilterMode.None:
+        default:
+          return null;
+      }
+    }
+
+    private void RefreshFilterResults() {
       _collectionView?.Refresh();
+    }
+
+    private void RefreshSearchResults() {
       _searchCollection?.Refresh();
+    }
+
+    private void RefreshAllResults() {
+      RefreshFilterResults();
+      RefreshSearchResults();
     }
     #endregion
 

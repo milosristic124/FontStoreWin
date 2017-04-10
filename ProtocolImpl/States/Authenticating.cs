@@ -95,9 +95,11 @@ namespace Protocol.Impl.States {
             FSM.State = new Connecting(_context, userData);
           }
         }
-      } catch (Exception e) {
 #if DEBUG
+      } catch (Exception e) {
         Console.WriteLine("[{0}] Authentication failed: {1}", DateTime.Now.ToString("hh:mm:ss.fff"), e);
+#else
+      } catch (Exception ) {
 #endif
         WillTransition = true;
         FSM.State = new RetryAuthenticating(_context, _authPayload);

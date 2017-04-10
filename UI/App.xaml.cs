@@ -111,6 +111,13 @@ namespace UI {
 
       NotifyIcon.Click += NotifyIcon_Click;
     }
+
+    private void RemoveNotificationIcon() {
+      NotifyIcon.Click -= NotifyIcon_Click;
+      NotifyIcon.Visible = false;
+      NotifyIcon.Icon = null;
+      NotifyIcon = null;
+    }
     #endregion
 
     #region private static methods
@@ -122,5 +129,9 @@ namespace UI {
       }
     }
     #endregion
+
+    private void Application_Exit(object sender, ExitEventArgs e) {
+      RemoveNotificationIcon();
+    }
   }
 }
