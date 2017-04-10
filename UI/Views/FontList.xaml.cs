@@ -1,8 +1,6 @@
 ﻿using Storage;
 using Storage.Data;
 using System;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -30,8 +28,6 @@ namespace UI.Views {
     private ViewModels.FamilyCollectionVM _newVM;
     private ViewModels.FamilyCollectionVM _allVM;
 
-    //private ViewModels.FamilyCollectionVM _collectionVM;
-    //private ListCollectionView _collectionView;
     private ListCollectionView _searchCollection;
     #endregion
 
@@ -101,15 +97,6 @@ namespace UI.Views {
 
         _allVM?.Dispose();
         _allVM = null;
-
-
-        //if (_collectionVM != null) {
-        //  UnregisterCollectionEvents();
-        //  _collectionVM.Dispose();
-        //  _collectionVM = null;
-        //  _collectionView = null;
-        //  _searchCollection = null;
-        //}
       }
       else {
         Loader.Visibility = Visibility.Collapsed;
@@ -132,19 +119,6 @@ namespace UI.Views {
         SearchFamilyTree.ItemsSource = _searchCollection;
 
         FamilyTree.ItemsSource = GetContentVM(_filterMode).Families;
-
-        //_collectionVM = new ViewModels.FamilyCollectionVM(Storage.FamilyCollection);
-        //RegisterCollectionEvents();
-        //_collectionView = new ListCollectionView(_collectionVM.Families);
-        //_collectionView.Filter = GetFilter(_filterMode);
-
-        //_searchCollection = new ListCollectionView(_collectionVM.Families);
-        //_searchCollection.Filter = SearchFilter;
-
-        //RefreshAllResults();
-
-        //SearchFamilyTree.ItemsSource = _searchCollection;
-        //FamilyTree.ItemsSource = _collectionView;
 
         if (SearchButton.IsChecked ?? false) {
           FamilyTree.Visibility = Visibility.Collapsed;
@@ -192,24 +166,6 @@ namespace UI.Views {
           return _allVM;
       }
     }
-
-    //private void RegisterCollectionEvents() {
-    //  if (_collectionVM != null) {
-    //    _collectionVM.OnFontActivationChanged += RefreshAllResults;
-    //    _collectionVM.OnFontAdded += RefreshAllResults;
-    //    _collectionVM.OnFontRemoved += RefreshAllResults;
-    //    _collectionVM.OnFontReplaced += RefreshAllResults;
-    //  }
-    //}
-
-    //private void UnregisterCollectionEvents() {
-    //  if (_collectionVM != null) {
-    //    _collectionVM.OnFontActivationChanged -= RefreshAllResults;
-    //    _collectionVM.OnFontAdded -= RefreshAllResults;
-    //    _collectionVM.OnFontRemoved -= RefreshAllResults;
-    //    _collectionVM.OnFontReplaced -= RefreshAllResults;
-    //  }
-    //}
     #endregion
 
     #region event handling
@@ -260,45 +216,20 @@ namespace UI.Views {
     private void InstalledButton_Checked(object sender, RoutedEventArgs e) {
       _filterMode = FilterMode.Installed;
       SetContentVM(_installedVM);
-      //if (_collectionView != null) {
-      //  _filterMode = FilterMode.Installed;
-      //  _collectionView.Filter = InstalledFilter;
-      //  _collectionView.Refresh();
-      //}
     }
 
     private void NewButton_Checked(object sender, RoutedEventArgs e) {
       _filterMode = FilterMode.New;
       SetContentVM(_newVM);
-      //if (_collectionView != null) {
-      //  _filterMode = FilterMode.New;
-      //  _collectionView.Filter = NewFilter;
-      //  _collectionView.Refresh();
-      //}
     }
 
     private void AllButton_Checked(object sender, RoutedEventArgs e) {
       _filterMode = FilterMode.None;
       SetContentVM(_allVM);
-      //if (_collectionView != null) {
-      //  _filterMode = FilterMode.None;
-      //  _collectionView.Filter = null;
-      //  _collectionView.Refresh();
-      //}
     }
     #endregion
 
     #region filtering methods
-    //private bool InstalledFilter(object item) {
-    //  ViewModels.FamilyVM fam = item as ViewModels.FamilyVM;
-    //  return fam.HasActivatedFont;
-    //}
-
-    //private bool NewFilter(object item) {
-    //  ViewModels.FamilyVM fam = item as ViewModels.FamilyVM;
-    //  return fam.HasNewFont;
-    //}
-
     private FilterMode CurrentFilterMode() {
       if (InstalledButton.IsChecked ?? false) {
         return FilterMode.Installed;
@@ -308,29 +239,6 @@ namespace UI.Views {
       }
       return FilterMode.None;
     }
-
-    //private Predicate<object> GetFilter(FilterMode mode) {
-    //  switch(mode) {
-    //    case FilterMode.Installed:
-    //      return InstalledFilter;
-
-    //    case FilterMode.New:
-    //      return NewFilter;
-
-    //    case FilterMode.None:
-    //    default:
-    //      return null;
-    //  }
-    //}
-
-    //private void RefreshFilterResults() {
-    //  _collectionView?.Refresh();
-    //}
-
-    //private void RefreshAllResults() {
-    //  RefreshFilterResults();
-    //  RefreshSearchResults();
-    //}
     #endregion
 
     #region search handling

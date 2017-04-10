@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 
@@ -15,20 +14,6 @@ namespace UI.ViewModels {
 
     #region properties
     public ObservableCollection<FamilyVM> Families { get; private set; }
-    #endregion
-
-    #region delegates
-    //public delegate void FontActivationChangedHandler();
-    //public delegate void FontRemovedHandler();
-    //public delegate void FontAddedHandler();
-    //public delegate void FontReplacedHandler();
-    #endregion
-
-    #region events
-    //public event FontActivationChangedHandler OnFontActivationChanged;
-    //public event FontRemovedHandler OnFontRemoved;
-    //public event FontAddedHandler OnFontAdded;
-    //public event FontReplacedHandler OnFontReplaced;
     #endregion
 
     #region ctor
@@ -47,10 +32,6 @@ namespace UI.ViewModels {
       } else {
         Families = new ObservableCollection<FamilyVM>(_vms);
       }
-
-      //Families = new ObservableCollection<FamilyVM>(_model.Families.Select(familyModel => {
-      //  return new FamilyVM(familyModel);
-      //}));
 
       _model.OnCollectionCleared += _model_OnCollectionCleared;
       _model.OnFamilyAdded += _model_OnFamilyAdded;
@@ -118,7 +99,6 @@ namespace UI.ViewModels {
         else if (existingVm != null && FilterOut(existingVm)) {
           Families.Remove(existingVm);
         }
-        //OnFontActivationChanged?.Invoke();
       });
     }
 
@@ -138,7 +118,6 @@ namespace UI.ViewModels {
         else if (existingVm != null && FilterOut(vm)) {
           Families.Remove(existingVm);
         }
-        //OnFontReplaced?.Invoke();
       });
     }
 
@@ -158,7 +137,6 @@ namespace UI.ViewModels {
         else if (existingVm != null && FilterOut(existingVm)) {
           Families.Remove(existingVm);
         }
-        //OnFontRemoved?.Invoke();
       });
     }
 
@@ -178,7 +156,6 @@ namespace UI.ViewModels {
         else if (existingVm != null && FilterOut(existingVm)) {
           Families.Remove(existingVm);
         }
-        //OnFontAdded?.Invoke();
       });
     }
     #endregion

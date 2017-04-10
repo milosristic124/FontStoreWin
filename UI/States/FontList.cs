@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using UI.Utilities;
-using Utilities.Extensions;
 
 namespace UI.States {
   class FontList : UIState {
