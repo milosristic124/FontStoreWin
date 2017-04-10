@@ -2,7 +2,7 @@
 using System.Text;
 
 namespace Encryption.Impl {
-  public class XORCypher: ICypher {
+  public class XORCypher : ICypher {
     #region private data
     private byte[] _bKey;
     #endregion
@@ -33,7 +33,7 @@ namespace Encryption.Impl {
       }
 
       result.Seek(0, SeekOrigin.Begin);
-        return result;
+      return result;
     }
     #endregion
 
@@ -42,10 +42,10 @@ namespace Encryption.Impl {
       byte[] result = new byte[count];
 
       for (int it = 0; it < count; it++) {
-        result[it] = (byte)(buffer[it] ^ key[it & key.Length]);
+        result[it] = (byte)(buffer[it] ^ key[it % key.Length]);
       }
 
-      return buffer;
+      return result;
     }
     #endregion
   }

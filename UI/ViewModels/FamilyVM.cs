@@ -66,7 +66,9 @@ namespace UI.ViewModels {
     private void _model_OnFontRemoved(Family sender, Font removedFont) {
       ExecuteOnUIThread(() => {
         FontVM removedVM = Fonts.FirstOrDefault(vm => vm.UID == removedFont.UID);
-        Fonts.Remove(removedVM);
+        if (removedVM != null) {
+          Fonts.Remove(removedVM);
+        }
       });
     }
 

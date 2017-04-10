@@ -18,7 +18,7 @@ namespace FontInstaller.Impl {
       _privateFonts = new Dictionary<string, IntPtr>();
       _userFonts = new Dictionary<string, string>();
 
-      _userFilesDir = Path.GetTempPath() + Guid.NewGuid().ToString();
+      _userFilesDir = Path.GetTempPath() + Guid.NewGuid().ToString() + "\\";
       Directory.CreateDirectory(_userFilesDir);
     }
     #endregion
