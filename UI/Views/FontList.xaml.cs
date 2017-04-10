@@ -126,7 +126,7 @@ namespace UI.Views {
         _installedVM = new ViewModels.FamilyCollectionVM(_collection, family => family.HasActivatedFont);
         _newVM = new ViewModels.FamilyCollectionVM(_collection, family => family.HasNewFont);
 
-        _searchCollection = new ListCollectionView(_newVM.Families);
+        _searchCollection = new ListCollectionView(_allVM.Families);
         _searchCollection.Filter = SearchFilter;
         RefreshSearchResults();
         SearchFamilyTree.ItemsSource = _searchCollection;

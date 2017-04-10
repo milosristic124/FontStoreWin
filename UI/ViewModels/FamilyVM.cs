@@ -55,6 +55,7 @@ namespace UI.ViewModels {
       _model.OnFullyActivatedChanged += _model_OnFullyActivatedChanged;
       _model.OnFontAdded += _model_OnFontAdded;
       _model.OnFontRemoved += _model_OnFontRemoved;
+      _model.OnFontUpdated += _model_OnFontUpdated;
     }
     #endregion
 
@@ -75,6 +76,16 @@ namespace UI.ViewModels {
     private void _model_OnFontAdded(Family sender, Font newFontModel) {
       ExecuteOnUIThread(() => {
         Fonts.Add(new FontVM(newFontModel));
+      });
+    }
+
+    private void _model_OnFontUpdated(Family sender, Font removedFont, Font updatedFont) {
+      ExecuteOnUIThread(() => {
+        FontVM removedVM = Fonts.FirstOrDefault(vm => vm.UID == removedFont.UID);
+        if (removedVM != null) {
+          Fonts.Remove(removedVM);
+        }
+        Fonts.Add(new FontVM(updatedFont));
       });
     }
     #endregion

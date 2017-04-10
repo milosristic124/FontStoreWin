@@ -141,9 +141,9 @@ namespace Storage.Data {
     private void ToggleFullFamilyActivation(bool newValue) {
       _batchActivation = true;
       foreach (Font font in Fonts) {
-        if (newValue) {
+        if (newValue && !font.Activated) {
           font.RequestActivation();
-        } else {
+        } else if (!newValue && font.Activated) {
           font.RequestDeactivation();
         }
       }
