@@ -56,6 +56,8 @@ namespace Storage {
     void BeginSynchronization();
     void EndSynchronization();
     void AbortSynchronization();
+
+    void ResetNewStatus();
     #endregion
   }
 }

@@ -19,6 +19,7 @@ namespace Storage.Data {
     public delegate void FontUpdatedHandler(FamilyCollection sender, Family target, Font removedFont, Font updatedFont);
 
     public delegate void FontActivationChangedHandler(FamilyCollection sender, Family fontFamily, Font target);
+    public delegate void FontNewChangedHandler(FamilyCollection sender, Family fontFamily, Font target);
 
     public delegate void FontActivationRequestHandler(FamilyCollection sender, Family fontFamily, Font target);
     public delegate void FontDeactivationRequestHandler(FamilyCollection sender, Family fontFamily, Font target);
@@ -32,6 +33,7 @@ namespace Storage.Data {
     public event FontRemovedHandler OnFontRemoved;
     public event FontUpdatedHandler OnFontUpdated;
     public event FontActivationChangedHandler OnActivationChanged;
+    public event FontNewChangedHandler OnNewChanged;
     public event FontActivationRequestHandler OnActivationRequest;
     public event FontDeactivationRequestHandler OnDeactivationRequest;
     #endregion
@@ -105,6 +107,7 @@ namespace Storage.Data {
       family.OnFontRemoved += Family_OnFontRemoved;
       family.OnFontUpdated += Family_OnFontUpdated;
       family.OnActivationChanged += Family_OnFontActivationChanged;
+      family.OnNewChanged += Family_OnNewChanged;
       family.OnActivationRequest += Family_OnActivationRequest;
       family.OnDeactivationRequest += Family_OnDeactivationRequest;
     }
@@ -114,6 +117,7 @@ namespace Storage.Data {
       family.OnFontRemoved -= Family_OnFontRemoved;
       family.OnFontUpdated -= Family_OnFontUpdated;
       family.OnActivationChanged -= Family_OnFontActivationChanged;
+      family.OnNewChanged -= Family_OnNewChanged;
       family.OnActivationRequest -= Family_OnActivationRequest;
       family.OnDeactivationRequest -= Family_OnDeactivationRequest;
     }
@@ -126,6 +130,10 @@ namespace Storage.Data {
 
     private void Family_OnFontActivationChanged(Family sender, Font target) {
       OnActivationChanged?.Invoke(this, sender, target);
+    }
+
+    private void Family_OnNewChanged(Family sender, Font target) {
+      OnNewChanged?.Invoke(this, sender, target);
     }
 
     private void Family_OnFontAdded(Family sender, Font newFont) {

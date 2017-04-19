@@ -78,6 +78,7 @@ namespace TestUtilities.Storage {
 
     #region methods
     public void Clear() {
+      RegisterCall("Clear");
       UnregisterCollectionEvents();
 
       LastCatalogUpdate = DateTime.Now;
@@ -89,15 +90,29 @@ namespace TestUtilities.Storage {
       RegisterCollectionEvents();
     }
 
+    public void ResetNewStatus() {
+      RegisterCall("ResetNewStatus");
+      foreach (Family family in FamilyCollection.Families) {
+        if (family.HasNewFont) {
+          foreach (Font font in family.Fonts) {
+            font.IsNew = false;
+          }
+        }
+      }
+    }
+
     public Task CleanCredentials() {
+      RegisterCall("CleanCredentials");
       return Task.Run(() => { });
     }
 
     public Task<string> LoadCredentials() {
+      RegisterCall("LoadCredentials");
       return Task.Run(() => (string)null);
     }
 
     public Task SaveCredentials(string creds) {
+      RegisterCall("SaveCredentials");
       return Task.Run(() => { });
     }
 
@@ -141,6 +156,7 @@ namespace TestUtilities.Storage {
     }
 
     public void DeactivateAllFonts(Action then = null) {
+      RegisterCall("DeactivateAllFonts");
       Installer.UninstallAllFonts().Wait();
       then?.Invoke();
     }

@@ -37,6 +37,7 @@ namespace UI.States {
       Application.Context.Connection.OnConnectionTerminated += Connection_Terminated;
       Application.Context.Storage.OnFontInstall += Storage_OnFontInstall;
       Application.Context.Storage.OnFontUninstall += Storage_OnFontUninstall;
+      Application.Context.Storage.FamilyCollection.OnNewChanged += FamilyCollection_OnNewChanged;
     }
     #endregion
 
@@ -71,6 +72,7 @@ namespace UI.States {
       Application.Context.Connection.OnConnectionTerminated -= Connection_Terminated;
       Application.Context.Storage.OnFontInstall -= Storage_OnFontInstall;
       Application.Context.Storage.OnFontUninstall -= Storage_OnFontUninstall;
+      Application.Context.Storage.FamilyCollection.OnNewChanged -= FamilyCollection_OnNewChanged;
     }
     #endregion
 
@@ -171,6 +173,12 @@ namespace UI.States {
     }
 
     private void Storage_OnFontInstall(Storage.Data.Font font, FontInstaller.InstallationScope scope, bool succeed) {
+      _view.InvokeOnUIThread(() => {
+        _view.UpdateCounters();
+      });
+    }
+
+    private void FamilyCollection_OnNewChanged(Storage.Data.FamilyCollection sender, Storage.Data.Family fontFamily, Storage.Data.Font target) {
       _view.InvokeOnUIThread(() => {
         _view.UpdateCounters();
       });

@@ -43,6 +43,7 @@ namespace Storage.Data {
     public delegate void FontUpdatedHandler(Family sender, Font removedFont, Font updatedFont);
 
     public delegate void FontActivationChangedHandler(Family sender, Font target);
+    public delegate void FontNewChangedHandler(Family sender, Font target);
     public delegate void FullyActivatedChangedHandler(Family sender);
 
     public delegate void FontActivationRequestHandler(Family sender, Font target);
@@ -55,6 +56,7 @@ namespace Storage.Data {
     public event FontUpdatedHandler OnFontUpdated;
 
     public event FontActivationChangedHandler OnActivationChanged;
+    public event FontNewChangedHandler OnNewChanged;
     public event FullyActivatedChangedHandler OnFullyActivatedChanged;
 
     public event FontActivationRequestHandler OnActivationRequest;
@@ -130,12 +132,14 @@ namespace Storage.Data {
       font.OnActivationChanged += FontActivationChanged;
       font.OnActivationRequest += FontActivationRequest;
       font.OnDeactivationRequest += FontDeactivationRequest;
+      font.OnNewChanged += Font_OnNewChanged;
     }
 
     private void UnregisterFontEvents(Font font) {
       font.OnActivationChanged -= FontActivationChanged;
       font.OnActivationRequest -= FontActivationRequest;
       font.OnDeactivationRequest -= FontDeactivationRequest;
+      font.OnNewChanged -= Font_OnNewChanged;
     }
 
     private void ToggleFullFamilyActivation(bool newValue) {
@@ -198,6 +202,10 @@ namespace Storage.Data {
 
     private void FontDeactivationRequest(Font sender) {
       OnDeactivationRequest?.Invoke(this, sender);
+    }
+
+    private void Font_OnNewChanged(Font sender) {
+      OnNewChanged?.Invoke(this, sender);
     }
     #endregion
   }

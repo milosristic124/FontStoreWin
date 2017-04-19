@@ -41,6 +41,7 @@ namespace UI.ViewModels {
       _model.OnFontRemoved += _model_OnFontRemoved;
       _model.OnFontUpdated += _model_OnFontUpdated;
       _model.OnActivationChanged += _model_OnActivationChanged;
+      _model.OnNewChanged += _model_OnNewChanged;
     }
 
     public void Dispose() {
@@ -52,6 +53,7 @@ namespace UI.ViewModels {
       _model.OnFontRemoved -= _model_OnFontRemoved;
       _model.OnFontUpdated -= _model_OnFontUpdated;
       _model.OnActivationChanged -= _model_OnActivationChanged;
+      _model.OnNewChanged -= _model_OnNewChanged;
     }
     #endregion
 
@@ -80,6 +82,25 @@ namespace UI.ViewModels {
     private void _model_OnCollectionCleared(FamilyCollection sender) {
       ExecuteOnUIThread(() => {
         Families.Clear();
+      });
+    }
+
+    private void _model_OnNewChanged(FamilyCollection sender, Family fontFamily, Font target) {
+      ExecuteOnUIThread(() => {
+        FamilyVM existingVm = Families.FirstOrDefault(fam => fam.Name == fontFamily.Name);
+        FamilyVM vm = existingVm;
+        if (vm == null) {
+          vm = new FamilyVM(fontFamily);
+        }
+
+        // family was not in the collection && family should be in the collection
+        if (existingVm == null && !FilterOut(vm)) {
+          Families.Add(vm);
+        }
+        // family was in the collection && family should not be in the collection
+        else if (existingVm != null && FilterOut(existingVm)) {
+          Families.Remove(existingVm);
+        }
       });
     }
 

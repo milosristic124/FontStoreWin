@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Storage.Data;
 using Storage.Impl.Tests.Utilities;
+using System.Threading;
 using TestUtilities;
 
 namespace Storage.Impl.Tests {
@@ -205,6 +206,9 @@ namespace Storage.Impl.Tests {
 
       family.FullyActivated = true;
       Assert.AreEqual(family.Fonts.Count, activationRequests, "Family.FullyActivated set should request fonts activation");
+
+      font1.Activated = true;
+      font2.Activated = true;
 
       family.FullyActivated = false;
       Assert.AreEqual(family.Fonts.Count, deactivationRequests, "Family.FullyActivated unset should request fonts deactivation");

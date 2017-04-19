@@ -36,6 +36,7 @@ namespace Protocol.Impl.States {
     private void RegisterEvents() {
       _context.CatalogChannel.OnFontDescription += CatalogChannel_OnFontDescription;
       _context.CatalogChannel.OnFontDeletion += CatalogChannel_OnFontDeletion;
+      _context.CatalogChannel.OnNewFontReleased += CatalogChannel_OnNewFontReleased;
 
       _context.UserChannel.OnFontActivation += UserChannel_OnFontActivation;
       _context.UserChannel.OnFontDeactivation += UserChannel_OnFontDeactivation;
@@ -50,6 +51,7 @@ namespace Protocol.Impl.States {
     private void UnregisterEvents() {
       _context.CatalogChannel.OnFontDescription -= CatalogChannel_OnFontDescription;
       _context.CatalogChannel.OnFontDeletion -= CatalogChannel_OnFontDeletion;
+      _context.CatalogChannel.OnNewFontReleased -= CatalogChannel_OnNewFontReleased;
 
       _context.UserChannel.OnFontActivation -= UserChannel_OnFontActivation;
       _context.UserChannel.OnFontDeactivation -= UserChannel_OnFontDeactivation;
@@ -74,6 +76,10 @@ namespace Protocol.Impl.States {
 
     private void CatalogChannel_OnFontDescription(Payloads.FontDescription desc) {
       _context.Storage.AddFont(desc);
+    }
+
+    private void CatalogChannel_OnNewFontReleased() {
+      _context.Storage.ResetNewStatus();
     }
     #endregion
 

@@ -18,12 +18,14 @@ namespace Protocol.Impl.States {
       _context.CatalogChannel.OnFontDescription -= _chan_OnFontDescription;
       _context.CatalogChannel.OnFontDeletion -= _chan_OnFontDeletion;
       _context.CatalogChannel.OnUpdateComplete -= _chan_OnUpdateComplete;
+      _context.CatalogChannel.OnNewFontReleased -= CatalogChannel_OnNewFontReleased;
     }
 
     protected override void Start() {
       _context.CatalogChannel.OnFontDescription += _chan_OnFontDescription;
       _context.CatalogChannel.OnFontDeletion += _chan_OnFontDeletion;
       _context.CatalogChannel.OnUpdateComplete += _chan_OnUpdateComplete;
+      _context.CatalogChannel.OnNewFontReleased += CatalogChannel_OnNewFontReleased;
 
       _context.CatalogChannel.Join().Then(() => {
         _context.CatalogChannel.SendUpdateRequest(_context.Storage.LastCatalogUpdate);
@@ -43,6 +45,10 @@ namespace Protocol.Impl.States {
 
     private void _chan_OnFontDescription(Payloads.FontDescription desc) {
       _context.Storage.AddFont(desc);
+    }
+
+    private void CatalogChannel_OnNewFontReleased() {
+      _context.Storage.ResetNewStatus();
     }
     #endregion
   }

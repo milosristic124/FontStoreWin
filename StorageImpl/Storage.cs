@@ -149,6 +149,16 @@ namespace Storage.Impl {
       _synchronizationCallback = null;
     }
 
+    public void ResetNewStatus() {
+      foreach (Family family in FamilyCollection.Families) {
+        if (family.HasNewFont) {
+          foreach (Font font in family.Fonts) {
+            font.IsNew = false;
+          }
+        }
+      }
+    }
+
     public Font AddFont(FontDescription description) {
       Font newFont = new Font(
         uid: description.UID,

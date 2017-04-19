@@ -551,6 +551,22 @@ namespace Protocol.Impl.Tests {
     }
 
     [TestMethod]
+    [TestCategory("Protocol.Running")]
+    public void NewFontReleasedMessage_shouldResetAllStoredFontNewStatus() {
+      MockedTransport transport = new MockedTransport();
+      MockedHttpTransport http = new MockedHttpTransport();
+      MockedFontInstaller installer = new MockedFontInstaller();
+      MockedStorage storage = new MockedStorage(installer);
+      TestConnection connection = new TestConnection(transport, http, storage);
+
+      connection.Updated(delegate {
+        transport.SimulateMessage("catalog", "font:new_release");
+
+        storage.Verify("ResetNewStatus", 1);
+      });
+    }
+
+    [TestMethod]
     [TestCategory("Protocol.Disconnect")]
     public void Disconnect_shouldDisconnectTheTransport_andStopUpdatingFontStorage() {
       MockedTransport transport = new MockedTransport();

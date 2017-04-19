@@ -8,6 +8,7 @@ namespace Storage.Data {
   public class Font {
     #region private data
     private bool _activated;
+    private bool _isNew;
     #endregion
 
     #region properties
@@ -17,7 +18,13 @@ namespace Storage.Data {
     public DateTime CreatedAt { get; private set; }
     public bool IsNew {
       get {
-        return (DateTime.UtcNow - CreatedAt).TotalDays < 5;
+        return _isNew;
+      }
+      set {
+        if (_isNew != value) {
+          _isNew = value;
+          OnNewChanged?.Invoke(this);
+        }
       }
     }
     public Uri DownloadUrl { get; private set; }
@@ -36,12 +43,14 @@ namespace Storage.Data {
 
     #region delegates
     public delegate void FontActivationEventHandler(Font sender);
+    public delegate void FontNewEventHandler(Font sender);
     public delegate void FontActivationRequestedHandler(Font sender);
     public delegate void FontDeactivationRequestedHandler(Font sender);
     #endregion
 
     #region events
     public event FontActivationEventHandler OnActivationChanged;
+    public event FontNewEventHandler OnNewChanged;
     public event FontActivationRequestedHandler OnActivationRequest;
     public event FontDeactivationRequestedHandler OnDeactivationRequest;
     #endregion
@@ -54,6 +63,7 @@ namespace Storage.Data {
       DownloadUrl = new Uri(downloadUrl);
       CreatedAt = DateTimeHelper.FromTimestamp(timestamp);
       _activated = false;
+      _isNew = true;
     }
     #endregion
 

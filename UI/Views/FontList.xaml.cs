@@ -168,9 +168,6 @@ namespace UI.Views {
     }
     #endregion
 
-    #region event handling
-    #endregion
-
     #region UI event handling
     private void MenuButton_Click(object sender, RoutedEventArgs e) {
       MenuButton.ContextMenu.IsEnabled = true;
