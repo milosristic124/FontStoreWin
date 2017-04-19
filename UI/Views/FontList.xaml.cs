@@ -68,12 +68,6 @@ namespace UI.Views {
       catch (Exception) { }
     }
 
-    public void UpdateCounters() {
-      AllCountLabel.Content = string.Format("({0})", Storage.FamilyCollection.Families.Count);
-      NewCountLabel.Content = string.Format("({0})", Storage.NewFamilies.Count);
-      InstalledCountLabel.Content = string.Format("({0})", Storage.ActivatedFamilies.Count);
-    }
-
     public void LoadingState(bool isLoading) {
       if (isLoading) {
         Loader.Visibility = Visibility.Visible;
@@ -89,12 +83,15 @@ namespace UI.Views {
         _collection?.Clear();
         _collection = null;
 
+        _installedVM.OnCountChanged -= _installedVM_OnCountChanged;
         _installedVM?.Dispose();
         _installedVM = null;
 
+        _newVM.OnCountChanged -= _newVM_OnCountChanged;
         _newVM?.Dispose();
         _newVM = null;
 
+        _allVM.OnCountChanged -= _allVM_OnCountChanged;
         _allVM?.Dispose();
         _allVM = null;
       }
@@ -104,14 +101,20 @@ namespace UI.Views {
         NewCountLabel.Visibility = Visibility.Visible;
         AllCountLabel.Visibility = Visibility.Visible;
 
-        UpdateCounters();
-
         _filterMode = CurrentFilterMode();
 
         _collection = Storage.FamilyCollection;
         _allVM = new ViewModels.FamilyCollectionVM(_collection);
         _installedVM = new ViewModels.FamilyCollectionVM(_collection, family => family.HasActivatedFont);
         _newVM = new ViewModels.FamilyCollectionVM(_collection, family => family.HasNewFont);
+
+        _allVM.OnCountChanged += _allVM_OnCountChanged;
+        _installedVM.OnCountChanged += _installedVM_OnCountChanged;
+        _newVM.OnCountChanged += _newVM_OnCountChanged;
+
+        _installedVM_OnCountChanged(_installedVM);
+        _newVM_OnCountChanged(_newVM);
+        _allVM_OnCountChanged(_allVM);
 
         _searchCollection = new ListCollectionView(_allVM.Families);
         _searchCollection.Filter = SearchFilter;
@@ -223,6 +226,20 @@ namespace UI.Views {
     private void AllButton_Checked(object sender, RoutedEventArgs e) {
       _filterMode = FilterMode.None;
       SetContentVM(_allVM);
+    }
+    #endregion
+
+    #region event handling
+    private void _installedVM_OnCountChanged(ViewModels.FamilyCollectionVM sender) {
+      InstalledCountLabelValue.Content = sender.Families.Count;
+    }
+
+    private void _allVM_OnCountChanged(ViewModels.FamilyCollectionVM sender) {
+      AllCountLabelValue.Content = sender.Families.Count;
+    }
+
+    private void _newVM_OnCountChanged(ViewModels.FamilyCollectionVM sender) {
+      NewCountLabelValue.Content = sender.Families.Count;
     }
     #endregion
 

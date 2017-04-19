@@ -114,6 +114,7 @@
     <Compile Include="Utilities\WindowPosition.cs" />
     <Compile Include="ViewModels\FamilyCollectionVM.cs" />
     <Compile Include="ViewModels\FamilyVM.cs" />
+    <Compile Include="ViewModels\FontListVM.cs" />
     <Compile Include="ViewModels\FontVM.cs" />
     <Compile Include="Views\IView.cs" />
     <Page Include="Controls\RememberMeButton.xaml">

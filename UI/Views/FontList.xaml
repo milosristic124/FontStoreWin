@@ -86,31 +86,67 @@
           <RadioButton x:Name="InstalledButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/Fontstore;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Center" IsChecked="True" Cursor="Hand" Checked="InstalledButton_Checked">
             <StackPanel Orientation="Horizontal">
               <Label Background="{x:Null}" Padding="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Installed" Margin="0,0,4,0"/>
-              <Label Name="InstalledCountLabel" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(0)">
-                <Label.Foreground>
-                  <SolidColorBrush Color="{DynamicResource FSGrey}"/>
-                </Label.Foreground>
-              </Label>
+              <StackPanel Name="InstalledCountLabel" Orientation="Horizontal">
+                <Label Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(">
+                  <Label.Foreground>
+                    <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                  </Label.Foreground>
+                </Label>
+                <Label Name="InstalledCountLabelValue" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="0">
+                  <Label.Foreground>
+                    <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                  </Label.Foreground>
+                </Label>
+                <Label Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content=")">
+                  <Label.Foreground>
+                    <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                  </Label.Foreground>
+                </Label>
+              </StackPanel>
             </StackPanel>
           </RadioButton>
           <RadioButton x:Name="NewButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/Fontstore;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Center" Margin="0" Grid.Column="1" Cursor="Hand" Checked="NewButton_Checked">
             <StackPanel Orientation="Horizontal">
               <Label Background="{x:Null}" Padding="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Content="New" Margin="0,0,4,0"/>
-              <Label x:Name="NewCountLabel" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(0)">
-                <Label.Foreground>
-                  <SolidColorBrush Color="{DynamicResource FSGrey}"/>
-                </Label.Foreground>
-              </Label>
+              <StackPanel Name="NewCountLabel" Orientation="Horizontal">
+                <Label Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(">
+                  <Label.Foreground>
+                    <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                  </Label.Foreground>
+                </Label>
+                <Label Name="NewCountLabelValue" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="0">
+                  <Label.Foreground>
+                    <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                  </Label.Foreground>
+                </Label>
+                <Label Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content=")">
+                  <Label.Foreground>
+                    <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                  </Label.Foreground>
+                </Label>
+              </StackPanel>
             </StackPanel>
           </RadioButton>
           <RadioButton x:Name="AllButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/Fontstore;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Center" Margin="0" Grid.Column="2" Cursor="Hand" Checked="AllButton_Checked">
             <StackPanel Orientation="Horizontal">
               <Label Background="{x:Null}" Padding="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Content="All Fonts" Margin="0,0,4,0"/>
-              <Label x:Name="AllCountLabel" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(0)">
-                <Label.Foreground>
-                  <SolidColorBrush Color="{DynamicResource FSGrey}"/>
-                </Label.Foreground>
-              </Label>
+              <StackPanel Name="AllCountLabel" Orientation="Horizontal">
+                <Label Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(">
+                  <Label.Foreground>
+                    <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                  </Label.Foreground>
+                </Label>
+                <Label Name="AllCountLabelValue" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="0">
+                  <Label.Foreground>
+                    <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                  </Label.Foreground>
+                </Label>
+                <Label Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content=")">
+                  <Label.Foreground>
+                    <SolidColorBrush Color="{DynamicResource FSGrey}"/>
+                  </Label.Foreground>
+                </Label>
+              </StackPanel>
             </StackPanel>
           </RadioButton>
 

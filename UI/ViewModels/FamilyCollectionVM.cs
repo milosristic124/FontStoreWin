@@ -16,6 +16,14 @@ namespace UI.ViewModels {
     public ObservableCollection<FamilyVM> Families { get; private set; }
     #endregion
 
+    #region delegates
+    public delegate void CountChangedHandler(FamilyCollectionVM sender);
+    #endregion
+
+    #region events
+    public event CountChangedHandler OnCountChanged;
+    #endregion
+
     #region ctor
     public FamilyCollectionVM(FamilyCollection model, Predicate<FamilyVM> filter = null) {
       _model = model;
@@ -63,6 +71,7 @@ namespace UI.ViewModels {
         FamilyVM removedVM = Families.FirstOrDefault(vm => vm.Name == removedFamily.Name);
         if (removedVM != null) {
           Families.Remove(removedVM);
+          OnCountChanged?.Invoke(this);
         }
       });
     }
@@ -74,6 +83,7 @@ namespace UI.ViewModels {
           FamilyVM vm = new FamilyVM(newFamily);
           if (!FilterOut(vm)) {
             Families.Add(vm);
+            OnCountChanged?.Invoke(this);
           }
         }
       });
@@ -82,6 +92,7 @@ namespace UI.ViewModels {
     private void _model_OnCollectionCleared(FamilyCollection sender) {
       ExecuteOnUIThread(() => {
         Families.Clear();
+        OnCountChanged?.Invoke(this);
       });
     }
 
@@ -96,10 +107,12 @@ namespace UI.ViewModels {
         // family was not in the collection && family should be in the collection
         if (existingVm == null && !FilterOut(vm)) {
           Families.Add(vm);
+          OnCountChanged?.Invoke(this);
         }
         // family was in the collection && family should not be in the collection
         else if (existingVm != null && FilterOut(existingVm)) {
           Families.Remove(existingVm);
+          OnCountChanged?.Invoke(this);
         }
       });
     }
@@ -115,10 +128,12 @@ namespace UI.ViewModels {
         // family was not in the collection && family should be in the collection
         if (existingVm == null && !FilterOut(vm)) {
           Families.Add(vm);
+          OnCountChanged?.Invoke(this);
         }
         // family was in the collection && family should not be in the collection
         else if (existingVm != null && FilterOut(existingVm)) {
           Families.Remove(existingVm);
+          OnCountChanged?.Invoke(this);
         }
       });
     }
@@ -134,10 +149,12 @@ namespace UI.ViewModels {
         // family was not in the collection && family should be in the collection
         if (existingVm == null && !FilterOut(vm)) {
           Families.Add(vm);
+          OnCountChanged?.Invoke(this);
         }
         // family was in the collection && family should not be in the collection
         else if (existingVm != null && FilterOut(vm)) {
           Families.Remove(existingVm);
+          OnCountChanged?.Invoke(this);
         }
       });
     }
@@ -153,10 +170,12 @@ namespace UI.ViewModels {
         // family was not in the collection && family should be in the collection
         if (existingVm == null && !FilterOut(vm)) {
           Families.Add(vm);
+          OnCountChanged?.Invoke(this);
         }
         // family was in the collection && family should not be in the collection
         else if (existingVm != null && FilterOut(existingVm)) {
           Families.Remove(existingVm);
+          OnCountChanged?.Invoke(this);
         }
       });
     }
@@ -172,10 +191,12 @@ namespace UI.ViewModels {
         // family was not in the collection && family should be in the collection
         if (existingVm == null && !FilterOut(vm)) {
           Families.Add(vm);
+          OnCountChanged?.Invoke(this);
         }
         // family was in the collection && family should not be in the collection
         else if (existingVm != null && FilterOut(existingVm)) {
           Families.Remove(existingVm);
+          OnCountChanged?.Invoke(this);
         }
       });
     }
