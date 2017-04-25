@@ -68,6 +68,10 @@ namespace UI.Views {
       catch (Exception) { }
     }
 
+    public TResult InvokeOnUIThread<TResult>(Func<TResult> action) {
+      return Dispatcher.Invoke(action);
+    }
+
     public void LoadingState(bool isLoading) {
       if (isLoading) {
         Loader.Visibility = Visibility.Visible;
@@ -83,17 +87,24 @@ namespace UI.Views {
         _collection?.Clear();
         _collection = null;
 
-        _installedVM.OnCountChanged -= _installedVM_OnCountChanged;
-        _installedVM?.Dispose();
-        _installedVM = null;
+        if (_installedVM != null) {
+          _installedVM.OnCountChanged -= _installedVM_OnCountChanged;
+          _installedVM.Dispose();
+          _installedVM = null;
+        }
 
-        _newVM.OnCountChanged -= _newVM_OnCountChanged;
-        _newVM?.Dispose();
-        _newVM = null;
+        if (_newVM != null) {
+          _newVM.OnCountChanged -= _newVM_OnCountChanged;
+          _newVM.Dispose();
+          _newVM = null;
+        }
 
-        _allVM.OnCountChanged -= _allVM_OnCountChanged;
-        _allVM?.Dispose();
-        _allVM = null;
+        if (_allVM != null) {
+          _allVM.OnCountChanged -= _allVM_OnCountChanged;
+          _allVM.Dispose();
+          _allVM = null;
+        }
+
       }
       else {
         Loader.Visibility = Visibility.Collapsed;
@@ -139,13 +150,14 @@ namespace UI.Views {
       MessageBox.Show(this, message, "Fontstore - Connection closed", MessageBoxButton.OK);
     }
 
-    public void Disconnected() {
+    public bool Disconnected() {
       Loader.Visibility = Visibility.Visible;
       if (MessageBox.Show(this, "The application has been disconnected.\nFontstore will try to reconnect automatically.",
-                          "Fontstore - Connection lost",
-                          MessageBoxButton.OKCancel) == MessageBoxResult.Cancel) {
-        OnLogout?.Invoke();
+                      "Fontstore - Connection lost",
+                      MessageBoxButton.OKCancel) == MessageBoxResult.Cancel) {
+        return false;
       }
+      return true;
     }
     #endregion
 

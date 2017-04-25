@@ -10,5 +10,6 @@ namespace UI.Views {
   interface IView {
     UIElement DragHandle { get; }
     void InvokeOnUIThread(Action action);
+    TResult InvokeOnUIThread<TResult>(Func<TResult> action);
   }
 }

@@ -11,6 +11,7 @@
         xmlns:Controls="clr-namespace:UI.Controls" x:Class="UI.Views.FontList"
         mc:Ignorable="d"
         gif:ImageBehavior.AnimateInDesignMode="True"
+        ShowInTaskbar="False"
         Title="FontList" Height="480" Foreground="{x:Null}" AllowsTransparency="True" WindowStyle="None" Background="{x:Null}" Width="330">
   <Grid>
     <Grid.OpacityMask>

@@ -96,6 +96,10 @@ namespace UI.Views {
         Dispatcher.Invoke(action);
       } catch (Exception) { }
     }
+
+    public TResult InvokeOnUIThread<TResult>(Func<TResult> action) {
+      return Dispatcher.Invoke(action);
+    }
     #endregion
 
     #region UI event handling

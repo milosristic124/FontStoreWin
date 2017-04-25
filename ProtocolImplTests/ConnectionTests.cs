@@ -633,6 +633,7 @@ namespace Protocol.Impl.Tests {
         AutoResetEvent disconnected = new AutoResetEvent(false);
         connection.OnDisconnected += delegate {
           disconnected.Set();
+          return true;
         };
 
         transport.SimulateTermination();

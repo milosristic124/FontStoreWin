@@ -15,7 +15,7 @@ namespace Protocol {
   public delegate void ConnectionEstablishedHandler(UserData userData);
   public delegate void CatalogUpdateFinishedHandler();
   public delegate void ConnectionClosedHandler();// connection closed after User disconnection
-  public delegate void DisconnectionHandler(); // connection disconnected after transport error
+  public delegate bool DisconnectionHandler(); // connection disconnected after transport error
   public delegate void ConnectionTerminatedHandler(string reason); // connection closed after Server disconnection
   #endregion
 }

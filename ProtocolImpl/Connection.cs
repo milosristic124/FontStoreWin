@@ -159,8 +159,12 @@ namespace Protocol.Impl {
 
     private void Transport_Closed() { // disconnection caused by error
       Transport.Closed -= Transport_Closed;
-      OnDisconnected?.Invoke();
-      StartTransportReconnection();
+      bool shouldReconnect = OnDisconnected?.Invoke() ?? true;
+      if (shouldReconnect) {
+        StartTransportReconnection();
+      } else {
+        Disconnect(DisconnectReason.Error, "User cancelled automatic reconnection.");
+      }
     }
     #endregion
   }

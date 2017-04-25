@@ -88,8 +88,9 @@ namespace Protocol.Impl.States {
     }
 
     protected override void Start() {
-      base.Start();
-      _context.Transport.Disconnect();
+      _context.Transport.Disconnect(delegate {
+        base.Start();
+      });
     }
   }
 }

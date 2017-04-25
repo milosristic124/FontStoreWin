@@ -9,7 +9,8 @@
         x:Class="UI.Views.Login"
         mc:Ignorable="d"
         gif:ImageBehavior.AnimateInDesignMode="True"
-        Title="Fontstore" Height="480" Width="330" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="Manual" MaxWidth="330" SizeToContent="WidthAndHeight" MinWidth="330" MinHeight="480" MaxHeight="480" ScrollViewer.VerticalScrollBarVisibility="Disabled" AllowsTransparency="True" Background="{x:Null}" Foreground="{x:Null}" ShowInTaskbar="False" Visibility="Visible">
+        ShowInTaskbar="False"
+        Title="Fontstore" Height="480" Width="330" ResizeMode="NoResize" WindowStyle="None" WindowStartupLocation="Manual" MaxWidth="330" SizeToContent="WidthAndHeight" MinWidth="330" MinHeight="480" MaxHeight="480" ScrollViewer.VerticalScrollBarVisibility="Disabled" AllowsTransparency="True" Background="{x:Null}" Foreground="{x:Null}" Visibility="Visible">
 
   <Grid x:Name="WindowGrid" ScrollViewer.VerticalScrollBarVisibility="Auto">
     <Grid.OpacityMask>

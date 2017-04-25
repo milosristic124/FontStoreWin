@@ -35,6 +35,7 @@ namespace UI.States {
       Application.Context.Connection.OnDisconnected += Connection_Disconnected;
       Application.Context.Connection.OnEstablished += Connection_OnEstablished;
       Application.Context.Connection.OnConnectionTerminated += Connection_Terminated;
+      Application.Context.Connection.OnConnectionClosed += Connection_OnConnectionClosed;
     }
     #endregion
 
@@ -67,6 +68,7 @@ namespace UI.States {
       Application.Context.Connection.OnCatalogUpdateFinished -= Connection_OnCatalogUpdateFinished;
       Application.Context.Connection.OnDisconnected -= Connection_Disconnected;
       Application.Context.Connection.OnConnectionTerminated -= Connection_Terminated;
+      Application.Context.Connection.OnConnectionClosed -= Connection_OnConnectionClosed;
     }
     #endregion
 
@@ -136,7 +138,6 @@ namespace UI.States {
         WillTransition = true;
         FSM.State = new Login(Application, WindowPosition.FromWindow(_view));
         FSM.State.Show();
-        Dispose();
       });
     }
 
@@ -146,10 +147,18 @@ namespace UI.States {
       _loading = false;
     }
 
-    private void Connection_Disconnected() {
+    private bool Connection_Disconnected() {
       _reconnecting = true;
-      _view.InvokeOnUIThread(delegate {
-        _view.Disconnected();
+      return _view.InvokeOnUIThread(delegate {
+        return _view.Disconnected();
+      });
+    }
+
+    private void Connection_OnConnectionClosed() {
+      _view.InvokeOnUIThread(() => {
+        WillTransition = true;
+        FSM.State = new Login(Application, WindowPosition.FromWindow(_view));
+        FSM.State.Show();
       });
     }
 
