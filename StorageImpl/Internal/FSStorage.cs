@@ -122,8 +122,7 @@ namespace Storage.Impl.Internal {
               uid: fontData.UID,
               familyName: fontData.FamilyName,
               name: fontData.Name,
-              downloadUrl: fontData.DownloadUrl,
-              timestamp: fontData.CreatedAt
+              downloadUrl: fontData.DownloadUrl
             );
             newFont.Activated = fontData.Activated;
             collection.AddFont(newFont);
@@ -292,7 +291,6 @@ namespace Storage.Impl.Internal {
         UID = font.UID;
         FamilyName = font.FamilyName;
         Name = font.Name;
-        CreatedAt = font.CreatedAt.ToTimestamp();
         DownloadUrl = font.DownloadUrl.AbsoluteUri;
         Activated = font.Activated;
       }

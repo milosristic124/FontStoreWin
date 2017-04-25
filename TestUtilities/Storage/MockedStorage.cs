@@ -122,8 +122,7 @@ namespace TestUtilities.Storage {
         uid: description.UID,
         familyName: description.FamilyName,
         name: description.Name,
-        downloadUrl: description.DownloadUrl,
-        timestamp: description.CreatedAt
+        downloadUrl: description.DownloadUrl
       );
       FamilyCollection.AddFont(newFont);
       LastCatalogUpdate = DateTimeHelper.FromTimestamp(description.TransmittedAt);

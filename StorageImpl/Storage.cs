@@ -164,8 +164,7 @@ namespace Storage.Impl {
         uid: description.UID,
         familyName: description.FamilyName,
         name: description.Name,
-        downloadUrl: description.DownloadUrl,
-        timestamp: description.CreatedAt
+        downloadUrl: description.DownloadUrl
       );
       FamilyCollection.AddFont(newFont);
       _HDDStorage.LastCatalogUpdate = DateTimeHelper.FromTimestamp(description.TransmittedAt);

@@ -20,7 +20,7 @@ namespace Protocol.Payloads {
   }
 
   public class AutoConnect : Authentication {
-    [JsonProperty("auth_token")]
+    [JsonProperty("reusable_token")]
     public string AuthToken { get; set; }
   }
 }

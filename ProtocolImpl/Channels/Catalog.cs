@@ -33,7 +33,7 @@ namespace Protocol.Impl.Channels {
       _underlying.On("update:complete", () => {
         OnUpdateComplete?.Invoke();
       });
-      _underlying.On("font:new_release", () => {
+      _underlying.On("fonts-package", () => {
         OnNewFontReleased?.Invoke();
       });
 

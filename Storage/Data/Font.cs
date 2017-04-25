@@ -15,7 +15,6 @@ namespace Storage.Data {
     public string UID { get; private set; }
     public string Name { get; private set; }
     public string FamilyName { get; private set; }
-    public DateTime CreatedAt { get; private set; }
     public bool IsNew {
       get {
         return _isNew;
@@ -56,12 +55,11 @@ namespace Storage.Data {
     #endregion
 
     #region ctor
-    public Font(string uid, string familyName, string name, string downloadUrl, int timestamp) {
+    public Font(string uid, string familyName, string name, string downloadUrl) {
       UID = uid;
       FamilyName = familyName;
       Name = name;
       DownloadUrl = new Uri(downloadUrl);
-      CreatedAt = DateTimeHelper.FromTimestamp(timestamp);
       _activated = false;
       _isNew = true;
     }

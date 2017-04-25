@@ -8,8 +8,7 @@ namespace Storage.Impl.Tests.Utilities {
         uid: desc.UID,
         familyName: desc.FamilyName,
         name: desc.Name,
-        downloadUrl: desc.DownloadUrl,
-        timestamp: desc.CreatedAt
+        downloadUrl: desc.DownloadUrl
       );
     }
   }

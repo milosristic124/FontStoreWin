@@ -40,7 +40,6 @@ namespace TestUtilities {
       FamilyName = "TestFamilyName",
       Name = "TestFontName",
       DownloadUrl = "http://localhost/downloads/font/test_font_uid",
-      CreatedAt = TimeStamp_Now(),
       TransmittedAt = 0
     };
 
@@ -49,7 +48,6 @@ namespace TestUtilities {
       FamilyName = "TestFamilyName",
       Name = "TestFontName2",
       DownloadUrl = "http://localhost/downloads/font/test_font_uid",
-      CreatedAt = TimeStamp_MinusDays(10),
       TransmittedAt = 0
     };
 
@@ -63,7 +61,6 @@ namespace TestUtilities {
       FamilyName = "TestFamilyName",
       Name = "TestFontName3",
       DownloadUrl = "http://localhost/downloads/font/test_font_uid_3",
-      CreatedAt = TimeStamp_MinusDays(10),
       TransmittedAt = 0
     };
 
@@ -78,7 +75,6 @@ namespace TestUtilities {
       FamilyName = "TestFamilyName_2",
       Name = "TestFontName_2",
       DownloadUrl = "http://localhost/downloads/font/test_font_uid_2",
-      CreatedAt = TimeStamp_Now(),
       TransmittedAt = 0
     };
 
