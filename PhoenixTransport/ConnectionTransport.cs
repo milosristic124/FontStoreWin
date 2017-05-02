@@ -3,6 +3,7 @@ using SuperSocket.ClientEngine;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Protocol.Transport.Phoenix {
   public class ConnectionTransport : AConnectionTransport {
@@ -36,10 +37,10 @@ namespace Protocol.Transport.Phoenix {
 
     public override void Disconnect(Action callback = null) {
       if (_socket != null) {
+        _socket.Opened -= _socket_Opened;
+        _socket.Closed -= _socket_Closed;
+        _socket.Error -= _socket_Error;
         _socket.Disconnect(() => {
-          _socket.Opened -= _socket_Opened;
-          _socket.Closed -= _socket_Closed;
-          _socket.Error -= _socket_Error;
           _socket = null;
           callback?.Invoke();
         });

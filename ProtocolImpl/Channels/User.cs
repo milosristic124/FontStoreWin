@@ -54,9 +54,9 @@ namespace Protocol.Impl.Channels {
     }
 
     public void SendDisconnect(string reason) {
-      _underlying.Send("disconnect", JsonConvert.SerializeObject(new Payloads.Disconnect {
+      _underlying.Send("disconnect", new Payloads.Disconnect {
         Reason = reason
-      }));
+      });
     }
 
     public void SendUpdateRequest(DateTime? lastUpdate) {
@@ -71,29 +71,29 @@ namespace Protocol.Impl.Channels {
     }
 
     public void RequestFontActivation(string uid) {
-      _underlying.Send("font:activation-request", JsonConvert.SerializeObject(new Payloads.FontId {
+      _underlying.Send("font:activation-request", new Payloads.FontId {
         UID = uid
-      }));
+      });
     }
 
     public void RequestFontDeactivation(string uid) {
-      _underlying.Send("font:deactivation-request", JsonConvert.SerializeObject(new Payloads.FontId {
+      _underlying.Send("font:deactivation-request", new Payloads.FontId {
         UID = uid
-      }));
+      });
     }
 
     public void SendFontInstallationReport(string uid, bool succeed) {
       string evt = succeed ? "font:installation-success" : "font:installation-failure";
-      _underlying.Send(evt, JsonConvert.SerializeObject(new Payloads.FontId() {
+      _underlying.Send(evt, new Payloads.FontId() {
         UID = uid
-      }));
+      });
     }
 
     public void SendFontUninstallationReport(string uid, bool succeed) {
       string evt = succeed ? "font:uninstallation-success" : "font:uninstallation-failure";
-      _underlying.Send(evt, JsonConvert.SerializeObject(new Payloads.FontId() {
+      _underlying.Send(evt, new Payloads.FontId() {
         UID = uid
-      }));
+      });
     }
 
     public void TransitionToRealtimeCommunication() {

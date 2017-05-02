@@ -159,10 +159,10 @@
               <Setter Property="Opacity" Value="0.8" />
             </Trigger>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton}, Path=IsChecked}" Value="False">
-              <Setter Property="Background" Value="{StaticResource FSButtonGreyBrush}" />
+              <Setter Property="Background" Value="{StaticResource FSBlueBrush}" />
             </DataTrigger>
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton}, Path=IsChecked}" Value="True">
-              <Setter Property="Background" Value="{StaticResource FSBlueBrush}" />
+              <Setter Property="Background" Value="{StaticResource FSButtonGreyBrush}" />
             </DataTrigger>
           </Style.Triggers>
         </Style>
