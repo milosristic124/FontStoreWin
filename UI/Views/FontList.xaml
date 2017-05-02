@@ -8,11 +8,14 @@
         xmlns:dev="clr-namespace:UI.Dev"
         xmlns:vm="clr-namespace:UI.ViewModels"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
-        xmlns:Controls="clr-namespace:UI.Controls" x:Class="UI.Views.FontList"
+        xmlns:Controls="clr-namespace:UI.Controls" xmlns:Converters="clr-namespace:UI.Converters" x:Class="UI.Views.FontList"
         mc:Ignorable="d"
         gif:ImageBehavior.AnimateInDesignMode="True"
         ShowInTaskbar="False"
         Title="FontList" Height="480" Foreground="{x:Null}" AllowsTransparency="True" WindowStyle="None" Background="{x:Null}" Width="330">
+  <Window.Resources>
+    <Converters:BoolToInstallStringConverter x:Key="BoolToInstallStringConverter"/>
+  </Window.Resources>
   <Grid>
     <Grid.OpacityMask>
       <VisualBrush Visual="{Binding ElementName=border}"/>
@@ -87,13 +90,13 @@
           <RadioButton x:Name="InstalledButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/Fontstore;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Center" IsChecked="True" Cursor="Hand" Checked="InstalledButton_Checked">
             <StackPanel Orientation="Horizontal">
               <Label Background="{x:Null}" Padding="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Installed" Margin="0,0,4,0"/>
-              <StackPanel Name="InstalledCountLabel" Orientation="Horizontal">
+              <StackPanel x:Name="InstalledCountLabel" Orientation="Horizontal">
                 <Label Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(">
                   <Label.Foreground>
                     <SolidColorBrush Color="{DynamicResource FSGrey}"/>
                   </Label.Foreground>
                 </Label>
-                <Label Name="InstalledCountLabelValue" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="0">
+                <Label x:Name="InstalledCountLabelValue" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="0">
                   <Label.Foreground>
                     <SolidColorBrush Color="{DynamicResource FSGrey}"/>
                   </Label.Foreground>
@@ -109,13 +112,13 @@
           <RadioButton x:Name="NewButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/Fontstore;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Center" Margin="0" Grid.Column="1" Cursor="Hand" Checked="NewButton_Checked">
             <StackPanel Orientation="Horizontal">
               <Label Background="{x:Null}" Padding="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Content="New" Margin="0,0,4,0"/>
-              <StackPanel Name="NewCountLabel" Orientation="Horizontal">
+              <StackPanel x:Name="NewCountLabel" Orientation="Horizontal">
                 <Label Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(">
                   <Label.Foreground>
                     <SolidColorBrush Color="{DynamicResource FSGrey}"/>
                   </Label.Foreground>
                 </Label>
-                <Label Name="NewCountLabelValue" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="0">
+                <Label x:Name="NewCountLabelValue" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="0">
                   <Label.Foreground>
                     <SolidColorBrush Color="{DynamicResource FSGrey}"/>
                   </Label.Foreground>
@@ -131,13 +134,13 @@
           <RadioButton x:Name="AllButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="-13,0,0,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/Fontstore;component/Fonts/#Litmus" Style="{DynamicResource ResourceKey=FSNavButton}" Foreground="{x:Null}" HorizontalAlignment="Center" Margin="0" Grid.Column="2" Cursor="Hand" Checked="AllButton_Checked">
             <StackPanel Orientation="Horizontal">
               <Label Background="{x:Null}" Padding="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center" Content="All Fonts" Margin="0,0,4,0"/>
-              <StackPanel Name="AllCountLabel" Orientation="Horizontal">
+              <StackPanel x:Name="AllCountLabel" Orientation="Horizontal">
                 <Label Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="(">
                   <Label.Foreground>
                     <SolidColorBrush Color="{DynamicResource FSGrey}"/>
                   </Label.Foreground>
                 </Label>
-                <Label Name="AllCountLabelValue" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="0">
+                <Label x:Name="AllCountLabelValue" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Background="{x:Null}" Content="0">
                   <Label.Foreground>
                     <SolidColorBrush Color="{DynamicResource FSGrey}"/>
                   </Label.Foreground>
@@ -159,7 +162,7 @@
                   <Trigger Property="Button.IsDefaulted" Value="True"/>
                   <Trigger Property="IsMouseOver" Value="True"/>
                   <Trigger Property="IsPressed" Value="True"/>
-                  <Trigger Property="RadioButton.IsChecked" Value="True"/>
+                  <Trigger Property="ToggleButton.IsChecked" Value="True"/>
                   <Trigger Property="IsEnabled" Value="False">
                     <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="#FF838383"/>
                   </Trigger>
@@ -238,7 +241,7 @@
                       Header="{Binding}" >
                 <Expander.HeaderTemplate>
                   <DataTemplate DataType="{x:Type vm:FamilyVM}">
-                    <Grid Height="40" FlowDirection="LeftToRight" Margin="0" HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
+                    <Grid Height="40" FlowDirection="LeftToRight" Margin="0" HorizontalAlignment="{Binding HorizontalAlignment, Mode=OneWayToSource, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}}" >
                       <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
@@ -277,7 +280,12 @@
                                   IsChecked="{Binding FullyActivated}"
                                   Style="{DynamicResource FSInstallButton}" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch">
                           <Border BorderThickness="0" CornerRadius="15" Width="80" Height="30">
-                            <Label Content="Install" Foreground="White" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="{x:Null}"/>
+                            <Label Content="{Binding IsChecked, Converter={StaticResource BoolToInstallStringConverter}, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ToggleButton}}}"
+                                   Foreground="White"
+                                   Padding="0"
+                                   VerticalContentAlignment="Center"
+                                   HorizontalContentAlignment="Center"
+                                   Background="{x:Null}"/>
                           </Border>
                         </ToggleButton>
                       </StackPanel>
@@ -317,7 +325,7 @@
                                         HorizontalContentAlignment="Center"
                                         VerticalContentAlignment="Stretch">
                             <Border BorderThickness="0" CornerRadius="15" Width="80" Height="30">
-                              <Label Content="Install"
+                              <Label Content="{Binding IsChecked, Converter={StaticResource BoolToInstallStringConverter}, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ToggleButton}}}"
                                      Foreground="White"
                                      Padding="0"
                                      VerticalContentAlignment="Center"
@@ -416,7 +424,7 @@
                   <SolidColorBrush Color="{DynamicResource FSButtonGrey}"/>
                 </Border.Background>
 
-                <Label Background="{x:Null}" Foreground="White" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">Search</Label>
+                <Label Background="{x:Null}" Foreground="White" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Content="Search"/>
               </Border>
             </Button>
 
@@ -464,7 +472,7 @@
                       Header="{Binding}" >
                   <Expander.HeaderTemplate>
                     <DataTemplate DataType="{x:Type vm:FamilyVM}">
-                      <Grid Height="40" FlowDirection="LeftToRight" Margin="0" HorizontalAlignment="{Binding Path=HorizontalAlignment, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, Mode=OneWayToSource}" >
+                      <Grid Height="40" FlowDirection="LeftToRight" Margin="0" HorizontalAlignment="{Binding HorizontalAlignment, Mode=OneWayToSource, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}}" >
                         <Grid.ColumnDefinitions>
                           <ColumnDefinition/>
                           <ColumnDefinition Width="Auto"/>
@@ -503,7 +511,12 @@
                                   IsChecked="{Binding FullyActivated}"
                                   Style="{DynamicResource FSInstallButton}" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch">
                             <Border BorderThickness="0" CornerRadius="15" Width="80" Height="30">
-                              <Label Content="Install" Foreground="White" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="{x:Null}"/>
+                              <Label Content="{Binding IsChecked, Converter={StaticResource BoolToInstallStringConverter}, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ToggleButton}}}"
+                                     Foreground="White"
+                                     Padding="0"
+                                     VerticalContentAlignment="Center"
+                                     HorizontalContentAlignment="Center"
+                                     Background="{x:Null}"/>
                             </Border>
                           </ToggleButton>
                         </StackPanel>
@@ -543,7 +556,7 @@
                                         HorizontalContentAlignment="Center"
                                         VerticalContentAlignment="Stretch">
                               <Border BorderThickness="0" CornerRadius="15" Width="80" Height="30">
-                                <Label Content="Install"
+                                <Label Content="{Binding IsChecked, Converter={StaticResource BoolToInstallStringConverter}, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ToggleButton}}}"
                                      Foreground="White"
                                      Padding="0"
                                      VerticalContentAlignment="Center"
@@ -623,7 +636,7 @@
 
       </StackPanel>
     </StackPanel>
-    <Grid Name="Loader" Panel.ZIndex="1" Margin="0,110,0,0" Visibility="Hidden" >
+    <Grid x:Name="Loader" Panel.ZIndex="1" Margin="0,110,0,0" Visibility="Hidden" >
       <Grid.Background>
         <SolidColorBrush Color="White" Opacity="0.9"/>
       </Grid.Background>

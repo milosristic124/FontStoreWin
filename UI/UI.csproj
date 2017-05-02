@@ -108,6 +108,8 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Converters\BaseConverter.cs" />
+    <Compile Include="Converters\BoolToInstallStringConverter.cs" />
     <Compile Include="Dev\DesignFamily.cs" />
     <Compile Include="Dev\TriggerTracing.cs" />
     <Compile Include="Utilities\ViewsUtility.cs" />
