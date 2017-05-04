@@ -163,9 +163,11 @@ namespace UI.Views {
 
     #region private methods
     private void SetContentVM(ViewModels.FamilyCollectionVM collection) {
-      InvokeOnUIThread(delegate {
-        FamilyTree.ItemsSource = collection.Families;
-      });
+      if (collection != null) {
+        InvokeOnUIThread(delegate {
+          FamilyTree.ItemsSource = collection.Families;
+        });
+      }
     }
 
     private ViewModels.FamilyCollectionVM GetContentVM(FilterMode mode) {
