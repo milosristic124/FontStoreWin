@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authentication.cs" />
+    <Compile Include="AuthenticationFailure.cs" />
     <Compile Include="Disconnect.cs" />
     <Compile Include="FontId.cs" />
     <Compile Include="TimestampedFontId.cs" />

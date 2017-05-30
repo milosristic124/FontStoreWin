@@ -81,19 +81,32 @@ namespace Protocol.Impl.States {
 
       try {
         IHttpResponse response = await _authRequest.Response;
-        using (StreamReader body = new StreamReader(response.ResponseStream)) {
-          string data = body.ReadToEnd();
+        string data = ReadResponseBody(response.ResponseStream);
 
-          if (response.StatusCode != HttpStatusCode.OK) {
-            WillTransition = true;
-            FSM.State = new Idle(_context);
-            _context.TriggerValidationFailure(data);
-          }
-          else {
-            Payloads.UserData userData = JsonConvert.DeserializeObject<Payloads.UserData>(data);
-            WillTransition = true;
-            FSM.State = new Connecting(_context, userData);
-          }
+        if (response.StatusCode != HttpStatusCode.OK) {
+          Payloads.AuthenticationFailure failure = JsonConvert.DeserializeObject<Payloads.AuthenticationFailure>(data);
+          WillTransition = true;
+          FSM.State = new Idle(_context);
+          _context.TriggerValidationFailure(failure.Message);
+        }
+        else {
+          Payloads.UserData userData = JsonConvert.DeserializeObject<Payloads.UserData>(data);
+          WillTransition = true;
+          FSM.State = new Connecting(_context, userData);
+        }
+      } catch (WebException e) {
+        if (e.Response != null) {
+          string data = ReadResponseBody(e.Response.GetResponseStream());
+          Payloads.AuthenticationFailure failure = JsonConvert.DeserializeObject<Payloads.AuthenticationFailure>(data);
+          WillTransition = true;
+          FSM.State = new Idle(_context);
+          _context.TriggerValidationFailure(failure.Message);
+        } else {
+#if DEBUG
+          Console.WriteLine("[{0}] Authentication failed: {1}", DateTime.Now.ToString("hh:mm:ss.fff"), e);
+#endif
+          WillTransition = true;
+          FSM.State = new RetryAuthenticating(_context, _authPayload);
         }
 #if DEBUG
       } catch (Exception e) {
@@ -103,6 +116,14 @@ namespace Protocol.Impl.States {
 #endif
         WillTransition = true;
         FSM.State = new RetryAuthenticating(_context, _authPayload);
+      }
+    }
+    #endregion
+
+    #region private methods
+    private string ReadResponseBody(Stream body) {
+      using (StreamReader bodyReader = new StreamReader(body)) {
+        return bodyReader.ReadToEnd();
       }
     }
     #endregion
