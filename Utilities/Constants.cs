@@ -31,7 +31,11 @@
 
     public static class Security {
       #region constants
-      public static readonly string FontCypherKey = "secret";
+#if DEBUG
+      public static readonly string FontCypherKey = "lvycpbhupbdmg";
+#else
+      public static readonly string FontCypherKey = "lvycpbhupbdmg";
+#endif
       #endregion
     }
   }
