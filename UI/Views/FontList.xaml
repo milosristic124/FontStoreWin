@@ -26,51 +26,23 @@
         <Grid.Background>
           <SolidColorBrush Color="{DynamicResource FSBlue}"/>
         </Grid.Background>
-        <Label x:Name="LogoLabel" Content="Hontstore" HorizontalAlignment="Left" Margin="14,0,0,13" VerticalAlignment="Bottom" Background="{x:Null}" Foreground="White" Padding="0" FontFamily="/Fontstore;component/Fonts/#Fontstore Final" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Label x:Name="LogoLabel" Content="Hontstore" HorizontalAlignment="Left" Margin="14,0,0,13" VerticalAlignment="Bottom" Background="{x:Null}" Foreground="White" Padding="0" FontFamily="/Fontstore;component/Fonts/#Fontstore Final" FontSize="24" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold"/>
         <StackPanel x:Name="RightPanel" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,14,13" Orientation="Horizontal">
           <Label x:Name="NameLabel" Content="Firstname Lastname" Background="{x:Null}" Foreground="White" Padding="0" VerticalContentAlignment="Center" Margin="0,0,7,0" FontFamily="/Fontstore;component/Fonts/#Litmus" MaxWidth="150" HorizontalAlignment="Right"/>
-          <Button x:Name="MenuButton" Content="" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Focusable="False" HorizontalAlignment="Right" Padding="0" Height="5" Foreground="{x:Null}" Width="10" VerticalAlignment="Center" Style="{DynamicResource FSButton}" Click="MenuButton_Click">
+          <Button x:Name="MenuButton" Content="" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Focusable="False" HorizontalAlignment="Right" Padding="0" Foreground="{x:Null}" Width="10" VerticalAlignment="Center" Style="{DynamicResource FSButton}" Click="MenuButton_Click">
             <Button.ContextMenu>
-              <ContextMenu BorderThickness="0" FontFamily="/Fontstore;component/Fonts/#Litmus" Padding="7,7,7,6" Background="#FFD2D2D2">
+              <ContextMenu BorderThickness="0" FontFamily="/Fontstore;component/Fonts/#Litmus" Padding="7,7,7,6">
                 <ContextMenu.Foreground>
                   <SolidColorBrush Color="{DynamicResource FSBlack}"/>
                 </ContextMenu.Foreground>
-                <Button BorderBrush="{x:Null}" BorderThickness="0" Background="{x:Null}" Content="Account" Padding="0" Style="{DynamicResource FSMenuButton}" Click="Account_Click">
-                  <Button.Foreground>
-                    <SolidColorBrush Color="{DynamicResource FSBlack}"/>
-                  </Button.Foreground>
-                </Button>
-                <Button BorderBrush="{x:Null}" BorderThickness="0" Background="{x:Null}" Content="Settings" Padding="0" Style="{DynamicResource FSMenuButton}" Click="Settings_Click">
-                  <Button.Foreground>
-                    <SolidColorBrush Color="{DynamicResource FSBlack}"/>
-                  </Button.Foreground>
-                </Button>
-                <Button BorderBrush="{x:Null}" BorderThickness="0" Background="{x:Null}" Content="Visit Fontstore" Padding="0" Style="{DynamicResource FSMenuButton}" Click="Visit_Click">
-                  <Button.Foreground>
-                    <SolidColorBrush Color="{DynamicResource FSBlack}"/>
-                  </Button.Foreground>
-                </Button>
-                <Button BorderBrush="{x:Null}" BorderThickness="0" Background="{x:Null}" Content="Help" Style="{DynamicResource FSMenuButton}" Click="Help_Click">
-                  <Button.Foreground>
-                    <SolidColorBrush Color="{DynamicResource FSBlack}"/>
-                  </Button.Foreground>
-                </Button>
-                <Button BorderBrush="{x:Null}" BorderThickness="0" Background="{x:Null}" Content="About" Style="{DynamicResource FSMenuButton}" Click="About_Click">
-                  <Button.Foreground>
-                    <SolidColorBrush Color="{DynamicResource FSBlack}"/>
-                  </Button.Foreground>
-                </Button>
-                <Button BorderBrush="{x:Null}" BorderThickness="0" Background="{x:Null}" Content="Logout" Padding="0" Style="{DynamicResource FSMenuButton}" Click="Logout_Click">
-                  <Button.Foreground>
-                    <SolidColorBrush Color="{DynamicResource FSBlack}"/>
-                  </Button.Foreground>
-                </Button>
+                <ContextMenu.Background>
+                  <SolidColorBrush Color="#FFD2D2D2"/>
+                </ContextMenu.Background>
+                <MenuItem Header="Visit Fontstore" Cursor="Hand" Click="Visit_Click" />
+                <MenuItem Header="Help" Cursor="Hand" Click="Help_Click" />
+                <MenuItem Header="About" Cursor="Hand" Click="About_Click" />
                 <Separator Foreground="#FFC4C6C5"/>
-                <Button BorderBrush="{x:Null}" BorderThickness="0" Background="{x:Null}" Content="Quit" Style="{DynamicResource FSMenuButton}" Click="Quit_Click">
-                  <Button.Foreground>
-                    <SolidColorBrush Color="{DynamicResource FSBlack}"/>
-                  </Button.Foreground>
-                </Button>
+                <MenuItem Header="Quit" Cursor="Hand" Click="Quit_Click" />
               </ContextMenu>
             </Button.ContextMenu>
             <Button.Background>
@@ -238,7 +210,7 @@
                       VerticalContentAlignment="Stretch"
                       ScrollViewer.CanContentScroll="False"
                       Width="Auto"
-                      Header="{Binding}" >
+                      Header="{Binding}" Cursor="Hand" >
                 <Expander.HeaderTemplate>
                   <DataTemplate DataType="{x:Type vm:FamilyVM}">
                     <Grid Height="40" FlowDirection="LeftToRight" Margin="0" HorizontalAlignment="{Binding HorizontalAlignment, Mode=OneWayToSource, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}}" >
@@ -293,7 +265,7 @@
                   </DataTemplate>
                 </Expander.HeaderTemplate>
 
-                <ListBox Template="{StaticResource NoScroll}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" BorderThickness="0" ItemsSource="{Binding Fonts}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" Padding="0" Margin="0" Focusable="False" IsTextSearchEnabled="False" IsEnabled="True" ScrollViewer.CanContentScroll="False">
+                <ListBox Template="{StaticResource NoScroll}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" BorderThickness="0" ItemsSource="{Binding Fonts}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" Padding="0" Margin="0" Focusable="False" IsTextSearchEnabled="False" IsEnabled="True" ScrollViewer.CanContentScroll="False" Cursor="Arrow">
                   <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type vm:FontVM}">
                       <ListBoxItem BorderBrush="{x:Null}" BorderThickness="0" Padding="22,0,5,0" Margin="0,0,0,1" VerticalContentAlignment="Center" VerticalAlignment="Top">
@@ -302,7 +274,7 @@
                         </ListBoxItem.Background>
 
                         <Grid Height="40" HorizontalAlignment="Stretch" Margin="0" Background="{x:Null}">
-                          <Label Content="{Binding Name}" Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding Name}" >
+                          <Label Content="{Binding Name}" Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding FamilyName}" FontWeight="{Binding Name}">
                             <Label.Foreground>
                               <SolidColorBrush Color="{DynamicResource FSBlack}"/>
                             </Label.Foreground>
@@ -469,7 +441,7 @@
                       VerticalContentAlignment="Stretch"
                       ScrollViewer.CanContentScroll="False"
                       Width="Auto"
-                      Header="{Binding}" >
+                      Header="{Binding}" Cursor="Hand" >
                   <Expander.HeaderTemplate>
                     <DataTemplate DataType="{x:Type vm:FamilyVM}">
                       <Grid Height="40" FlowDirection="LeftToRight" Margin="0" HorizontalAlignment="{Binding HorizontalAlignment, Mode=OneWayToSource, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}}" >
@@ -524,7 +496,7 @@
                     </DataTemplate>
                   </Expander.HeaderTemplate>
 
-                  <ListBox Template="{StaticResource NoScroll}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" BorderThickness="0" ItemsSource="{Binding Fonts}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" Padding="0" Margin="0" Focusable="False" IsTextSearchEnabled="False" IsEnabled="True" ScrollViewer.CanContentScroll="False">
+                  <ListBox Template="{StaticResource NoScroll}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" BorderThickness="0" ItemsSource="{Binding Fonts}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" Padding="0" Margin="0" Focusable="False" IsTextSearchEnabled="False" IsEnabled="True" ScrollViewer.CanContentScroll="False" Cursor="Arrow">
                     <ListBox.ItemTemplate>
                       <DataTemplate DataType="{x:Type vm:FontVM}">
                         <ListBoxItem BorderBrush="{x:Null}" BorderThickness="0" Padding="22,0,5,0" Margin="0,0,0,1" VerticalContentAlignment="Center" VerticalAlignment="Top">
@@ -533,7 +505,7 @@
                           </ListBoxItem.Background>
 
                           <Grid Height="40" HorizontalAlignment="Stretch" Margin="0" Background="{x:Null}">
-                            <Label Content="{Binding Name}" Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding Name}" >
+                            <Label Content="{Binding Name}" Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding FamilyName}" FontWeight="{Binding Name}" >
                               <Label.Foreground>
                                 <SolidColorBrush Color="{DynamicResource FSBlack}"/>
                               </Label.Foreground>

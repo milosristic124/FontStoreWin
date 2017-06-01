@@ -121,7 +121,7 @@ namespace TestUtilities.Storage {
       Font newFont = new Font(
         uid: description.UID,
         familyName: description.FamilyName,
-        name: description.Name,
+        style: description.Style,
         downloadUrl: description.DownloadUrl
       );
       FamilyCollection.AddFont(newFont);

@@ -48,7 +48,7 @@ namespace UI {
     #region about popup
     public void ShowAboutPopup(Window parent) {
       string aboutTxt = $"Fontstore v{Constants.App.ApplicationVersion}\n" +
-        $"Indian Type Foundry all rights reserved - © 2017";
+        $"Fontstore all rights reserved - © 2017";
       MessageBox.Show(parent, aboutTxt, "About Fontstore", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
     }
     #endregion
@@ -106,7 +106,7 @@ namespace UI {
     private void InitializeNotificationIcon() {
       NotifyIcon = new System.Windows.Forms.NotifyIcon();
       NotifyIcon.Text = "Fontstore";
-      NotifyIcon.Icon = UI.Properties.Resources.NotifIcon;
+      NotifyIcon.Icon = UI.Properties.Resources.NotifIcon_54;
       NotifyIcon.Visible = true;
 
       NotifyIcon.Click += NotifyIcon_Click;

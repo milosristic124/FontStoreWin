@@ -1,9 +1,6 @@
 ﻿using PhoenixSocket;
 using SuperSocket.ClientEngine;
 using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace Protocol.Transport.Phoenix {
   public class ConnectionTransport : AConnectionTransport {
@@ -24,7 +21,12 @@ namespace Protocol.Transport.Phoenix {
       }
 #if DEBUG
       _socket = new Socket(EndPoint, logger: (string s1, string s2, object o) => {
-        Console.WriteLine(string.Format("[{0}] [{1}] [{2}] -> {3}", DateTime.Now.ToString("hh:mm:ss.fff"), s1, s2, o));
+        if (o is Payloads.FontId) {
+          Console.WriteLine(string.Format("[{0}] [{1}] [{2}] -> FontId ({3})", DateTime.Now.ToString("hh:mm:ss.fff"), s1, s2, (o as Payloads.FontId).UID));
+        }
+        else {
+          Console.WriteLine(string.Format("[{0}] [{1}] [{2}] -> {3}", DateTime.Now.ToString("hh:mm:ss.fff"), s1, s2, o));
+        }
       }, urlparams: UrlParams);
 #else
       _socket = new Socket(EndPoint, urlparams: UrlParams);

@@ -1,5 +1,4 @@
-﻿using Storage.Data;
-using Utilities.Extensions;
+﻿using System;
 
 namespace Protocol.Impl.States {
   class UpdatingFonts : ConnectionState {
@@ -25,6 +24,7 @@ namespace Protocol.Impl.States {
       _context.UserChannel.OnUpdateComplete += UserChannel_OnUpdateComplete;
 
       _context.UserChannel.Join().Then(() => {
+        Console.WriteLine("[{0}] Updating fonts since {1}", DateTime.Now.ToString("hh:mm:ss.fff"), _context.Storage.LastFontStatusUpdate?.ToString("g"));
         _context.UserChannel.SendUpdateRequest(_context.Storage.LastFontStatusUpdate);
       });
     }

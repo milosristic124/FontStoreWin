@@ -73,7 +73,7 @@ namespace Storage.Impl.Tests {
       storage.AddFont(TestData.Font1_Description);
       storage.AddFont(TestData.Font1_Description2);
 
-      Assert.AreSame(TestData.Font1_Description2.Name, storage.FamilyCollection.Families[0].Fonts[0].Name,
+      Assert.AreSame(TestData.Font1_Description2.Style, storage.FamilyCollection.Families[0].Fonts[0].Style,
         "AddFont should replace obsolete font in the FontStorage");
     }
 

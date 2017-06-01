@@ -5,7 +5,7 @@ namespace Protocol.Payloads {
     [JsonProperty("uid")]
     public string UID { get; set; }
     [JsonProperty("font_style")]
-    public string Name { get; set; }
+    public string Style { get; set; }
     [JsonProperty("font_family")]
     public string FamilyName { get; set; }
     [JsonProperty("download_url")]

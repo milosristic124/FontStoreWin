@@ -121,7 +121,7 @@ namespace Storage.Impl.Internal {
             Font newFont = new Font(
               uid: fontData.UID,
               familyName: fontData.FamilyName,
-              name: fontData.Name,
+              style: fontData.Name,
               downloadUrl: fontData.DownloadUrl
             );
             newFont.Activated = fontData.Activated;
@@ -290,7 +290,7 @@ namespace Storage.Impl.Internal {
       public FontData(Font font) {
         UID = font.UID;
         FamilyName = font.FamilyName;
-        Name = font.Name;
+        Name = font.Style;
         DownloadUrl = font.DownloadUrl.AbsoluteUri;
         Activated = font.Activated;
       }

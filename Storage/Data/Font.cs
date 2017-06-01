@@ -13,7 +13,7 @@ namespace Storage.Data {
 
     #region properties
     public string UID { get; private set; }
-    public string Name { get; private set; }
+    public string Style { get; private set; }
     public string FamilyName { get; private set; }
     public bool IsNew {
       get {
@@ -55,10 +55,10 @@ namespace Storage.Data {
     #endregion
 
     #region ctor
-    public Font(string uid, string familyName, string name, string downloadUrl) {
+    public Font(string uid, string familyName, string style, string downloadUrl) {
       UID = uid;
       FamilyName = familyName;
-      Name = name;
+      Style = style;
       DownloadUrl = new Uri(downloadUrl);
       _activated = false;
       _isNew = true;

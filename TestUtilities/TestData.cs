@@ -38,7 +38,7 @@ namespace TestUtilities {
     public static FontDescription Font1_Description = new FontDescription {
       UID = "test_font_uid",
       FamilyName = "TestFamilyName",
-      Name = "TestFontName",
+      Style = "TestFontName",
       DownloadUrl = "http://localhost/downloads/font/test_font_uid",
       TransmittedAt = 0
     };
@@ -46,7 +46,7 @@ namespace TestUtilities {
     public static FontDescription Font1_Description2 = new FontDescription {
       UID = "test_font_uid",
       FamilyName = "TestFamilyName",
-      Name = "TestFontName2",
+      Style = "TestFontName2",
       DownloadUrl = "http://localhost/downloads/font/test_font_uid",
       TransmittedAt = 0
     };
@@ -59,7 +59,7 @@ namespace TestUtilities {
     public static FontDescription Font3_Description = new FontDescription {
       UID = "test_font_uid_3",
       FamilyName = "TestFamilyName",
-      Name = "TestFontName3",
+      Style = "TestFontName3",
       DownloadUrl = "http://localhost/downloads/font/test_font_uid_3",
       TransmittedAt = 0
     };
@@ -73,7 +73,7 @@ namespace TestUtilities {
     public static FontDescription Font2_Description = new FontDescription {
       UID = "test_font_uid_2",
       FamilyName = "TestFamilyName_2",
-      Name = "TestFontName_2",
+      Style = "TestFontName_2",
       DownloadUrl = "http://localhost/downloads/font/test_font_uid_2",
       TransmittedAt = 0
     };

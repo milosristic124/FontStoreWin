@@ -7,7 +7,7 @@ namespace Storage.Impl.Tests.Utilities {
       return new Font(
         uid: desc.UID,
         familyName: desc.FamilyName,
-        name: desc.Name,
+        style: desc.Style,
         downloadUrl: desc.DownloadUrl
       );
     }

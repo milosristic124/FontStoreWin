@@ -204,12 +204,12 @@ namespace UI.Views {
     }
 
     private void Visit_Click(object sender, RoutedEventArgs e) {
-      ViewsUtility.NavigateToUri(new Uri("http://fontstore.com"));
+      ViewsUtility.NavigateToUri(new Uri("http://www.fontstore.com"));
       e.Handled = true;
     }
 
     private void Help_Click(object sender, RoutedEventArgs e) {
-      ViewsUtility.NavigateToUri(new Uri("http://fontstore.com/faqs"));
+      ViewsUtility.NavigateToUri(new Uri("http://www.fontstore.com/help"));
       e.Handled = true;
     }
 

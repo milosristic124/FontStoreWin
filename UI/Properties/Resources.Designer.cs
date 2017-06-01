@@ -63,9 +63,29 @@ namespace UI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon AppIcon {
+        internal static System.Drawing.Icon AppIcon_128 {
             get {
-                object obj = ResourceManager.GetObject("AppIcon", resourceCulture);
+                object obj = ResourceManager.GetObject("AppIcon_128", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon AppIcon_32 {
+            get {
+                object obj = ResourceManager.GetObject("AppIcon_32", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon AppIcon_64 {
+            get {
+                object obj = ResourceManager.GetObject("AppIcon_64", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -76,6 +96,26 @@ namespace UI.Properties {
         internal static System.Drawing.Bitmap BlackTriangle {
             get {
                 object obj = ResourceManager.GetObject("BlackTriangle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CheckBox {
+            get {
+                object obj = ResourceManager.GetObject("CheckBox", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap CheckBox_Active {
+            get {
+                object obj = ResourceManager.GetObject("CheckBox_Active", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -153,9 +193,29 @@ namespace UI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon NotifIcon {
+        internal static System.Drawing.Icon NotifIcon_18 {
             get {
-                object obj = ResourceManager.GetObject("NotifIcon", resourceCulture);
+                object obj = ResourceManager.GetObject("NotifIcon_18", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon NotifIcon_36 {
+            get {
+                object obj = ResourceManager.GetObject("NotifIcon_36", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon NotifIcon_54 {
+            get {
+                object obj = ResourceManager.GetObject("NotifIcon_54", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }

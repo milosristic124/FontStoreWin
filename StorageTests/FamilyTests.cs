@@ -28,7 +28,7 @@ namespace Storage.Impl.Tests {
       family.Add(updatedFont);
 
       Assert.AreEqual(1, family.Fonts.Count, "Family.Add should not duplicate fonts with the same UID");
-      Assert.AreEqual(TestData.Font1_Description2.Name, family.Fonts[0].Name, "Family.Add should update font");
+      Assert.AreEqual(TestData.Font1_Description2.Style, family.Fonts[0].Style, "Family.Add should update font");
     }
 
     [TestMethod]

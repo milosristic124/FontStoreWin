@@ -16,9 +16,15 @@ namespace UI.ViewModels {
         return _model.UID;
       }
     }
+    public string FamilyName {
+      get {
+        return _model.FamilyName;
+      }
+    }
+
     public string Name {
       get {
-        return _model.Name;
+        return _model.Style;
       }
     }
     #endregion

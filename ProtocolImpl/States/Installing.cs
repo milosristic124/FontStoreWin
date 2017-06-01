@@ -1,5 +1,7 @@
 ﻿using FontInstaller;
 using System;
+using System.Threading.Tasks;
+using Utilities.Extensions;
 
 namespace Protocol.Impl.States {
   class Installing : ConnectionState {
@@ -22,11 +24,12 @@ namespace Protocol.Impl.States {
     }
 
     protected override void Start() {
-      RegisterStorageEvents();
-
-      _context.Storage.SynchronizeWithSystem(delegate {
-        WillTransition = true;
-        FSM.State = new Running(_context);
+      _context.Storage.SaveFonts().ContinueWith(delegate {
+        RegisterStorageEvents();
+        _context.Storage.SynchronizeWithSystem(delegate {
+          WillTransition = true;
+          FSM.State = new Running(_context);
+        });
       });
     }
     #endregion
