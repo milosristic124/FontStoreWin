@@ -34,12 +34,12 @@ namespace Storage.Impl {
       }
     }
 
-    public DateTime? LastCatalogUpdate {
+    public int? LastCatalogUpdate {
       get {
         return _HDDStorage.LastCatalogUpdate;
       }
     }
-    public DateTime? LastFontStatusUpdate {
+    public int? LastFontStatusUpdate {
       get {
         return _HDDStorage.LastFontStatusUpdate;
       }
@@ -115,7 +115,21 @@ namespace Storage.Impl {
 
       return Installer.UninstallAllFonts()
         .ContinueWith(t => {
-          return _HDDStorage.Load().Result;
+          return _HDDStorage.Load(loadedFont => {
+            // font loaded, download it if necessary
+            Console.WriteLine("[{0}] Font loaded, download queued: {1}", DateTime.Now.ToString("hh:mm:ss.fff"), loadedFont.UID);
+            _fsAgent.QueueDownload(loadedFont, delegate {
+              // install the font for the application
+              Console.WriteLine("[{0}] Font loaded, install queued (process): {1}", DateTime.Now.ToString("hh:mm:ss.fff"), loadedFont.UID);
+              _installAgent.QueueInstall(loadedFont, InstallationScope.Process, delegate {
+                // if the font was activated, install it for the user
+                if (loadedFont.Activated) {
+                  Console.WriteLine("[{0}] Font loaded, install queued (user): {1}", DateTime.Now.ToString("hh:mm:ss.fff"), loadedFont.UID);
+                  _installAgent.QueueInstall(loadedFont, InstallationScope.User); 
+                }
+              });
+            });
+          }).Result;
         }, TaskContinuationOptions.OnlyOnRanToCompletion)
         .ContinueWith(loadTask => {
           FamilyCollection = loadTask.Result;
@@ -167,13 +181,13 @@ namespace Storage.Impl {
         downloadUrl: description.DownloadUrl
       );
       FamilyCollection.AddFont(newFont);
-      _HDDStorage.LastCatalogUpdate = DateTimeHelper.FromTimestamp(description.TransmittedAt);
+      _HDDStorage.LastCatalogUpdate = description.TransmittedAt;
       return newFont;
     }
 
     public void RemoveFont(TimestampedFontId fid) {
       FamilyCollection.RemoveFont(fid.UID);
-      _HDDStorage.LastCatalogUpdate = DateTimeHelper.FromTimestamp(fid.TransmittedAt);
+      _HDDStorage.LastCatalogUpdate = fid.TransmittedAt;
     }
 
     public void ActivateFont(TimestampedFontId fid) {
@@ -181,7 +195,7 @@ namespace Storage.Impl {
       if (font != null) {
         font.Activated = true;
       }
-      _HDDStorage.LastFontStatusUpdate = DateTimeHelper.FromTimestamp(fid.TransmittedAt);
+      _HDDStorage.LastFontStatusUpdate = fid.TransmittedAt;
     }
 
     public void DeactivateFont(TimestampedFontId fid) {
@@ -189,7 +203,7 @@ namespace Storage.Impl {
       if (font != null) {
         font.Activated = false;
       }
-      _HDDStorage.LastFontStatusUpdate = DateTimeHelper.FromTimestamp(fid.TransmittedAt);
+      _HDDStorage.LastFontStatusUpdate = fid.TransmittedAt;
     }
 
     public async void DeactivateAllFonts(Action then = null) {

@@ -38,8 +38,8 @@ namespace TestUtilities.Storage {
     }
     public bool HasChanged { get; private set; }
     public bool Loaded { get; private set; }
-    public DateTime? LastCatalogUpdate { get; private set; }
-    public DateTime? LastFontStatusUpdate { get; private set; }
+    public int? LastCatalogUpdate { get; private set; }
+    public int? LastFontStatusUpdate { get; private set; }
     #endregion
 
     #region events
@@ -52,8 +52,8 @@ namespace TestUtilities.Storage {
     #region ctor
     public MockedStorage(IFontInstaller installer) {
       Installer = installer;
-      LastCatalogUpdate = DateTime.Now;
-      LastFontStatusUpdate = DateTime.Now;
+      LastCatalogUpdate = null;
+      LastFontStatusUpdate = null;
       FamilyCollection = new FamilyCollection();
       _callbackBuffer = new Queue<Action>();
       _synchronizing = false;
@@ -81,8 +81,8 @@ namespace TestUtilities.Storage {
       RegisterCall("Clear");
       UnregisterCollectionEvents();
 
-      LastCatalogUpdate = DateTime.Now;
-      LastFontStatusUpdate = DateTime.Now;
+      LastCatalogUpdate = null;
+      LastFontStatusUpdate = null;
       FamilyCollection = new FamilyCollection();
       _callbackBuffer = new Queue<Action>();
       _synchronizing = false;
@@ -125,7 +125,7 @@ namespace TestUtilities.Storage {
         downloadUrl: description.DownloadUrl
       );
       FamilyCollection.AddFont(newFont);
-      LastCatalogUpdate = DateTimeHelper.FromTimestamp(description.TransmittedAt);
+      LastCatalogUpdate = description.TransmittedAt;
       return newFont;
     }
 
@@ -133,7 +133,7 @@ namespace TestUtilities.Storage {
       RegisterCall("RemoveFont");
       
       FamilyCollection.RemoveFont(fid.UID);
-      LastCatalogUpdate = DateTimeHelper.FromTimestamp(fid.TransmittedAt);
+      LastCatalogUpdate = fid.TransmittedAt;
     }
 
     public void ActivateFont(TimestampedFontId fid) {
@@ -142,7 +142,7 @@ namespace TestUtilities.Storage {
       if (font != null) {
         font.Activated = true;
       }
-      LastFontStatusUpdate = DateTimeHelper.FromTimestamp(fid.TransmittedAt);
+      LastFontStatusUpdate = fid.TransmittedAt;
     }
 
     public void DeactivateFont(TimestampedFontId fid) {
@@ -151,7 +151,7 @@ namespace TestUtilities.Storage {
       if (font != null) {
         font.Activated = false;
       }
-      LastFontStatusUpdate = DateTimeHelper.FromTimestamp(fid.TransmittedAt);
+      LastFontStatusUpdate = fid.TransmittedAt;
     }
 
     public void DeactivateAllFonts(Action then = null) {

@@ -21,7 +21,7 @@
       <Grid.Background>
         <SolidColorBrush Color="{DynamicResource FSBlue}"/>
       </Grid.Background>
-      <Label x:Name="TitleLabel" Content="Hontstore" HorizontalAlignment="Left" Margin="14,0,0,13" FontFamily="/Fontstore;component/Fonts/#Fontstore Final" Foreground="White" FontSize="24" Padding="0" Background="{x:Null}" VerticalAlignment="Bottom"/>
+      <Image Source="/Fontstore;component/Resources/Logo.png" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="14,0,0,13" Stretch="None"  />
       <StackPanel x:Name="RightPanel" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,0,14,13" VerticalAlignment="Bottom">
         <Label x:Name="WelcomeLabel" Content="Welcome" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" HorizontalAlignment="Right" Margin="0,0,7,0" FontFamily="/Fontstore;component/Fonts/#Litmus"/>
         <Button x:Name="MenuButton" Content="" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Focusable="False" Padding="0" Foreground="{x:Null}" Style="{DynamicResource FSButton}" Click="MenuButton_Click" Width="10" HorizontalAlignment="Right">

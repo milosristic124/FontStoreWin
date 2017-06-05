@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <PublishUrlHistory>C:\Users\remyr\Documents\FontStore\Publish\|ftp://51.15.139.241/apps/windows/|ftp://51.15.139.241/windows/|https://app.fontstore.com/windows/|publish\</PublishUrlHistory>
-    <InstallUrlHistory>https://app.fontstore.com/windows/|https://app.fontstore.com/downloads/win/</InstallUrlHistory>
+    <PublishUrlHistory>C:\Users\remyr\Documents\FontStore\Publish\|https://app.fontstore.com/windows/|ftp://51.15.139.241/apps/windows/|ftp://51.15.139.241/windows/|publish\</PublishUrlHistory>
+    <InstallUrlHistory>http://app.fontstore.com/windows/|https://app.fontstore.com/windows/|https://app.fontstore.com/downloads/win/</InstallUrlHistory>
     <SupportUrlHistory />
     <UpdateUrlHistory />
     <BootstrapperUrlHistory />

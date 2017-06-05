@@ -1,4 +1,5 @@
-﻿using PhoenixSocket;
+﻿using Newtonsoft.Json;
+using PhoenixSocket;
 using SuperSocket.ClientEngine;
 using System;
 
@@ -21,12 +22,7 @@ namespace Protocol.Transport.Phoenix {
       }
 #if DEBUG
       _socket = new Socket(EndPoint, logger: (string s1, string s2, object o) => {
-        if (o is Payloads.FontId) {
-          Console.WriteLine(string.Format("[{0}] [{1}] [{2}] -> FontId ({3})", DateTime.Now.ToString("hh:mm:ss.fff"), s1, s2, (o as Payloads.FontId).UID));
-        }
-        else {
-          Console.WriteLine(string.Format("[{0}] [{1}] [{2}] -> {3}", DateTime.Now.ToString("hh:mm:ss.fff"), s1, s2, o));
-        }
+        Console.WriteLine("[{0}] [{1}] [{2}] -> {3}", DateTime.Now.ToString("hh:mm:ss.fff"), s1, s2, JsonConvert.SerializeObject(o));
       }, urlparams: UrlParams);
 #else
       _socket = new Socket(EndPoint, urlparams: UrlParams);
@@ -42,7 +38,7 @@ namespace Protocol.Transport.Phoenix {
         _socket.Opened -= _socket_Opened;
         _socket.Closed -= _socket_Closed;
         _socket.Error -= _socket_Error;
-        _socket.Disconnect(() => {
+        _socket.Disconnect(delegate {
           _socket = null;
           callback?.Invoke();
         });

@@ -66,6 +66,7 @@ namespace Storage.Impl.Internal {
 
     public void QueueDownload(Font font, Action then = null) {
       _agent.Enqueue(delegate {
+        Console.WriteLine("[{0}] Download started: {1}", DateTime.Now.ToString("hh:mm:ss.fff"), font.UID);
         DownloadFont(font).Wait();
         then?.Invoke();
       });
@@ -81,12 +82,16 @@ namespace Storage.Impl.Internal {
 
     #region private methods
     private async Task DownloadFont(Font font) {
-      IHttpRequest request = _transport.CreateHttpRequest(font.DownloadUrl.AbsoluteUri);
-      request.Method = WebRequestMethods.Http.Get;
+      if (!_storage.FontFileExists(font.UID)) {
+        IHttpRequest request = _transport.CreateHttpRequest(font.DownloadUrl.AbsoluteUri);
+        request.Method = WebRequestMethods.Http.Get;
 
-      IHttpResponse response = await request.Response;
-      using (response.ResponseStream) {
-        await _storage.SaveFontFile(font.UID, response.ResponseStream);
+        IHttpResponse response = await request.Response;
+        using (response.ResponseStream) {
+          await _storage.SaveFontFile(font.UID, response.ResponseStream);
+        }
+      } else {
+        Console.WriteLine("[{0}] Download already done: {1}", DateTime.Now.ToString("hh:mm:ss.fff"), font.UID);
       }
     }
     #endregion

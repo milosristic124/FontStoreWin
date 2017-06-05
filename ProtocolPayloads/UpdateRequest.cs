@@ -2,7 +2,7 @@
 
 namespace Protocol.Payloads {
   public class UpdateRequest {
-    [JsonProperty("last_udpate_date")]
-    public int LastUpdateDate { get; set; }
+    [JsonProperty("last_update_date")]
+    public string LastUpdateDate { get; set; }
   }
 }

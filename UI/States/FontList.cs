@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using UI.Utilities;
 
 namespace UI.States {
@@ -20,6 +21,7 @@ namespace UI.States {
 
     #region ctor
     public FontList(App application, WindowPosition prevPos = null) : base(application, prevPos) {
+      Console.WriteLine("[{0}] FontList state created", DateTime.Now.ToString("hh:mm:ss.fff"));
       _view = new Views.FontList(Application.Context.Connection.UserData);
       Application.SetDragHandle(_view.DragHandle);
       Application.MainWindow = _view;
@@ -62,6 +64,7 @@ namespace UI.States {
     }
 
     public override void Dispose() {
+      Console.WriteLine("[{0}] FontList state disposed", DateTime.Now.ToString("hh:mm:ss.fff"));
       _view.OnExit -= _view_OnExit;
       _view.OnLogout -= _view_OnLogout;
       _view.OnAboutClicked -= _view_OnAboutClicked;
@@ -105,22 +108,14 @@ namespace UI.States {
     #endregion
 
     #region action handling
-    private async void _view_OnLogout() {
+    private void _view_OnLogout() {
       Application.Context.Connection.Disconnect(Protocol.DisconnectReason.Logout);
-      await Application.Context.Storage.SaveFonts();
-      await Application.Context.Storage.CleanCredentials();
-      Application.Context.Storage.Clear();
-
-      _view.InvokeOnUIThread(() => {
-        WillTransition = true;
-        FSM.State = new Login(Application, WindowPosition.FromWindow(_view));
-        FSM.State.Show();
-        Dispose();
-      });
     }
 
     private void _view_OnExit() {
+      Application.Context.Connection.OnConnectionClosed -= Connection_OnConnectionClosed;
       Application.Context.Connection.Disconnect(Protocol.DisconnectReason.Quit);
+      Application.Context.Storage.SaveFonts().Wait();
       Application.Shutdown();
     }
 
@@ -154,11 +149,16 @@ namespace UI.States {
       });
     }
 
-    private void Connection_OnConnectionClosed() {
+    private async void Connection_OnConnectionClosed() {
+      await Application.Context.Storage.SaveFonts();
+      await Application.Context.Storage.CleanCredentials();
+      Application.Context.Storage.Clear();
+
       _view.InvokeOnUIThread(() => {
         WillTransition = true;
         FSM.State = new Login(Application, WindowPosition.FromWindow(_view));
         FSM.State.Show();
+        Dispose();
       });
     }
 

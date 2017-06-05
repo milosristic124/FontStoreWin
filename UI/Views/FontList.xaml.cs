@@ -4,6 +4,7 @@ using System;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using UI.Utilities;
 
 namespace UI.Views {
@@ -166,6 +167,7 @@ namespace UI.Views {
       if (collection != null) {
         InvokeOnUIThread(delegate {
           FamilyTree.ItemsSource = collection.Families;
+          FamilyTree?.Dispatcher?.Invoke(delegate { }, DispatcherPriority.Render);
         });
       }
     }
@@ -204,12 +206,12 @@ namespace UI.Views {
     }
 
     private void Visit_Click(object sender, RoutedEventArgs e) {
-      ViewsUtility.NavigateToUri(new Uri("http://www.fontstore.com"));
+      ViewsUtility.NavigateToUri(new Uri("https://www.fontstore.com"));
       e.Handled = true;
     }
 
     private void Help_Click(object sender, RoutedEventArgs e) {
-      ViewsUtility.NavigateToUri(new Uri("http://www.fontstore.com/help"));
+      ViewsUtility.NavigateToUri(new Uri("https://www.fontstore.com/help"));
       e.Handled = true;
     }
 
@@ -273,6 +275,7 @@ namespace UI.Views {
     private void SearchButton_Checked(object sender, RoutedEventArgs e) {
       _searchCollection?.Refresh();
       UpdateSearchResult();
+      SearchFamilyTree.Dispatcher.Invoke(delegate { }, DispatcherPriority.Render);
       FamilyTree.Visibility = Visibility.Collapsed;
       SearchPanel.Visibility = Visibility.Visible;
     }
@@ -295,7 +298,7 @@ namespace UI.Views {
       if (searchedTxt == null || searchedTxt == "") {
         return true;
       } else {
-        return fam.Name.ToLower().Contains(searchedTxt);
+        return fam.Name.ToLower().StartsWith(searchedTxt);
       }
     }
 

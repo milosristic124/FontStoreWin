@@ -14,6 +14,8 @@
         ShowInTaskbar="False"
         Title="FontList" Height="480" Foreground="{x:Null}" AllowsTransparency="True" WindowStyle="None" Background="{x:Null}" Width="330">
   <Window.Resources>
+    <Converters:StringToFontStyleConverter x:Key="StringToFontStyleConverter"/>
+    <Converters:StringToFontWeightConverter x:Key="StringToFontWeightConverter"/>
     <Converters:BoolToInstallStringConverter x:Key="BoolToInstallStringConverter"/>
   </Window.Resources>
   <Grid>
@@ -26,7 +28,7 @@
         <Grid.Background>
           <SolidColorBrush Color="{DynamicResource FSBlue}"/>
         </Grid.Background>
-        <Label x:Name="LogoLabel" Content="Hontstore" HorizontalAlignment="Left" Margin="14,0,0,13" VerticalAlignment="Bottom" Background="{x:Null}" Foreground="White" Padding="0" FontFamily="/Fontstore;component/Fonts/#Fontstore Final" FontSize="24" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold"/>
+        <Image Source="/Fontstore;component/Resources/Logo.png" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="14,0,0,13" Stretch="None"  />
         <StackPanel x:Name="RightPanel" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,14,13" Orientation="Horizontal">
           <Label x:Name="NameLabel" Content="Firstname Lastname" Background="{x:Null}" Foreground="White" Padding="0" VerticalContentAlignment="Center" Margin="0,0,7,0" FontFamily="/Fontstore;component/Fonts/#Litmus" MaxWidth="150" HorizontalAlignment="Right"/>
           <Button x:Name="MenuButton" Content="" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Focusable="False" HorizontalAlignment="Right" Padding="0" Foreground="{x:Null}" Width="10" VerticalAlignment="Center" Style="{DynamicResource FSButton}" Click="MenuButton_Click">
@@ -38,9 +40,12 @@
                 <ContextMenu.Background>
                   <SolidColorBrush Color="#FFD2D2D2"/>
                 </ContextMenu.Background>
+                <MenuItem Header="Account" Cursor="Hand" Click="Account_Click" />
+                <MenuItem Header="Settings" Cursor="Hand" Click="Settings_Click" />
                 <MenuItem Header="Visit Fontstore" Cursor="Hand" Click="Visit_Click" />
                 <MenuItem Header="Help" Cursor="Hand" Click="Help_Click" />
                 <MenuItem Header="About" Cursor="Hand" Click="About_Click" />
+                <MenuItem Header="Logout" Cursor="Hand" Click="Logout_Click" />
                 <Separator Foreground="#FFC4C6C5"/>
                 <MenuItem Header="Quit" Cursor="Hand" Click="Quit_Click" />
               </ContextMenu>
@@ -274,7 +279,7 @@
                         </ListBoxItem.Background>
 
                         <Grid Height="40" HorizontalAlignment="Stretch" Margin="0" Background="{x:Null}">
-                          <Label Content="{Binding Name}" Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding FamilyName}" FontWeight="{Binding Name}">
+                          <Label Content="{Binding Name}" Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding FamilyName}" FontWeight="{Binding Path=Name, Converter={StaticResource StringToFontWeightConverter}, Mode=OneWay}" FontStyle="{Binding Name, Converter={StaticResource StringToFontStyleConverter}, Mode=OneWay}">
                             <Label.Foreground>
                               <SolidColorBrush Color="{DynamicResource FSBlack}"/>
                             </Label.Foreground>
@@ -505,7 +510,7 @@
                           </ListBoxItem.Background>
 
                           <Grid Height="40" HorizontalAlignment="Stretch" Margin="0" Background="{x:Null}">
-                            <Label Content="{Binding Name}" Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding FamilyName}" FontWeight="{Binding Name}" >
+                            <Label Content="{Binding Name}" Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding FamilyName}" FontWeight="{Binding Path=Name, Converter={StaticResource StringToFontWeightConverter}, Mode=OneWay}" FontStyle="{Binding Name, Converter={StaticResource StringToFontStyleConverter}, Mode=OneWay}">
                               <Label.Foreground>
                                 <SolidColorBrush Color="{DynamicResource FSBlack}"/>
                               </Label.Foreground>

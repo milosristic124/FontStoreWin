@@ -31,6 +31,8 @@ namespace UI.ViewModels {
 
       IEnumerable<FamilyVM> _vms = _model.Families.Select(familyModel => {
         return new FamilyVM(familyModel);
+      }).OrderBy(familyvm => {
+        return familyvm.Name;
       });
 
       if (_filter != null) {

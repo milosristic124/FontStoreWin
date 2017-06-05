@@ -32,7 +32,7 @@
     public static class Security {
       #region constants
 #if DEBUG
-      public static readonly string FontCypherKey = "lvycpbhupbdmg";
+      public static readonly string FontCypherKey = "lvcypbhupbdmg";
 #else
       public static readonly string FontCypherKey = "lvycpbhupbdmg";
 #endif

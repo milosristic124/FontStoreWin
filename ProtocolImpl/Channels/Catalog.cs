@@ -47,13 +47,13 @@ namespace Protocol.Impl.Channels {
       return _underlying.Leave();
     }
 
-    public void SendUpdateRequest(DateTime? lastUpdate) {
+    public void SendUpdateRequest(int? lastUpdate) {
       Payloads.UpdateRequest payload;
-      if (lastUpdate == null) {
+      if (!lastUpdate.HasValue) {
         payload = null;
       }
       else {
-        payload = new Payloads.UpdateRequest() { LastUpdateDate = lastUpdate.Value.ToTimestamp() };
+        payload = new Payloads.UpdateRequest() { LastUpdateDate = lastUpdate.Value.ToString() };
       }
 
       _underlying.Send("update:request", payload);

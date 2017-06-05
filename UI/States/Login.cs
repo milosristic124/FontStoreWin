@@ -19,6 +19,7 @@ namespace UI.States {
 
     #region ctor
     public Login(App application, WindowPosition prevPos = null) : base(application, prevPos) {
+      Console.WriteLine("[{0}] Login state created", DateTime.Now.ToString("hh:mm:ss.fff"));
       _view = new Views.Login();
       Application.SetDragHandle(_view.DragHandle);
       Application.MainWindow = _view;
@@ -50,6 +51,7 @@ namespace UI.States {
     }
 
     public override void Dispose() {
+      Console.WriteLine("[{0}] Login state disposed", DateTime.Now.ToString("hh:mm:ss.fff"));
       Application.Context.Connection.OnValidationFailure -= Connection_OnValidationFailure;
       Application.Context.Connection.OnEstablished -= Connection_OnEstablished;
 
@@ -99,6 +101,7 @@ namespace UI.States {
         await Application.Context.Storage.SaveCredentials(userData.AuthToken);
         Console.WriteLine("[{0}] Credentials saved", DateTime.Now.ToString("hh:mm:ss.fff"));
       }
+
       _view.InvokeOnUIThread(() => {
         WillTransition = true;
         FSM.State = new FontList(Application, WindowPosition.FromWindow(_view));

@@ -39,12 +39,12 @@
           break;
       }
 
+      if (_context.CatalogChannel?.IsJoined ?? false) {
+        _context.CatalogChannel?.Leave();
+      }
       if (_context.UserChannel?.IsJoined ?? false) {
         _context.UserChannel?.SendDisconnect(message);
         _context.UserChannel?.Leave();
-      }
-      if (_context.CatalogChannel?.IsJoined ?? false) {
-        _context.CatalogChannel?.Leave();
       }
 
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -10,6 +11,8 @@ namespace FontInstaller.Impl {
     private Dictionary<string, IntPtr> _privateFonts;
     private Dictionary<string, string> _userFonts;
 
+    private PrivateFontCollection _fontCollection;
+
     private string _userFilesDir;
     #endregion
 
@@ -17,6 +20,7 @@ namespace FontInstaller.Impl {
     public FontInstaller() {
       _privateFonts = new Dictionary<string, IntPtr>();
       _userFonts = new Dictionary<string, string>();
+      _fontCollection = new PrivateFontCollection();
 
       _userFilesDir = Path.GetTempPath() + Guid.NewGuid().ToString() + "\\";
       Directory.CreateDirectory(_userFilesDir);
@@ -95,13 +99,13 @@ namespace FontInstaller.Impl {
           IntPtr fontPtr = Marshal.AllocCoTaskMem(bytes.Length);
           Marshal.Copy(bytes, 0, fontPtr, bytes.Length);
           uint dummy = 0;
+          //_fontCollection.AddMemoryFont(fontPtr, bytes.Length);
           IntPtr handle = AddFontMemResourceEx(fontPtr, (uint)bytes.Length, IntPtr.Zero, ref dummy);
           Marshal.FreeCoTaskMem(fontPtr);
 
           if (handle == IntPtr.Zero) {
             return FontAPIResult.Failure;
-          }
-          else {
+          } else {
             _privateFonts.Add(uid, handle);
             SendNotifyMessage(HWND_BROADCAST, WM_FONTCHANGE, IntPtr.Zero, IntPtr.Zero);
             return FontAPIResult.Success;

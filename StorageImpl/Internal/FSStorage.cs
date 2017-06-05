@@ -41,8 +41,8 @@ namespace Storage.Impl.Internal {
     #endregion
 
     #region properties
-    public DateTime? LastCatalogUpdate { get; set; }
-    public DateTime? LastFontStatusUpdate { get; set; }
+    public int? LastCatalogUpdate { get; set; }
+    public int? LastFontStatusUpdate { get; set; }
 
     public string SessionID {
       get {
@@ -100,7 +100,7 @@ namespace Storage.Impl.Internal {
     #endregion
 
     #region methods
-    public Task<FamilyCollection> Load() {
+    public Task<FamilyCollection> Load(Action<Font> fontLoaded = null) {
       LastCatalogUpdate = null;
       LastFontStatusUpdate = null;
       FamilyCollection collection = new FamilyCollection();
@@ -126,6 +126,7 @@ namespace Storage.Impl.Internal {
             );
             newFont.Activated = fontData.Activated;
             collection.AddFont(newFont);
+            fontLoaded?.Invoke(newFont);
           }
         }
       });
@@ -201,6 +202,11 @@ namespace Storage.Impl.Internal {
       return RemoveFile(_credFilePath);
     }
 
+
+    public bool FontFileExists(string uid) {
+      return File.Exists(FontFilePath(uid));
+    }
+
     public Task<Stream> ReadFontFile(string uid) {
       return ReadData(FontFilePath(uid));
     }
@@ -265,9 +271,9 @@ namespace Storage.Impl.Internal {
 
     private class StorageData {
       [JsonProperty("last_catalog_update")]
-      public DateTime LastCatalogUpdate { get; set; }
+      public int LastCatalogUpdate { get; set; }
       [JsonProperty("last_fonts_update")]
-      public DateTime LastFontsUpdate { get; set; }
+      public int LastFontsUpdate { get; set; }
     }
 
     private class FontData {

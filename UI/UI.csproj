@@ -25,13 +25,13 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://app.fontstore.com/windows/</InstallUrl>
+    <InstallUrl>http://app.fontstore.com/windows/</InstallUrl>
     <ProductName>Fontstore</ProductName>
     <PublisherName>FontStore</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationRevision>9</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -113,6 +113,8 @@
     </ApplicationDefinition>
     <Compile Include="Converters\BaseConverter.cs" />
     <Compile Include="Converters\BoolToInstallStringConverter.cs" />
+    <Compile Include="Converters\StringToFontStyleConverter.cs" />
+    <Compile Include="Converters\StringToFontWeightConverter.cs" />
     <Compile Include="Dev\DesignFamily.cs" />
     <Compile Include="Dev\TriggerTracing.cs" />
     <Compile Include="Utilities\ViewsUtility.cs" />
@@ -272,6 +274,9 @@
   <ItemGroup>
     <Resource Include="Resources\NotifIcon_18.ico" />
     <Resource Include="Resources\NotifIcon_36.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
