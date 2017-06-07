@@ -92,8 +92,8 @@ namespace Protocol.Impl {
       OnValidationFailure?.Invoke(error);
     }
 
-    internal void TriggerUpdateFinished() {
-      OnCatalogUpdateFinished?.Invoke();
+    internal void TriggerUpdateFinished(int newFontCount) {
+      OnCatalogUpdateFinished?.Invoke(newFontCount);
     }
 
     internal void TriggerConnectionClosed() { // disconnection caused by user

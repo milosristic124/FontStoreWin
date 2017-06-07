@@ -26,9 +26,9 @@ namespace Protocol.Impl.States {
     protected override void Start() {
       _context.Storage.SaveFonts().ContinueWith(delegate {
         RegisterStorageEvents();
-        _context.Storage.SynchronizeWithSystem(delegate {
+        _context.Storage.SynchronizeWithSystem(newFontCount => {
           WillTransition = true;
-          FSM.State = new Running(_context);
+          FSM.State = new Running(newFontCount, _context);
         });
       });
     }

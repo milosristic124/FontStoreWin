@@ -79,6 +79,17 @@ namespace UI {
     }
     #endregion
 
+    #region Notification
+    public void ShowNotification(string message, System.Windows.Forms.ToolTipIcon icon) {
+      try {
+        Dispatcher.Invoke(() => {
+          NotifyIcon.ShowBalloonTip(3000, "Fontstore", message, icon);
+        });
+      }
+      catch (Exception) { }
+    }
+    #endregion
+
     #region event handling
     private void App_Deactivated(object sender, EventArgs e) {
 #if DEBUG

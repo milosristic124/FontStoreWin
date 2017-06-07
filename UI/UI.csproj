@@ -31,7 +31,7 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>9</ApplicationRevision>
+    <ApplicationRevision>11</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -117,6 +117,11 @@
     <Compile Include="Converters\StringToFontWeightConverter.cs" />
     <Compile Include="Dev\DesignFamily.cs" />
     <Compile Include="Dev\TriggerTracing.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\ViewsUtility.cs" />
     <Compile Include="Utilities\WindowPosition.cs" />
     <Compile Include="ViewModels\FamilyCollectionVM.cs" />
@@ -167,11 +172,6 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -265,10 +265,6 @@
     <Resource Include="Resources\Search_Active.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\AppIcon_128.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\AppIcon_32.ico" />
     <Resource Include="Resources\AppIcon_64.ico" />
   </ItemGroup>
   <ItemGroup>

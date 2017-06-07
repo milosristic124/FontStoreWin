@@ -24,6 +24,7 @@ namespace Storage.Impl.Internal {
         return _agent.CommandCount;
       }
     }
+    public int DownloadCount { get; private set; }
     #endregion
 
     #region delegates
@@ -90,6 +91,7 @@ namespace Storage.Impl.Internal {
         using (response.ResponseStream) {
           await _storage.SaveFontFile(font.UID, response.ResponseStream);
         }
+        DownloadCount += 1;
       } else {
         Console.WriteLine("[{0}] Download already done: {1}", DateTime.Now.ToString("hh:mm:ss.fff"), font.UID);
       }

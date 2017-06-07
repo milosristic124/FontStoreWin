@@ -20,7 +20,7 @@ namespace Storage.Impl {
     private FSSynchronizationAgent _fsAgent;
     private FontInstallerAgent _installAgent;
 
-    private Action _synchronizationCallback;
+    private Action<int> _synchronizationCallback;
     #endregion
 
     #region properties
@@ -216,7 +216,7 @@ namespace Storage.Impl {
       return FamilyCollection.FindFont(uid);
     }
 
-    public void SynchronizeWithSystem(Action then = null) {
+    public void SynchronizeWithSystem(Action<int> then = null) {
       _synchronizationCallback = then;
       Synchronization_ExecuteFSCommands();
     }
@@ -294,7 +294,7 @@ namespace Storage.Impl {
     }
 
     private void Synchronization_TriggerSynchroFinished() {
-      _synchronizationCallback?.Invoke();
+      _synchronizationCallback?.Invoke(_fsAgent.DownloadCount);
       _synchronizationCallback = null;
     }
     #endregion

@@ -136,10 +136,13 @@ namespace UI.States {
       });
     }
 
-    private async void Connection_OnCatalogUpdateFinished() {
+    private async void Connection_OnCatalogUpdateFinished(int newFontCount) {
       await Application.Context.Storage.SaveFonts();
       ShowLoadedState();
       _loading = false;
+      if (newFontCount > 0) {
+        Application.ShowNotification($"{0} new fonts synchronized", System.Windows.Forms.ToolTipIcon.Info);
+      }
     }
 
     private bool Connection_Disconnected() {

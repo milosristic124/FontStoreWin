@@ -52,7 +52,7 @@ namespace Storage {
 
     void DeactivateAllFonts(Action then = null);
 
-    void SynchronizeWithSystem(Action then = null);
+    void SynchronizeWithSystem(Action<int> then = null);
     void BeginSynchronization();
     void EndSynchronization();
     void AbortSynchronization();

@@ -3,11 +3,16 @@ using Storage.Data;
 
 namespace Protocol.Impl.States {
   class Running : ConnectionState {
+    #region data
+    private int _newFontCount = 0;
+    #endregion
+
     #region ctor
-    public Running(Connection connection): this("Running", connection) {
+    public Running(int newFontCount, Connection connection): this("Running", newFontCount, connection) {
     }
 
-    private Running(string name, Connection connection) : base(name, connection) {
+    private Running(string name, int newFontCount, Connection connection) : base(name, connection) {
+      _newFontCount = newFontCount;
     }
     #endregion
 
@@ -28,7 +33,7 @@ namespace Protocol.Impl.States {
       _context.Storage.BeginSynchronization();
       _context.UserChannel.TransitionToRealtimeCommunication();
 
-      _context.TriggerUpdateFinished();
+      _context.TriggerUpdateFinished(_newFontCount);
     }
     #endregion
 

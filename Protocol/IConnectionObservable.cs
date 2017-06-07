@@ -13,7 +13,7 @@ namespace Protocol {
   #region event handlers
   public delegate void ConnectionValidationFailedHandler(string reason);
   public delegate void ConnectionEstablishedHandler(UserData userData);
-  public delegate void CatalogUpdateFinishedHandler();
+  public delegate void CatalogUpdateFinishedHandler(int newFontCount);
   public delegate void ConnectionClosedHandler();// connection closed after User disconnection
   public delegate bool DisconnectionHandler(); // connection disconnected after transport error
   public delegate void ConnectionTerminatedHandler(string reason); // connection closed after Server disconnection

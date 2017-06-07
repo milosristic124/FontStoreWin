@@ -179,10 +179,11 @@ namespace TestUtilities.Storage {
       });
     }
 
-    public async void SynchronizeWithSystem(Action then = null) {
+    public async void SynchronizeWithSystem(Action<int> then = null) {
       RegisterCall("SynchronizeWithSystem");
+      int actionCount = _callbackBuffer.Count;
       await ProcessBufferedCallbacks(true).Then(delegate {
-        then?.Invoke();
+        then?.Invoke(actionCount);
       });
     }
 
