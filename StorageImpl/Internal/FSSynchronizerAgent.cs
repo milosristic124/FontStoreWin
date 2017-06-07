@@ -1,11 +1,10 @@
-﻿using Protocol.Transport;
+﻿using Logging;
 using Protocol.Transport.Http;
 using Storage.Data;
 using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Utilities.Extensions;
 using Utilities.Threading;
 
 namespace Storage.Impl.Internal {
@@ -67,7 +66,7 @@ namespace Storage.Impl.Internal {
 
     public void QueueDownload(Font font, Action then = null) {
       _agent.Enqueue(delegate {
-        Console.WriteLine("[{0}] Download started: {1}", DateTime.Now.ToString("hh:mm:ss.fff"), font.UID);
+        Logger.Log("Download started: {0}", font.UID);
         DownloadFont(font).Wait();
         then?.Invoke();
       });
@@ -93,7 +92,7 @@ namespace Storage.Impl.Internal {
         }
         DownloadCount += 1;
       } else {
-        Console.WriteLine("[{0}] Download already done: {1}", DateTime.Now.ToString("hh:mm:ss.fff"), font.UID);
+        Logger.Log("Download already done: {0}", font.UID);
       }
     }
     #endregion

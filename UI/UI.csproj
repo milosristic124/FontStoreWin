@@ -209,6 +209,10 @@
       <Project>{7D9852A5-6911-478F-B863-C31FBCDD8065}</Project>
       <Name>FontInstaller</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Logger\Logger.csproj">
+      <Project>{94E761D5-414B-42C6-8D32-3DAE9ADD920E}</Project>
+      <Name>Logger</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ProtocolPayloads\ProtocolPayloads.csproj">
       <Project>{de2e0581-3b35-44bc-a408-f3f480d70f18}</Project>
       <Name>ProtocolPayloads</Name>

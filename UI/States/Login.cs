@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Logging;
+using System;
 using UI.Utilities;
-using Utilities.Extensions;
 
 namespace UI.States {
   class Login : UIState {
@@ -19,7 +19,7 @@ namespace UI.States {
 
     #region ctor
     public Login(App application, WindowPosition prevPos = null) : base(application, prevPos) {
-      Console.WriteLine("[{0}] Login state created", DateTime.Now.ToString("hh:mm:ss.fff"));
+      Logger.Log("Login state created");
       _view = new Views.Login();
       Application.SetDragHandle(_view.DragHandle);
       Application.MainWindow = _view;
@@ -51,7 +51,7 @@ namespace UI.States {
     }
 
     public override void Dispose() {
-      Console.WriteLine("[{0}] Login state disposed", DateTime.Now.ToString("hh:mm:ss.fff"));
+      Logger.Log("Login state disposed");
       Application.Context.Connection.OnValidationFailure -= Connection_OnValidationFailure;
       Application.Context.Connection.OnEstablished -= Connection_OnEstablished;
 
@@ -67,7 +67,7 @@ namespace UI.States {
 
       string savedCreds = await Application.Context.Storage.LoadCredentials();
       if (savedCreds != null) {
-        Console.WriteLine("[{0}] Credentials loaded", DateTime.Now.ToString("hh:mm:ss.fff"));
+        Logger.Log("Credentials loaded");
         _view.InvokeOnUIThread(() => {
           _view.ConnectionRequestStarted();
         });
@@ -99,7 +99,7 @@ namespace UI.States {
     private async void Connection_OnEstablished(Protocol.Payloads.UserData userData) {
       if (_saveCredentials) {
         await Application.Context.Storage.SaveCredentials(userData.AuthToken);
-        Console.WriteLine("[{0}] Credentials saved", DateTime.Now.ToString("hh:mm:ss.fff"));
+        Logger.Log("Credentials saved");
       }
 
       _view.InvokeOnUIThread(() => {

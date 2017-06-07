@@ -1,4 +1,5 @@
 ﻿using FontInstaller;
+using Logging;
 using System;
 using System.Threading.Tasks;
 using Utilities.Extensions;
@@ -51,7 +52,7 @@ namespace Protocol.Impl.States {
       if (scope.HasFlag(InstallationScope.User)) {
         _context.UserChannel.SendFontUninstallationReport(font.UID, succeed);
       } else if (scope.HasFlag(InstallationScope.User)) {
-        Console.WriteLine("[{0}] [Installing] Font uninstalled in scope {1}: success = {2}", DateTime.Now.ToString("hh:mm:ss.fff"), scope, succeed);
+        Logger.Log("[Installing] Font uninstalled in scope {0}: success = {1}", scope, succeed);
       }
     }
 
@@ -60,7 +61,7 @@ namespace Protocol.Impl.States {
         _context.UserChannel.SendFontInstallationReport(font.UID, succeed);
       }
       else if (scope.HasFlag(InstallationScope.User)) {
-        Console.WriteLine("[{0}] [Installing] Font installed in scope {1}: success = {2}", DateTime.Now.ToString("hh:mm:ss.fff"), scope, succeed);
+        Logger.Log("[Installing] Font installed in scope {0}: success = {1}", scope, succeed);
       }
     }
     #endregion

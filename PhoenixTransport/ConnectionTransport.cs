@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Logging;
+using Newtonsoft.Json;
 using PhoenixSocket;
 using SuperSocket.ClientEngine;
 using System;
@@ -22,7 +23,7 @@ namespace Protocol.Transport.Phoenix {
       }
 #if DEBUG
       _socket = new Socket(EndPoint, logger: (string s1, string s2, object o) => {
-        Console.WriteLine("[{0}] [{1}] [{2}] -> {3}", DateTime.Now.ToString("hh:mm:ss.fff"), s1, s2, JsonConvert.SerializeObject(o));
+        Logger.Log("[{0}] [{1}] -> {2}", s1, s2, JsonConvert.SerializeObject(o));
       }, urlparams: UrlParams);
 #else
       _socket = new Socket(EndPoint, urlparams: UrlParams);

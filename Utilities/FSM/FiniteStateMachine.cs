@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Logging;
+using System;
 
 namespace Utilities.FSM {
   public class FiniteStateMachine<T> where T : class, IState<T> {
@@ -26,7 +27,7 @@ namespace Utilities.FSM {
           }
 
 #if DEBUG
-          Console.WriteLine("[{0}] [FSM] {1} -> {2}", DateTime.Now.ToString("hh:mm:ss.fff"), oldState.GetType().Name, newState.GetType().Name);
+          Logger.Log("[FSM] {0} -> {1}", oldState.GetType().Name, newState.GetType().Name);
 #endif
 
           if (_startBeforeStop) {

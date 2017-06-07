@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FontEncryption", "FontEncry
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FontEncryptionImpl", "FontEncryptionImpl\FontEncryptionImpl.csproj", "{2C66D0E4-25E4-4EC9-B19E-87CB38111FD9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "Logger\Logger.csproj", "{94E761D5-414B-42C6-8D32-3DAE9ADD920E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Ubuntu|Any CPU = Debug_Ubuntu|Any CPU
@@ -739,6 +741,38 @@ Global
 		{2C66D0E4-25E4-4EC9-B19E-87CB38111FD9}.Release|x64.Build.0 = Release|Any CPU
 		{2C66D0E4-25E4-4EC9-B19E-87CB38111FD9}.Release|x86.ActiveCfg = Release|Any CPU
 		{2C66D0E4-25E4-4EC9-B19E-87CB38111FD9}.Release|x86.Build.0 = Release|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Debug_Ubuntu|ARM.ActiveCfg = Debug|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Debug_Ubuntu|ARM.Build.0 = Debug|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Debug_Ubuntu|x64.ActiveCfg = Debug|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Debug_Ubuntu|x64.Build.0 = Debug|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Debug_Ubuntu|x86.ActiveCfg = Debug|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Debug_Ubuntu|x86.Build.0 = Debug|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Debug|ARM.Build.0 = Debug|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Debug|x64.Build.0 = Debug|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Debug|x86.Build.0 = Debug|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release_Ubuntu|Any CPU.ActiveCfg = Release|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release_Ubuntu|ARM.ActiveCfg = Release|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release_Ubuntu|ARM.Build.0 = Release|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release_Ubuntu|x64.ActiveCfg = Release|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release_Ubuntu|x64.Build.0 = Release|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release_Ubuntu|x86.ActiveCfg = Release|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release_Ubuntu|x86.Build.0 = Release|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release|ARM.ActiveCfg = Release|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release|ARM.Build.0 = Release|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release|x64.ActiveCfg = Release|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release|x64.Build.0 = Release|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release|x86.ActiveCfg = Release|Any CPU
+		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

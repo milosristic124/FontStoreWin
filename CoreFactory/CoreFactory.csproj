@@ -65,6 +65,10 @@
       <Project>{291a80b9-8d03-4e29-a8a0-a5974f6a4024}</Project>
       <Name>HttpTransportIml</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Logger\Logger.csproj">
+      <Project>{94E761D5-414B-42C6-8D32-3DAE9ADD920E}</Project>
+      <Name>Logger</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PhoenixTransport\PhoenixTransport.csproj">
       <Project>{334eaac4-1dca-4440-bb6e-ef64084bff65}</Project>
       <Name>PhoenixTransport</Name>

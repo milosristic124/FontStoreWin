@@ -1,4 +1,5 @@
-﻿using Protocol.Transport;
+﻿using Logging;
+using Protocol.Transport;
 using System;
 using Utilities;
 
@@ -48,7 +49,7 @@ namespace Protocol.Impl.States {
     private void _transport_Error(Exception exception) {
       WillTransition = true;
 #if DEBUG
-      Console.WriteLine("[{0}] Connection failed: {1}", DateTime.Now.ToString("hh:mm:ss.fff"), exception);
+      Logger.Log("Connection failed: {0}", exception);
 #endif
       FSM.State = new RetryConnecting(_context, _userData);
     }

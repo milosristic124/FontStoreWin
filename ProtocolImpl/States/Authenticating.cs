@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using Logging;
+using Newtonsoft.Json;
 using Protocol.Transport.Http;
 using System;
 using System.IO;
 using System.Net;
 using Utilities;
-using Utilities.Extensions;
 
 namespace Protocol.Impl.States {
   class Authenticating : ConnectionState {
@@ -103,14 +103,14 @@ namespace Protocol.Impl.States {
           _context.TriggerValidationFailure(failure.Message);
         } else {
 #if DEBUG
-          Console.WriteLine("[{0}] Authentication failed: {1}", DateTime.Now.ToString("hh:mm:ss.fff"), e);
+          Logger.Log("Authentication failed: {0}", e);
 #endif
           WillTransition = true;
           FSM.State = new RetryAuthenticating(_context, _authPayload);
         }
 #if DEBUG
       } catch (Exception e) {
-        Console.WriteLine("[{0}] Authentication failed: {1}", DateTime.Now.ToString("hh:mm:ss.fff"), e);
+        Logger.Log("Authentication failed: {0}", e);
 #else
       } catch (Exception ) {
 #endif

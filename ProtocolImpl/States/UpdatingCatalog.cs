@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Logging;
+using System;
 
 namespace Protocol.Impl.States {
   class UpdatingCatalog : ConnectionState {
@@ -27,7 +28,6 @@ namespace Protocol.Impl.States {
       _context.CatalogChannel.OnNewFontReleased += CatalogChannel_OnNewFontReleased;
 
       _context.CatalogChannel.Join().Then(() => {
-        Console.WriteLine("[{0}] Updating catalog since {1}", DateTime.Now.ToString("hh:mm:ss.fff"), _context.Storage.LastCatalogUpdate);
         _context.CatalogChannel.SendUpdateRequest(_context.Storage.LastCatalogUpdate);
       });
     }

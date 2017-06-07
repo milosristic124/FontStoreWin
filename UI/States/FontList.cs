@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Logging;
+using System;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 using UI.Utilities;
 
 namespace UI.States {
@@ -21,7 +21,7 @@ namespace UI.States {
 
     #region ctor
     public FontList(App application, WindowPosition prevPos = null) : base(application, prevPos) {
-      Console.WriteLine("[{0}] FontList state created", DateTime.Now.ToString("hh:mm:ss.fff"));
+      Logger.Log("FontList state created");
       _view = new Views.FontList(Application.Context.Connection.UserData);
       Application.SetDragHandle(_view.DragHandle);
       Application.MainWindow = _view;
@@ -64,7 +64,7 @@ namespace UI.States {
     }
 
     public override void Dispose() {
-      Console.WriteLine("[{0}] FontList state disposed", DateTime.Now.ToString("hh:mm:ss.fff"));
+      Logger.Log("FontList state disposed");
       _view.OnExit -= _view_OnExit;
       _view.OnLogout -= _view_OnLogout;
       _view.OnAboutClicked -= _view_OnAboutClicked;
@@ -85,7 +85,7 @@ namespace UI.States {
         try {
           await Application.Context.Storage.LoadFonts();
         } catch (Exception e) {
-          Console.WriteLine(string.Format("Catalog loading failed: {0}", e.Message));
+          Logger.Log("Catalog loading failed: {0}", e);
         }
         Application.Context.Connection.UpdateCatalog();
       }
