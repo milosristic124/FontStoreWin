@@ -231,16 +231,25 @@ namespace UI.Views {
     private void InstalledButton_Checked(object sender, RoutedEventArgs e) {
       _filterMode = FilterMode.Installed;
       SetContentVM(_installedVM);
+      if (SearchButton?.IsChecked ?? false) {
+        SearchButton.IsChecked = false;
+      }
     }
 
     private void NewButton_Checked(object sender, RoutedEventArgs e) {
       _filterMode = FilterMode.New;
       SetContentVM(_newVM);
+      if (SearchButton?.IsChecked ?? false) {
+        SearchButton.IsChecked = false;
+      }
     }
 
     private void AllButton_Checked(object sender, RoutedEventArgs e) {
       _filterMode = FilterMode.None;
       SetContentVM(_allVM);
+      if (SearchButton?.IsChecked ?? false) {
+        SearchButton.IsChecked = false;
+      }
     }
     #endregion
 
