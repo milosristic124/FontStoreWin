@@ -1,5 +1,6 @@
 ﻿using Logging;
 using System;
+using System.Drawing;
 using UI.Utilities;
 
 namespace UI.States {
@@ -32,6 +33,8 @@ namespace UI.States {
 
       Application.Context.Connection.OnValidationFailure += Connection_OnValidationFailure;
       Application.Context.Connection.OnEstablished += Connection_OnEstablished;
+
+      Application.Context.Connection.OnCatalogUpdateFinished += Connection_OnCatalogUpdateFinished;
     }
     #endregion
 
@@ -54,6 +57,7 @@ namespace UI.States {
       Logger.Log("Login state disposed");
       Application.Context.Connection.OnValidationFailure -= Connection_OnValidationFailure;
       Application.Context.Connection.OnEstablished -= Connection_OnEstablished;
+      Application.Context.Connection.OnCatalogUpdateFinished -= Connection_OnCatalogUpdateFinished;
 
       _view.OnConnect -= _view_OnConnect;
       _view.OnExit -= _view_OnExit;
@@ -102,17 +106,39 @@ namespace UI.States {
         Logger.Log("Credentials saved");
       }
 
-      _view.InvokeOnUIThread(() => {
-        WillTransition = true;
-        FSM.State = new FontList(Application, WindowPosition.FromWindow(_view));
-        FSM.State.Show();
-        Dispose();
-      });
+      try {
+        await Application.Context.Storage.LoadFonts();
+      }
+      catch (Exception e) {
+        Logger.Log("Catalog loading failed: {0}", e);
+      }
+      Application.Context.Connection.UpdateCatalog();
+
+      //_view.InvokeOnUIThread(() => {
+      //  WillTransition = true;
+      //  FSM.State = new FontList(Application, WindowPosition.FromWindow(_view));
+      //  FSM.State.Show();
+      //  Dispose();
+      //});
     }
 
     private void Connection_OnValidationFailure(string reason) {
       _view.InvokeOnUIThread(() => {
         _view.ConnectionRequestFailed(reason);
+      });
+    }
+
+    private async void Connection_OnCatalogUpdateFinished(int newFontCount) {
+      await Application.Context.Storage.SaveFonts();
+      if (newFontCount > 0) {
+        Application.ShowNotification($"{0} new fonts synchronized", System.Windows.Forms.ToolTipIcon.Info);
+      }
+
+      _view.InvokeOnUIThread(() => {
+        WillTransition = true;
+        FSM.State = new FontList(Application, WindowPosition.FromWindow(_view));
+        FSM.State.Show();
+        Dispose();
       });
     }
     #endregion

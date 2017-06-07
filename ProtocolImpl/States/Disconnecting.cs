@@ -44,7 +44,6 @@
       }
       if (_context.UserChannel?.IsJoined ?? false) {
         _context.UserChannel?.SendDisconnect(message);
-        _context.UserChannel?.Leave();
       }
 
 

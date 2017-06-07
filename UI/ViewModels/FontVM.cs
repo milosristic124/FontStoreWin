@@ -27,6 +27,12 @@ namespace UI.ViewModels {
         return _model.Style;
       }
     }
+
+    public int SortRank {
+      get {
+        return _model.SortRank;
+      }
+    }
     #endregion
 
     #region observable properties

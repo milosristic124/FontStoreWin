@@ -9,6 +9,10 @@ namespace UI.ViewModels {
   class FamilyVM : INotifyPropertyChanged {
     #region private data
     private Family _model;
+
+    private Func<FontVM, int> rank = (fnt) => {
+      return fnt.SortRank;
+    };
     #endregion
 
     #region properties
@@ -50,7 +54,7 @@ namespace UI.ViewModels {
 
       Fonts = new ObservableCollection<FontVM>(_model.Fonts.Select(fontModel => {
         return new FontVM(fontModel);
-      }));
+      }).OrderBy(rank));
 
       _model.OnFullyActivatedChanged += _model_OnFullyActivatedChanged;
       _model.OnFontAdded += _model_OnFontAdded;
@@ -76,6 +80,7 @@ namespace UI.ViewModels {
     private void _model_OnFontAdded(Family sender, Font newFontModel) {
       ExecuteOnUIThread(() => {
         Fonts.Add(new FontVM(newFontModel));
+        Fonts = (ObservableCollection<FontVM>)Fonts.OrderBy(rank);
       });
     }
 

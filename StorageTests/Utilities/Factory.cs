@@ -8,7 +8,8 @@ namespace Storage.Impl.Tests.Utilities {
         uid: desc.UID,
         familyName: desc.FamilyName,
         style: desc.Style,
-        downloadUrl: desc.DownloadUrl
+        downloadUrl: desc.DownloadUrl,
+        sortRank: 0
       );
     }
   }

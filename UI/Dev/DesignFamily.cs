@@ -17,7 +17,7 @@ namespace UI.Dev {
     public new string Name { get; set; }
     public new bool Activated { get; set; }
 
-    public DesignFont(): base(new Storage.Data.Font("uid", "familyname", "fontname", "http://test.com")) {
+    public DesignFont(): base(new Storage.Data.Font("uid", "familyname", "fontname", 0, "http://test.com")) {
     }
   }
 }

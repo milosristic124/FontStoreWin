@@ -122,7 +122,8 @@ namespace TestUtilities.Storage {
         uid: description.UID,
         familyName: description.FamilyName,
         style: description.Style,
-        downloadUrl: description.DownloadUrl
+        downloadUrl: description.DownloadUrl,
+        sortRank: 0
       );
       FamilyCollection.AddFont(newFont);
       LastCatalogUpdate = description.TransmittedAt;

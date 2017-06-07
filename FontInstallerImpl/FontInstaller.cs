@@ -10,11 +10,10 @@ namespace FontInstaller.Impl {
   public class FontInstaller : IFontInstaller {
     #region private data
     private Dictionary<string, string> _userFonts;
+    private Dictionary<string, string> _privateFonts;
 
     private string _userFilesDir;
     private string _privateFilesDir;
-
-    private Dictionary<string, string> _privateFonts;
     #endregion
 
     #region ctor
@@ -28,7 +27,7 @@ namespace FontInstaller.Impl {
 
       _privateFilesDir = Path.GetTempPath() + Guid.NewGuid().ToString() + "\\";
       Directory.CreateDirectory(_privateFilesDir);
-      Logger.Log("Process font directory: {0}", _userFilesDir);
+      Logger.Log("Process font directory: {0}", _privateFilesDir);
     }
     #endregion
 
@@ -203,19 +202,28 @@ namespace FontInstaller.Impl {
 
     #region font API encapsulation
     private bool RemovePocessFont(string path) {
-      if (RemoveFontResourceEx(path, FR_PRIVATE, IntPtr.Zero) != 0) {
+      if (File.Exists(path)) {
+        int attempt = 0;
+        while (RemoveFontResourceEx(path, FR_PRIVATE, IntPtr.Zero) != 0) {
+          SendNotifyMessage(HWND_BROADCAST, WM_FONTCHANGE, IntPtr.Zero, IntPtr.Zero);
+          attempt += 1;
+        }
+
         File.Delete(path);
-        SendNotifyMessage(HWND_BROADCAST, WM_FONTCHANGE, IntPtr.Zero, IntPtr.Zero);
-        return true;
+        return attempt > 0;
       }
       return false;
     }
 
     private bool RemoveUserFont(string path) {
-      if (RemoveFontResource(path) != 0) {
+      if (File.Exists(path)) {
+        int attempt = 0;
+        while (RemoveFontResource(path) != 0) {
+          SendNotifyMessage(HWND_BROADCAST, WM_FONTCHANGE, IntPtr.Zero, IntPtr.Zero);
+          attempt += 1;
+        }
         File.Delete(path);
-        SendNotifyMessage(HWND_BROADCAST, WM_FONTCHANGE, IntPtr.Zero, IntPtr.Zero);
-        return true;
+        return attempt > 0;
       }
       return false;
     }
@@ -246,6 +254,7 @@ namespace FontInstaller.Impl {
     private static extern bool SendNotifyMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
     private const uint WM_FONTCHANGE = 0x001D;
     private const uint FR_PRIVATE = 0x10;
+    private const uint FS_NOT_ENUM = 0x20;
     private IntPtr HWND_BROADCAST = new IntPtr(0xffff);
     #endregion
   }

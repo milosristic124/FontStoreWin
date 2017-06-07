@@ -122,7 +122,8 @@ namespace Storage.Impl.Internal {
               uid: fontData.UID,
               familyName: fontData.FamilyName,
               style: fontData.Name,
-              downloadUrl: fontData.DownloadUrl
+              downloadUrl: fontData.DownloadUrl,
+              sortRank: fontData.SortRank
             );
             newFont.Activated = fontData.Activated;
             collection.AddFont(newFont);
@@ -289,6 +290,8 @@ namespace Storage.Impl.Internal {
       public string DownloadUrl { get; set; }
       [JsonProperty("activated")]
       public bool Activated { get; set; }
+      [JsonProperty("number")]
+      public int SortRank { get; set; }
 
       public FontData() {
       }

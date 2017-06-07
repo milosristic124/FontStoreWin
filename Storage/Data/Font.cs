@@ -38,6 +38,7 @@ namespace Storage.Data {
         }
       }
     }
+    public int SortRank { get; private set; }
     #endregion
 
     #region delegates
@@ -55,7 +56,7 @@ namespace Storage.Data {
     #endregion
 
     #region ctor
-    public Font(string uid, string familyName, string style, string downloadUrl) {
+    public Font(string uid, string familyName, string style, int sortRank, string downloadUrl) {
       UID = uid;
       FamilyName = familyName;
       Style = style;

@@ -54,6 +54,11 @@ namespace Protocol.Impl.Channels {
     }
 
     public void SendDisconnect(string reason) {
+      //_underlying.Off("font:activation");
+      //_underlying.Off("font:deactivation");
+      //_underlying.Off("udpate:complete");
+      //_underlying.Off("disconnection");
+      //_underlying.Leave();
       _underlying.Send("disconnect", new Payloads.Disconnect {
         Reason = reason
       });

@@ -1,5 +1,7 @@
 ﻿using Logging;
 using System;
+using System.Drawing;
+using System.Drawing.Text;
 using System.Threading.Tasks;
 using UI.Utilities;
 
@@ -142,6 +144,11 @@ namespace UI.States {
       _loading = false;
       if (newFontCount > 0) {
         Application.ShowNotification($"{0} new fonts synchronized", System.Windows.Forms.ToolTipIcon.Info);
+      }
+
+      Logger.Log("FontFamilies >>");
+      foreach(FontFamily family in FontFamily.Families) {
+        Logger.Log("\t{0}", family.Name);
       }
     }
 
