@@ -50,6 +50,10 @@
       <Project>{7d9852a5-6911-478f-b863-c31fbcdd8065}</Project>
       <Name>FontInstaller</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Logger\Logger.csproj">
+      <Project>{94E761D5-414B-42C6-8D32-3DAE9ADD920E}</Project>
+      <Name>Logger</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
