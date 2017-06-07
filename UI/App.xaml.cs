@@ -42,9 +42,9 @@ namespace UI {
 
     #region about popup
     public void ShowAboutPopup(Window parent) {
-      string aboutTxt = $"Fontstore v{Constants.App.ApplicationVersion}\n" +
-        $"Fontstore all rights reserved - © 2017";
-      MessageBox.Show(parent, aboutTxt, "About Fontstore", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
+      string aboutTxt = $"Fontstore Installer (v{Constants.App.ApplicationVersion})\n" +
+        $"Copyright © 2017 - Fontstore Pte Ltd";
+      MessageBox.Show(parent, aboutTxt, "About", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
     }
     #endregion
 
