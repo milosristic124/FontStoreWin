@@ -131,8 +131,8 @@
             </StackPanel>
           </RadioButton>
 
-          <RadioButton x:Name="SearchButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/Fontstore;component/Fonts/#Litmus" Foreground="{x:Null}" HorizontalAlignment="Center" Margin="0" Grid.Column="3" Cursor="Hand" Checked="SearchButton_Checked" VerticalAlignment="Center" Unchecked="SearchButton_Unchecked">
-            <RadioButton.Template>
+          <ToggleButton x:Name="SearchButton" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" IsTabStop="False" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Disabled" FontFamily="/Fontstore;component/Fonts/#Litmus" Foreground="{x:Null}" HorizontalAlignment="Center" Margin="0" Grid.Column="3" Cursor="Hand" Checked="SearchButton_Checked" VerticalAlignment="Center" Unchecked="SearchButton_Unchecked">
+            <ToggleButton.Template>
               <ControlTemplate TargetType="{x:Type ButtonBase}">
                 <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                 <ControlTemplate.Triggers>
@@ -145,8 +145,8 @@
                   </Trigger>
                 </ControlTemplate.Triggers>
               </ControlTemplate>
-            </RadioButton.Template>
-            <RadioButton.Style>
+            </ToggleButton.Template>
+            <ToggleButton.Style>
               <Style TargetType="{x:Type ToggleButton}">
                 <Setter Property="Content">
                   <Setter.Value>
@@ -178,9 +178,9 @@
                   </Trigger>
                 </Style.Triggers>
               </Style>
-            </RadioButton.Style>
+            </ToggleButton.Style>
 
-          </RadioButton>
+          </ToggleButton>
         </Grid>
         <Separator Height="1" Margin="0" VerticalAlignment="Top" d:IsLocked="True">
           <Separator.Background>

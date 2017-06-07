@@ -167,7 +167,6 @@ namespace UI.Views {
       if (collection != null) {
         InvokeOnUIThread(delegate {
           FamilyTree.ItemsSource = collection.Families;
-          FamilyTree?.Dispatcher?.Invoke(delegate { }, DispatcherPriority.Render);
         });
       }
     }
@@ -275,7 +274,6 @@ namespace UI.Views {
     private void SearchButton_Checked(object sender, RoutedEventArgs e) {
       _searchCollection?.Refresh();
       UpdateSearchResult();
-      SearchFamilyTree.Dispatcher.Invoke(delegate { }, DispatcherPriority.Render);
       FamilyTree.Visibility = Visibility.Collapsed;
       SearchPanel.Visibility = Visibility.Visible;
     }
@@ -296,7 +294,7 @@ namespace UI.Views {
 
       string searchedTxt = SearchInput.Text?.Trim()?.ToLower();
       if (searchedTxt == null || searchedTxt == "") {
-        return true;
+        return false;
       } else {
         return fam.Name.ToLower().StartsWith(searchedTxt);
       }
