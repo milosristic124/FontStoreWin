@@ -22,7 +22,7 @@ namespace UI.States {
     #region ctor
     public FontList(App application, WindowPosition prevPos = null) : base(application, prevPos) {
       Logger.Log("FontList state created");
-      _view = new Views.FontList(Application.Context.Connection.UserData);
+      _view = new Views.FontList(Application.Context.Connection.UserData, Application.Context.FontInstaller);
       Application.SetDragHandle(_view.DragHandle);
       Application.MainWindow = _view;
       SetWindowPosition(_view, WindowPosition);
@@ -138,14 +138,6 @@ namespace UI.States {
 
     private async void Connection_OnCatalogUpdateFinished(int newFontCount) {
       await Application.Context.Storage.SaveFonts();
-
-      foreach (Storage.Data.Family family in Application.Context.Storage.FamilyCollection.Families) {
-        await Previews.Generator.Instance.GeneratePreview(family.DefaultFont(), familyPreview: true);
-
-        foreach(Storage.Data.Font font in family.Fonts) {
-          await Previews.Generator.Instance.GeneratePreview(font);
-        }
-      }
 
       ShowLoadedState();
       _loading = false;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing.Text;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -16,14 +17,17 @@ namespace FontInstaller {
     User = 2
   }
 
-  public delegate void PrivateFontInstalledHandler(string uid, string path);
-
   public interface IFontInstaller {
-    event PrivateFontInstalledHandler OnPrivateFontInstalled;
+    #region properties
+    string UserFontDir { get; set; }
+    string PrivateFontDir { get; set; }
+    #endregion
 
+    #region methods
     InstallationScope GetFontInstallationScope(string uid);
     Task<FontAPIResult> InstallFont(string uid, InstallationScope scope, MemoryStream fontData);
     Task<FontAPIResult> UninstallFont(string uid, InstallationScope scope);
     Task UninstallAllFonts();
+    #endregion
   }
 }

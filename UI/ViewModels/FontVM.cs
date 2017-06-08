@@ -1,13 +1,13 @@
-﻿using Storage.Data;
+﻿using FontInstaller;
 using System;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Input;
+using System.Windows.Media;
 
 namespace UI.ViewModels {
   class FontVM : INotifyPropertyChanged {
     #region private data
-    private Font _model;
+    private Storage.Data.Font _model;
     #endregion
 
     #region properties
@@ -33,8 +33,6 @@ namespace UI.ViewModels {
         return _model.SortRank;
       }
     }
-
-    public string PreviewPath { get; private set; }
     #endregion
 
     #region observable properties
@@ -58,16 +56,15 @@ namespace UI.ViewModels {
     #endregion
 
     #region ctor
-    public FontVM(Font model) {
+    public FontVM(Storage.Data.Font model) {
       _model = model;
-      PreviewPath = Previews.Generator.Instance.GetPreviewPath(_model);
 
       _model.OnActivationChanged += _model_OnActivationChanged;
     }
     #endregion
 
     #region event handling
-    private void _model_OnActivationChanged(Font sender) {
+    private void _model_OnActivationChanged(Storage.Data.Font sender) {
       TriggerPropertyChange("Activated");
     }
     #endregion

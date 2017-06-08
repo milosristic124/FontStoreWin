@@ -1,4 +1,5 @@
-﻿using Storage;
+﻿using FontInstaller;
+using Storage;
 using Storage.Data;
 using System;
 using System.Windows;
@@ -21,6 +22,7 @@ namespace UI.Views {
     #endregion
 
     #region data
+    private IFontInstaller _installer;
     private Protocol.Payloads.UserData _userData;
     private FilterMode _filterMode;
 
@@ -52,8 +54,9 @@ namespace UI.Views {
     #endregion
 
     #region ctor
-    public FontList(Protocol.Payloads.UserData userData) {
+    public FontList(Protocol.Payloads.UserData userData, IFontInstaller installer) {
       _userData = userData;
+      _installer = installer;
 
       InitializeComponent();
 
@@ -116,7 +119,7 @@ namespace UI.Views {
         _filterMode = CurrentFilterMode();
 
         _collection = Storage.FamilyCollection;
-        _allVM = new ViewModels.FamilyCollectionVM(_collection);
+        _allVM = new ViewModels.FamilyCollectionVM( _collection);
         _installedVM = new ViewModels.FamilyCollectionVM(_collection, family => family.HasActivatedFont);
         _newVM = new ViewModels.FamilyCollectionVM(_collection, family => family.HasNewFont);
 

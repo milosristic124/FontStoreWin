@@ -1,5 +1,4 @@
-﻿using Storage.Data;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Windows;
 namespace UI.ViewModels {
   class FamilyVM : INotifyPropertyChanged {
     #region private data
-    private Family _model;
+    private Storage.Data.Family _model;
 
     private Func<FontVM, int> rank = (fnt) => {
       return fnt.SortRank;
@@ -29,8 +28,6 @@ namespace UI.ViewModels {
     public bool HasActivatedFont {
       get { return _model.HasActivatedFont; }
     }
-
-    public string PreviewPath { get; private set; }
     #endregion
 
     #region observable properties
@@ -51,10 +48,8 @@ namespace UI.ViewModels {
     #endregion
 
     #region ctor
-    public FamilyVM(Family model) {
+    public FamilyVM(Storage.Data.Family model) {
       _model = model;
-
-      PreviewPath = Previews.Generator.Instance.GetPreviewPath(_model.DefaultFont(), familyPreview: true);
 
       Fonts = new ObservableCollection<FontVM>(_model.Fonts.Select(fontModel => {
         return new FontVM(fontModel);
@@ -68,11 +63,11 @@ namespace UI.ViewModels {
     #endregion
 
     #region event handling
-    private void _model_OnFullyActivatedChanged(Family sender) {
+    private void _model_OnFullyActivatedChanged(Storage.Data.Family sender) {
       TriggerPropertyChanged("FullyActivated");
     }
 
-    private void _model_OnFontRemoved(Family sender, Font removedFont) {
+    private void _model_OnFontRemoved(Storage.Data.Family sender, Storage.Data.Font removedFont) {
       ExecuteOnUIThread(() => {
         FontVM removedVM = Fonts.FirstOrDefault(vm => vm.UID == removedFont.UID);
         if (removedVM != null) {
@@ -81,14 +76,14 @@ namespace UI.ViewModels {
       });
     }
 
-    private void _model_OnFontAdded(Family sender, Font newFontModel) {
+    private void _model_OnFontAdded(Storage.Data.Family sender, Storage.Data.Font newFontModel) {
       ExecuteOnUIThread(() => {
         Fonts.Add(new FontVM(newFontModel));
         Fonts = (ObservableCollection<FontVM>)Fonts.OrderBy(rank);
       });
     }
 
-    private void _model_OnFontUpdated(Family sender, Font removedFont, Font updatedFont) {
+    private void _model_OnFontUpdated(Storage.Data.Family sender, Storage.Data.Font removedFont, Storage.Data.Font updatedFont) {
       ExecuteOnUIThread(() => {
         FontVM removedVM = Fonts.FirstOrDefault(vm => vm.UID == removedFont.UID);
         if (removedVM != null) {

@@ -35,7 +35,6 @@ namespace UI {
       Deactivated += App_Deactivated;
 
       Context = Core.Factory.InitializeApplicationContext();
-      Previews.Generator.Initialize(Context.FontInstaller);
 
       _ui.State = new States.Login(this);
       _ui.State.Show();

@@ -1,5 +1,6 @@
 ﻿using FontInstaller;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -9,8 +10,9 @@ namespace TestUtilities.FontManager {
     private Dictionary<string, InstallationScope> _installedFonts;
     #endregion
 
-    #region events
-    public event PrivateFontInstalledHandler OnPrivateFontInstalled;
+    #region properties
+    public string UserFontDir { get; set; }
+    public string PrivateFontDir { get; set; }
     #endregion
 
     #region ctor

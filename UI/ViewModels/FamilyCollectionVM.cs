@@ -1,4 +1,5 @@
-﻿using Storage.Data;
+﻿using FontInstaller;
+using Storage.Data;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

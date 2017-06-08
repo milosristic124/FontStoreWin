@@ -223,7 +223,11 @@
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
                       </Grid.ColumnDefinitions>
-                      <Image Stretch="None" Source="{Binding PreviewPath, Mode=OneWay}" MaxWidth="140" HorizontalAlignment="Left" />
+                      <Label Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding Name}" Content="{Binding Name, Mode=OneWay}" >
+                        <Label.Foreground>
+                          <SolidColorBrush Color="{DynamicResource FSBlack}"/>
+                        </Label.Foreground>
+                      </Label>
 
                       <StackPanel Orientation="Horizontal" Margin="5,0" HorizontalAlignment="Right" Grid.Column="1">
                         <Label Background="{x:Null}" Padding="0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Right" Content="{Binding Fonts.Count, Mode=OneWay}">
@@ -275,7 +279,11 @@
                         </ListBoxItem.Background>
 
                         <Grid Height="40" HorizontalAlignment="Stretch" Margin="0" Background="{x:Null}">
-                          <Image Source="{Binding PreviewPath, Mode=OneWay}" MaxWidth="140" HorizontalAlignment="Left" Stretch="None" />
+                          <Label Content="{Binding Name}" Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding FamilyName}" FontWeight="{Binding Name, Converter={StaticResource StringToFontWeightConverter}, Mode=OneWay}" FontStyle="{Binding Name, Converter={StaticResource StringToFontStyleConverter}, Mode=OneWay}">
+                            <Label.Foreground>
+                              <SolidColorBrush Color="{DynamicResource FSBlack}"/>
+                            </Label.Foreground>
+                          </Label>
 
                           <ToggleButton BorderThickness="0"
                                         BorderBrush="{x:Null}"
@@ -446,7 +454,11 @@
                           <ColumnDefinition/>
                           <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Image Stretch="None" Source="{Binding PreviewPath, Mode=OneWay}" MaxWidth="140" HorizontalAlignment="Left" />
+                        <Label Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding Name}" Content="{Binding Name, Mode=OneWay}" >
+                          <Label.Foreground>
+                            <SolidColorBrush Color="{DynamicResource FSBlack}"/>
+                          </Label.Foreground>
+                        </Label>
 
                         <StackPanel Orientation="Horizontal" Margin="5,0" HorizontalAlignment="Right" Grid.Column="1">
                           <Label Background="{x:Null}" Padding="0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Right" Content="{Binding Fonts.Count, Mode=OneWay}">
@@ -498,7 +510,11 @@
                           </ListBoxItem.Background>
 
                           <Grid Height="40" HorizontalAlignment="Stretch" Margin="0" Background="{x:Null}">
-                            <Image Stretch="None" Source="{Binding PreviewPath, Mode=OneWay}" MaxWidth="140" HorizontalAlignment="Left" />
+                            <Label Content="{Binding Name}" Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding FamilyName}" FontWeight="{Binding Path=Name, Converter={StaticResource StringToFontWeightConverter}, Mode=OneWay}" FontStyle="{Binding Name, Converter={StaticResource StringToFontStyleConverter}, Mode=OneWay}">
+                              <Label.Foreground>
+                                <SolidColorBrush Color="{DynamicResource FSBlack}"/>
+                              </Label.Foreground>
+                            </Label>
 
                             <ToggleButton BorderThickness="0"
                                         BorderBrush="{x:Null}"
