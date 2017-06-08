@@ -113,13 +113,6 @@ namespace UI.States {
         Logger.Log("Catalog loading failed: {0}", e);
       }
       Application.Context.Connection.UpdateCatalog();
-
-      //_view.InvokeOnUIThread(() => {
-      //  WillTransition = true;
-      //  FSM.State = new FontList(Application, WindowPosition.FromWindow(_view));
-      //  FSM.State.Show();
-      //  Dispose();
-      //});
     }
 
     private void Connection_OnValidationFailure(string reason) {
@@ -131,7 +124,7 @@ namespace UI.States {
     private async void Connection_OnCatalogUpdateFinished(int newFontCount) {
       await Application.Context.Storage.SaveFonts();
       if (newFontCount > 0) {
-        Application.ShowNotification($"{0} new fonts synchronized", System.Windows.Forms.ToolTipIcon.Info);
+        Application.ShowNotification($"{newFontCount} new fonts synchronized", System.Windows.Forms.ToolTipIcon.Info);
       }
 
       _view.InvokeOnUIThread(() => {

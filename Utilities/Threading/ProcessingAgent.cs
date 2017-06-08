@@ -107,7 +107,6 @@ namespace Utilities.Threading {
     #endregion
 
     #region private methods
-
     private async void StartProcessing() {
       if (_processingStarted && !Running) {
         await ProcessCommands();
@@ -116,22 +115,27 @@ namespace Utilities.Threading {
 
 
     private async Task ProcessCommands() {
-      await Task.Run(delegate {
-        while (_processingStarted && !_commandQueue.IsEmpty) {
-          Running = true;
+      try {
+        await Task.Run(delegate {
+          while (_processingStarted && !_commandQueue.IsEmpty) {
+            Running = true;
 
-          List<Task> batch = new List<Task>();
-          for (int it = 0; it < _concurrentFactor && !_commandQueue.IsEmpty; it++) {
-            Action action;
-            if (_commandQueue.TryDequeue(out action)) {
-              batch.Add(Task.Run(action));
+            List<Task> batch = new List<Task>();
+            for (int it = 0; it < _concurrentFactor && !_commandQueue.IsEmpty; it++) {
+              Action action;
+              if (_commandQueue.TryDequeue(out action)) {
+                batch.Add(Task.Run(action, _cancelSource.Token));
+              }
             }
+            try {
+              Task.WaitAll(batch.ToArray(), _cancelSource.Token);
+            } catch (OperationCanceledException) { }
+            _processedCommands += batch.Count;
           }
-          Task.WaitAll(batch.ToArray());
-          _processedCommands += batch.Count;
-        }
-        Running = false;
-      });
+          Running = false;
+        }, _cancelSource.Token);
+      }
+      catch (OperationCanceledException) { }
     }
     #endregion
   }

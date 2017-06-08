@@ -272,10 +272,6 @@
     <Resource Include="Resources\AppIcon_64.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\NotifIcon_18.ico" />
-    <Resource Include="Resources\NotifIcon_36.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

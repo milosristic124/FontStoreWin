@@ -183,26 +183,6 @@ namespace UI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon NotifIcon_18 {
-            get {
-                object obj = ResourceManager.GetObject("NotifIcon_18", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        internal static System.Drawing.Icon NotifIcon_36 {
-            get {
-                object obj = ResourceManager.GetObject("NotifIcon_36", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
         internal static System.Drawing.Icon NotifIcon_54 {
             get {
                 object obj = ResourceManager.GetObject("NotifIcon_54", resourceCulture);

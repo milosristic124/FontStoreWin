@@ -2,6 +2,7 @@
 using Protocol.Transport.Http;
 using Storage.Data;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,8 @@ namespace Storage.Impl.Internal {
 
     private ProcessingAgent _agent;
     private CancellationTokenSource _cancelSource;
+
+    private Dictionary<string, IHttpRequest> _dlRequests;
     #endregion
 
     #region properties
@@ -40,6 +43,7 @@ namespace Storage.Impl.Internal {
     public FSSynchronizationAgent(IHttpTransport transport, FSStorage storage) {
       _transport = transport;
       _storage = storage;
+      _dlRequests = new Dictionary<string, IHttpRequest>();
       _cancelSource = new CancellationTokenSource();
       _agent = new ProcessingAgent(() => transport.DownloadParallelism, _cancelSource);
 
@@ -58,10 +62,23 @@ namespace Storage.Impl.Internal {
 
     public void PauseProcessing() {
       _agent.Stop();
+
+      foreach (IHttpRequest request in _dlRequests.Values) {
+        request?.Abort();
+      }
+      _dlRequests.Clear();
     }
 
     public void AbortProcessing() {
+      _agent.Stop();
       _cancelSource.Cancel();
+
+      lock (_dlRequests) {
+        foreach (IHttpRequest request in _dlRequests.Values) {
+          request?.Abort();
+        }
+        _dlRequests.Clear();
+      }
     }
 
     public void QueueDownload(Font font, Action then = null) {
@@ -83,15 +100,27 @@ namespace Storage.Impl.Internal {
     #region private methods
     private async Task DownloadFont(Font font) {
       if (!_storage.FontFileExists(font.UID)) {
-        IHttpRequest request = _transport.CreateHttpRequest(font.DownloadUrl.AbsoluteUri);
-        request.Method = WebRequestMethods.Http.Get;
+        try {
+          IHttpRequest request = _transport.CreateHttpRequest(font.DownloadUrl.AbsoluteUri);
+          request.Method = WebRequestMethods.Http.Get;
 
-        IHttpResponse response = await request.Response;
-        using (response.ResponseStream) {
-          await _storage.SaveFontFile(font.UID, response.ResponseStream);
+          lock (_dlRequests) {
+            _dlRequests.Add(font.UID, request);
+          }
+          IHttpResponse response = await request.Response;
+          using (response.ResponseStream) {
+            await _storage.SaveFontFile(font.UID, response.ResponseStream, _cancelSource.Token);
+          }
+          lock (_dlRequests) {
+            _dlRequests.Remove(font.UID);
+          }
+          DownloadCount += 1;
         }
-        DownloadCount += 1;
-      } else {
+        catch (Exception e) {
+          Logger.Log("Downloading font {0} failed: {1}", font.UID, e);
+        }
+      }
+      else {
         Logger.Log("Download already done: {0}", font.UID);
       }
     }

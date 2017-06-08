@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Logging;
+using Newtonsoft.Json;
 using Protocol.Payloads;
 using Storage.Data;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Utilities;
 using Utilities.Extensions;
@@ -212,8 +214,8 @@ namespace Storage.Impl.Internal {
       return ReadData(FontFilePath(uid));
     }
 
-    public async Task SaveFontFile(string uid, Stream data) {
-      await WriteData(FontFilePath(uid), data);
+    public async Task SaveFontFile(string uid, Stream data, CancellationToken token) {
+      await WriteData(FontFilePath(uid), data, token);
     }
 
     public async Task RemoveFontFile(string uid) {
@@ -247,14 +249,22 @@ namespace Storage.Impl.Internal {
       });
     }
 
-    private Task WriteData(string path, Stream data) {
+    private Task WriteData(string path, Stream data, CancellationToken? token = null) {
+      CancellationToken cancelToken = token ?? CancellationToken.None;
       return Task.Run(delegate {
-        using (data) {
-          using (FileStream fileStream = File.Create(path)) {
-            data.CopyTo(fileStream);
+        try {
+          using (data) {
+            using (FileStream fileStream = File.Create(path)) {
+              data.CopyTo(fileStream);
+            }
+          }
+        } catch (Exception e) {
+          Logger.Log("Saving file {0} failed: {1}", path, e);
+          if (File.Exists(path)) {
+            File.Delete(path);
           }
         }
-      });
+      }, cancelToken);
     }
 
     private Task RemoveFile(string path) {
