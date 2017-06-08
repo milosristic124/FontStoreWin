@@ -25,7 +25,7 @@ namespace ProtocolImplTests {
       connection.Updated(delegate {
         int installReport = 0;
         int uninstallReport = 0;
-        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+        transport.OnMessageSent += (string evt, dynamic payload) => {
           if (evt == connection.UserTopicEvent("font:installation-success")) {
             installReport += 1;
           }
@@ -58,7 +58,7 @@ namespace ProtocolImplTests {
 
         int installReport = 0;
         int uninstallReport = 0;
-        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+        transport.OnMessageSent += (string evt, dynamic payload) => {
           if (evt == connection.UserTopicEvent("font:installation-success")) {
             installReport += 1;
           }
@@ -88,7 +88,7 @@ namespace ProtocolImplTests {
       connection.Updated(delegate {
         int installReport = 0;
         int uninstallReport = 0;
-        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+        transport.OnMessageSent += (string evt, dynamic payload) => {
           if (evt == connection.UserTopicEvent("font:installation-success")) {
             installReport += 1;
           }
@@ -118,7 +118,7 @@ namespace ProtocolImplTests {
       connection.Updated(delegate {
         int installReport = 0;
         int uninstallReport = 0;
-        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+        transport.OnMessageSent += (string evt, dynamic payload) => {
           if (evt == connection.UserTopicEvent("font:installation-success")) {
             installReport += 1;
           }
@@ -152,7 +152,7 @@ namespace ProtocolImplTests {
 
         int installReport = 0;
         int uninstallReport = 0;
-        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+        transport.OnMessageSent += (string evt, dynamic payload) => {
           if (evt == connection.UserTopicEvent("font:installation-success")) {
             installReport += 1;
           }
@@ -183,7 +183,7 @@ namespace ProtocolImplTests {
       connection.Updated(delegate {
         int installReport = 0;
         int uninstallReport = 0;
-        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+        transport.OnMessageSent += (string evt, dynamic payload) => {
           if (evt == connection.UserTopicEvent("font:installation-success")) {
             installReport += 1;
           }
@@ -217,7 +217,7 @@ namespace ProtocolImplTests {
 
         int installReport = 0;
         int uninstallReport = 0;
-        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+        transport.OnMessageSent += (string evt, dynamic payload) => {
           if (evt == connection.UserTopicEvent("font:installation-success")) {
             installReport += 1;
           }

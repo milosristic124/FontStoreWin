@@ -90,7 +90,7 @@ namespace Protocol.Impl.Tests {
         AutoResetEvent fontUpdateRequest = new AutoResetEvent(false);
         AutoResetEvent updateFinished = new AutoResetEvent(false);
 
-        MockedTransport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+        MockedTransport.OnMessageSent += (string evt, dynamic payload) => {
           if (evt == "catalog.update:request") {
             catalogUpdateRequest.Set();
           }

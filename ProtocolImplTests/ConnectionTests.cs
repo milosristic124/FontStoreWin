@@ -161,7 +161,7 @@ namespace Protocol.Impl.Tests {
         bool catalogUpdateRequested = false;
 
         AutoResetEvent autoResetEvent = new AutoResetEvent(false);
-        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+        transport.OnMessageSent += (string evt, dynamic payload) => {
           switch (evt) {
             case "catalog.update:request":
               catalogUpdateRequested = true;
@@ -199,7 +199,7 @@ namespace Protocol.Impl.Tests {
         bool fontUpdateRequested = false;
 
         AutoResetEvent autoResetEvent = new AutoResetEvent(false);
-        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+        transport.OnMessageSent += (string evt, dynamic payload) => {
           if (evt == "catalog.update:request") {
             autoResetEvent.Set();
           }
@@ -235,7 +235,7 @@ namespace Protocol.Impl.Tests {
 
       connection.Connected(delegate {
         AutoResetEvent autoResetEvent = new AutoResetEvent(false);
-        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+        transport.OnMessageSent += (string evt, dynamic payload) => {
           if (evt == "catalog.update:request") {
             autoResetEvent.Set();
           }
@@ -298,7 +298,7 @@ namespace Protocol.Impl.Tests {
         int installationFailureReport = 0;
         int uninstallationSuccessReport = 0;
         int uninstallationFailureReport = 0;
-        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+        transport.OnMessageSent += (string evt, dynamic payload) => {
           if (evt == "catalog.update:request") {
             catalogUpdateRequest.Set();
           }
@@ -364,7 +364,7 @@ namespace Protocol.Impl.Tests {
       TestConnection connection = new TestConnection(transport, http, storage);
 
       bool clientReadyMessageSent = false;
-      transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+      transport.OnMessageSent += (string evt, dynamic payload) => {
         if (evt == connection.UserTopicEvent("ready")) {
           clientReadyMessageSent = true;
         }
@@ -447,7 +447,7 @@ namespace Protocol.Impl.Tests {
       connection.Updated(delegate {
         int installReport = 0;
         int uninstallReport = 0;
-        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+        transport.OnMessageSent += (string evt, dynamic payload) => {
           if (evt == connection.UserTopicEvent("font:installation-success")) {
             installReport += 1;
           } else if (evt == connection.UserTopicEvent("font:uninstallation-success")) {
@@ -478,7 +478,7 @@ namespace Protocol.Impl.Tests {
       connection.Updated(delegate {
         int installReport = 0;
         int uninstallReport = 0;
-        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+        transport.OnMessageSent += (string evt, dynamic payload) => {
           if (evt == connection.UserTopicEvent("font:installation-success")) {
             installReport += 1;
           }
@@ -509,7 +509,7 @@ namespace Protocol.Impl.Tests {
 
       connection.Updated(delegate {
         bool requestSent = false;
-        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+        transport.OnMessageSent += (string evt, dynamic payload) => {
           if (evt == connection.UserTopicEvent("font:activation-request")) {
             requestSent = true;
           }
@@ -535,7 +535,7 @@ namespace Protocol.Impl.Tests {
 
       connection.Updated(delegate {
         bool requestSent = false;
-        transport.OnMessageSent += (MockedBroadcastResponse resp, string evt, dynamic payload) => {
+        transport.OnMessageSent += (string evt, dynamic payload) => {
           if (evt == connection.UserTopicEvent("font:deactivation-request")) {
             requestSent = true;
           }

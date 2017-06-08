@@ -33,8 +33,8 @@ namespace Protocol.Transport.Phoenix {
       return new BroadcastChannelAction(_channel.Leave());
     }
 
-    public IBroadcastResponse Send(string @event, dynamic payload) {
-      return new BroadcastResponse(_channel.Push(@event, payload));
+    public void Send(string @event, dynamic payload) {
+      _channel.Push(@event, payload);
     }
 
     public IBroadcastChannel On(string evt, Action callback) {

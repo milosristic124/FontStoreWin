@@ -54,7 +54,6 @@
   <ItemGroup>
     <Compile Include="BroadcastChannel.cs" />
     <Compile Include="BroadcastChannelResult.cs" />
-    <Compile Include="BroadcastResponse.cs" />
     <Compile Include="ConnectionTransport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

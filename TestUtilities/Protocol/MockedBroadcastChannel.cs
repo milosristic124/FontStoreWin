@@ -52,7 +52,7 @@ namespace TestUtilities.Protocol {
     #endregion
 
     #region test methods
-    public delegate void ChannelSentHandler(MockedBroadcastChannel chan, MockedBroadcastResponse resp, string evt, dynamic payload);
+    public delegate void ChannelSentHandler(MockedBroadcastChannel chan, string evt, dynamic payload);
     public event ChannelSentHandler OnMessageSent;
 
     public void SimulateMessage(string evt, dynamic payload = null) {
@@ -76,10 +76,8 @@ namespace TestUtilities.Protocol {
       return new MockedBroadcastChannelResult(ResponseStatus.Ok);
     }
 
-    public IBroadcastResponse Send(string @event, dynamic payload) {
-      MockedBroadcastResponse resp = new MockedBroadcastResponse();
-      OnMessageSent?.Invoke(this, resp, @event, payload);
-      return resp;
+    public void Send(string @event, dynamic payload) {
+      OnMessageSent?.Invoke(this, @event, payload);
     }
 
     public IBroadcastChannel On(string evt, Action callback) {

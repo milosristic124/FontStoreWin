@@ -43,7 +43,6 @@
     <Compile Include="AConnectionTransport.cs" />
     <Compile Include="IBroadcastChannel.cs" />
     <Compile Include="IBroadcastChannelResult.cs" />
-    <Compile Include="IBroadcastResponse.cs" />
     <Compile Include="IConnectionTransport.cs" />
     <Compile Include="Http\IHttpRequest.cs" />
     <Compile Include="Http\IHttpResponse.cs" />

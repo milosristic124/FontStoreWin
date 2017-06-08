@@ -73,7 +73,7 @@ namespace TestUtilities.Protocol {
       Closed?.Invoke();
     }
 
-    public delegate void MessageSentHandler(MockedBroadcastResponse resp, string evt, dynamic payload);
+    public delegate void MessageSentHandler(string evt, dynamic payload);
     public event MessageSentHandler OnMessageSent;
 
     public delegate bool ConnectionAttemptHandler();
@@ -119,8 +119,8 @@ namespace TestUtilities.Protocol {
     #endregion
 
     #region private methods
-    private void Chan_OnMessageSent(MockedBroadcastChannel chan, MockedBroadcastResponse resp, string evt, dynamic payload) {
-      OnMessageSent?.Invoke(resp, string.Format("{0}.{1}", chan.Topic, evt), payload);
+    private void Chan_OnMessageSent(MockedBroadcastChannel chan, string evt, dynamic payload) {
+      OnMessageSent?.Invoke(string.Format("{0}.{1}", chan.Topic, evt), payload);
     }
 
     private async void TriggerConnectionAttempt() {
