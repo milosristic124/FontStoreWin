@@ -1,7 +1,5 @@
 ﻿using Logging;
 using System;
-using System.Drawing;
-using System.Drawing.Text;
 using System.Threading.Tasks;
 using UI.Utilities;
 
@@ -140,15 +138,19 @@ namespace UI.States {
 
     private async void Connection_OnCatalogUpdateFinished(int newFontCount) {
       await Application.Context.Storage.SaveFonts();
+
+      foreach (Storage.Data.Family family in Application.Context.Storage.FamilyCollection.Families) {
+        await Previews.Generator.Instance.GeneratePreview(family.DefaultFont(), familyPreview: true);
+
+        foreach(Storage.Data.Font font in family.Fonts) {
+          await Previews.Generator.Instance.GeneratePreview(font);
+        }
+      }
+
       ShowLoadedState();
       _loading = false;
       if (newFontCount > 0) {
-        Application.ShowNotification($"{0} new fonts synchronized", System.Windows.Forms.ToolTipIcon.Info);
-      }
-
-      Logger.Log("FontFamilies >>");
-      foreach(FontFamily family in FontFamily.Families) {
-        Logger.Log("\t{0}", family.Name);
+        Application.ShowNotification($"{newFontCount} new fonts synchronized", System.Windows.Forms.ToolTipIcon.Info);
       }
     }
 

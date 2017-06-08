@@ -106,13 +106,20 @@ namespace UI.States {
         Logger.Log("Credentials saved");
       }
 
-      try {
-        await Application.Context.Storage.LoadFonts();
-      }
-      catch (Exception e) {
-        Logger.Log("Catalog loading failed: {0}", e);
-      }
-      Application.Context.Connection.UpdateCatalog();
+      //try {
+      //  await Application.Context.Storage.LoadFonts();
+      //}
+      //catch (Exception e) {
+      //  Logger.Log("Catalog loading failed: {0}", e);
+      //}
+      //Application.Context.Connection.UpdateCatalog();
+
+      _view.InvokeOnUIThread(() => {
+        WillTransition = true;
+        FSM.State = new FontList(Application, WindowPosition.FromWindow(_view));
+        FSM.State.Show();
+        Dispose();
+      });
     }
 
     private void Connection_OnValidationFailure(string reason) {

@@ -113,6 +113,10 @@ namespace Storage.Data {
     public Font FindFont(string uid) {
       return Fonts.FirstOrDefault(font => font.UID == uid);
     }
+
+    public Font DefaultFont() {
+      return Fonts.FirstOrDefault(font => font.Style.ToLower() == "regular");
+    }
     #endregion
 
     #region private methods

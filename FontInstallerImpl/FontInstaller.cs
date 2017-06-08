@@ -1,7 +1,6 @@
 ﻿using Logging;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Text;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -14,6 +13,10 @@ namespace FontInstaller.Impl {
 
     private string _userFilesDir;
     private string _privateFilesDir;
+    #endregion
+
+    #region events
+    public event PrivateFontInstalledHandler OnPrivateFontInstalled;
     #endregion
 
     #region ctor
@@ -121,6 +124,9 @@ namespace FontInstaller.Impl {
             if (activatedFonts) {
               _privateFonts[uid] = tempFilePath;
               SendNotifyMessage(HWND_BROADCAST, WM_FONTCHANGE, IntPtr.Zero, IntPtr.Zero);
+
+              OnPrivateFontInstalled?.Invoke(uid, tempFilePath);
+
               return FontAPIResult.Success;
             }
 
@@ -134,6 +140,21 @@ namespace FontInstaller.Impl {
 
           return FontAPIResult.Failure;
         }
+      }
+    }
+
+    private FontAPIResult UninstallPrivateFont(string uid) {
+      if (!_privateFonts.ContainsKey(uid)) {
+        return FontAPIResult.Noop;
+      }
+      else {
+        string fontFilePath = _privateFonts[uid];
+        if (RemovePocessFont(fontFilePath)) {
+          _privateFonts.Remove(uid);
+          return FontAPIResult.Success;
+        }
+
+        return FontAPIResult.Failure;
       }
     }
 
@@ -167,21 +188,6 @@ namespace FontInstaller.Impl {
 
           return FontAPIResult.Failure;
         }
-      }
-    }
-
-    private FontAPIResult UninstallPrivateFont(string uid) {
-      if (!_privateFonts.ContainsKey(uid)) {
-        return FontAPIResult.Noop;
-      }
-      else {
-        string fontFilePath = _privateFonts[uid];
-        if (RemovePocessFont(fontFilePath)) {
-          _privateFonts.Remove(uid);
-          return FontAPIResult.Success;
-        }
-
-        return FontAPIResult.Failure;
       }
     }
 

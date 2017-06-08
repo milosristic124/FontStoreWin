@@ -29,6 +29,8 @@ namespace UI.ViewModels {
     public bool HasActivatedFont {
       get { return _model.HasActivatedFont; }
     }
+
+    public string PreviewPath { get; private set; }
     #endregion
 
     #region observable properties
@@ -49,8 +51,10 @@ namespace UI.ViewModels {
     #endregion
 
     #region ctor
-    public FamilyVM(Storage.Data.Family model) {
+    public FamilyVM(Family model) {
       _model = model;
+
+      PreviewPath = Previews.Generator.Instance.GetPreviewPath(_model.DefaultFont(), familyPreview: true);
 
       Fonts = new ObservableCollection<FontVM>(_model.Fonts.Select(fontModel => {
         return new FontVM(fontModel);

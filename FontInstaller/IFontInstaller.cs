@@ -16,7 +16,11 @@ namespace FontInstaller {
     User = 2
   }
 
+  public delegate void PrivateFontInstalledHandler(string uid, string path);
+
   public interface IFontInstaller {
+    event PrivateFontInstalledHandler OnPrivateFontInstalled;
+
     InstallationScope GetFontInstallationScope(string uid);
     Task<FontAPIResult> InstallFont(string uid, InstallationScope scope, MemoryStream fontData);
     Task<FontAPIResult> UninstallFont(string uid, InstallationScope scope);

@@ -9,6 +9,10 @@ namespace TestUtilities.FontManager {
     private Dictionary<string, InstallationScope> _installedFonts;
     #endregion
 
+    #region events
+    public event PrivateFontInstalledHandler OnPrivateFontInstalled;
+    #endregion
+
     #region ctor
     public MockedFontInstaller() {
       _installedFonts = new Dictionary<string, InstallationScope>();
