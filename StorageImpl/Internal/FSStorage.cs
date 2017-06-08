@@ -312,6 +312,7 @@ namespace Storage.Impl.Internal {
         Name = font.Style;
         DownloadUrl = font.DownloadUrl.AbsoluteUri;
         Activated = font.Activated;
+        SortRank = font.SortRank;
       }
     }
     #endregion

@@ -63,6 +63,7 @@ namespace Storage.Data {
       DownloadUrl = new Uri(downloadUrl);
       _activated = false;
       _isNew = true;
+      SortRank = sortRank;
     }
     #endregion
 
