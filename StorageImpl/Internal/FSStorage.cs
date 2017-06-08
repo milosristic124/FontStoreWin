@@ -290,7 +290,7 @@ namespace Storage.Impl.Internal {
       public string DownloadUrl { get; set; }
       [JsonProperty("activated")]
       public bool Activated { get; set; }
-      [JsonProperty("number")]
+      [JsonProperty("rank")]
       public int SortRank { get; set; }
 
       public FontData() {

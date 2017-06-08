@@ -12,7 +12,7 @@ namespace Protocol.Payloads {
     public string DownloadUrl { get; set; }
     [JsonProperty("transmitted_at")]
     public int TransmittedAt { get; set; }
-    [JsonProperty("number")]
+    [JsonProperty("font_number")]
     public int SortRank { get; set; }
   }
 }
