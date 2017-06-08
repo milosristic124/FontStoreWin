@@ -157,6 +157,9 @@
   <data name="NotifIcon_54" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\notificon_54.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="NotifIcon_Unactive_54" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\notificon_unactive_54.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="WhiteTriangle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\whitetriangle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

@@ -76,6 +76,10 @@ namespace UI {
     #endregion
 
     #region Notification
+    public void ApplicationActive() {
+      NotifyIcon.Icon = UI.Properties.Resources.NotifIcon_54;
+    }
+
     public void ShowNotification(string message, System.Windows.Forms.ToolTipIcon icon) {
       try {
         Dispatcher.Invoke(() => {
@@ -110,7 +114,7 @@ namespace UI {
     private void InitializeNotificationIcon() {
       NotifyIcon = new System.Windows.Forms.NotifyIcon();
       NotifyIcon.Text = "Fontstore";
-      NotifyIcon.Icon = UI.Properties.Resources.NotifIcon_54;
+      NotifyIcon.Icon = UI.Properties.Resources.NotifIcon_Unactive_54;
       NotifyIcon.Visible = true;
 
       NotifyIcon.Click += NotifyIcon_Click;

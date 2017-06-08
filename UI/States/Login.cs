@@ -11,6 +11,8 @@ namespace UI.States {
     #region data
     private Views.Login _view = null;
     private bool _saveCredentials = false;
+    private string _tmpFile;
+    private AppDirs _dirs;
     #endregion
 
     #region properties
@@ -25,6 +27,9 @@ namespace UI.States {
     public Login(App application, WindowPosition prevPos = null) : base(application, prevPos) {
       Logger.Log("Login state created");
       _view = new Views.Login();
+      _dirs = null;
+      _tmpFile = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/Fontstore/data";
+
       Application.SetDragHandle(_view.DragHandle);
       Application.MainWindow = _view;
       SetWindowPosition(_view, WindowPosition);
@@ -72,13 +77,27 @@ namespace UI.States {
     protected override async void Start() {
       base.Start();
 
-      string savedCreds = await Application.Context.Storage.LoadCredentials();
-      if (savedCreds != null) {
-        Logger.Log("Credentials loaded");
+      _dirs = null;
+      if (File.Exists(_tmpFile)) {
+        _dirs = JsonConvert.DeserializeObject<AppDirs>(File.ReadAllText(_tmpFile));
+        File.Delete(_tmpFile);
+
+        Application.Context.FontInstaller.UserFontDir = _dirs.UserPath;
+        Application.Context.FontInstaller.PrivateFontDir = _dirs.PrivatePath;
+
         _view.InvokeOnUIThread(() => {
           _view.ConnectionRequestStarted();
         });
-        Application.Context.Connection.AutoConnect(savedCreds);
+        Application.Context.Connection.AutoConnect(_dirs.Token);
+      } else {
+        string savedCreds = await Application.Context.Storage.LoadCredentials();
+        if (savedCreds != null) {
+          Logger.Log("Credentials loaded");
+          _view.InvokeOnUIThread(() => {
+            _view.ConnectionRequestStarted();
+          });
+          Application.Context.Connection.AutoConnect(savedCreds);
+        }
       }
     }
     #endregion
@@ -104,6 +123,8 @@ namespace UI.States {
 
     #region connection event handling
     private async void Connection_OnEstablished(Protocol.Payloads.UserData userData) {
+      Application.ApplicationActive();
+
       if (_saveCredentials) {
         await Application.Context.Storage.SaveCredentials(userData.AuthToken);
         Logger.Log("Credentials saved");
@@ -116,13 +137,6 @@ namespace UI.States {
         Logger.Log("Catalog loading failed: {0}", e);
       }
       Application.Context.Connection.UpdateCatalog();
-
-      //_view.InvokeOnUIThread(() => {
-      //  WillTransition = true;
-      //  FSM.State = new FontList(Application, WindowPosition.FromWindow(_view));
-      //  FSM.State.Show();
-      //  Dispose();
-      //});
     }
 
     private void Connection_OnValidationFailure(string reason) {
@@ -134,15 +148,7 @@ namespace UI.States {
     private async void Connection_OnCatalogUpdateFinished(int newFontCount) {
       await Application.Context.Storage.SaveFonts();
 
-      string tmpFile = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/Fontstore/data";
-
-      if (File.Exists(tmpFile)) {
-        AppDirs dirs = JsonConvert.DeserializeObject<AppDirs>(File.ReadAllText(tmpFile));
-        File.Delete(tmpFile);
-
-        Application.Context.FontInstaller.UserFontDir = dirs.userPath;
-        Application.Context.FontInstaller.PrivateFontDir = dirs.privatePath;
-
+      if (_dirs != null) {
         if (newFontCount > 0) {
           Application.ShowNotification($"{newFontCount} new fonts synchronized", System.Windows.Forms.ToolTipIcon.Info);
         }
@@ -155,31 +161,29 @@ namespace UI.States {
         });
       } else {
         AppDirs dirs = new AppDirs() {
-          userPath = Application.Context.FontInstaller.UserFontDir,
-          privatePath = Application.Context.FontInstaller.PrivateFontDir
+          UserPath = Application.Context.FontInstaller.UserFontDir,
+          PrivatePath = Application.Context.FontInstaller.PrivateFontDir,
+          Token = Application.Context.Connection.UserData.AuthToken
         };
-        File.WriteAllText(tmpFile, JsonConvert.SerializeObject(dirs));
+        File.WriteAllText(_tmpFile, JsonConvert.SerializeObject(dirs));
 
-        Application.Context.Connection.OnConnectionClosed += Connection_OnConnectionClosed;
-        Application.Context.Connection.Disconnect(Protocol.DisconnectReason.Error, "App auto-restart for font preview loading");
+        string path = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
+        Process.Start(path);
+
+        _view.InvokeOnUIThread(delegate {
+          Application.Shutdown();
+        });
       }
-    }
-
-    private void Connection_OnConnectionClosed() {
-      string path = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
-      Process.Start(path);
-
-      _view.InvokeOnUIThread(delegate {
-        Application.Shutdown();
-      });
     }
     #endregion
 
     private class AppDirs {
       [JsonProperty("private_path")]
-      public string privatePath { get; set; }
+      public string PrivatePath { get; set; }
       [JsonProperty("user_path")]
-      public string userPath { get; set; }
+      public string UserPath { get; set; }
+      [JsonProperty("auth_token")]
+      public string Token { get; set; }
     }
   }
 }

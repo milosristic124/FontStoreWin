@@ -111,29 +111,25 @@ namespace Storage.Impl {
 
       UnregisterCollectionEvents();
 
-      return Installer.UninstallAllFonts()
-        .ContinueWith(t => {
-          return _HDDStorage.Load(loadedFont => {
-            // font loaded, download it if necessary
-            Logger.Log("Font loaded, download queued: {0}", loadedFont.UID);
-            _fsAgent.QueueDownload(loadedFont, delegate {
-              // install the font for the application
-              Logger.Log("Font loaded, install queued (process): {0}", loadedFont.UID);
-              _installAgent.QueueInstall(loadedFont, InstallationScope.Process, delegate {
-                // if the font was activated, install it for the user
-                if (loadedFont.Activated) {
-                  Logger.Log("Font loaded, install queued (user): {0}", loadedFont.UID);
-                  _installAgent.QueueInstall(loadedFont, InstallationScope.User); 
-                }
-              });
-            });
-          }).Result;
-        }, TaskContinuationOptions.OnlyOnRanToCompletion)
-        .ContinueWith(loadTask => {
-          FamilyCollection = loadTask.Result;
-          RegisterCollectionEvents();
-          Loaded = true;
-        }, TaskContinuationOptions.OnlyOnRanToCompletion);
+      return _HDDStorage.Load(loadedFont => {
+        // font loaded, download it if necessary
+        Logger.Log("Font loaded, download queued: {0}", loadedFont.UID);
+        _fsAgent.QueueDownload(loadedFont, delegate {
+          // install the font for the application
+          Logger.Log("Font loaded, install queued (process): {0}", loadedFont.UID);
+          _installAgent.QueueInstall(loadedFont, InstallationScope.Process, delegate {
+            // if the font was activated, install it for the user
+            if (loadedFont.Activated) {
+              Logger.Log("Font loaded, install queued (user): {0}", loadedFont.UID);
+              _installAgent.QueueInstall(loadedFont, InstallationScope.User);
+            }
+          });
+        });
+      }).ContinueWith(loadTask => {
+        FamilyCollection = loadTask.Result;
+        RegisterCollectionEvents();
+        Loaded = true;
+      }, TaskContinuationOptions.OnlyOnRanToCompletion);
     }
 
     public Task SaveFonts() {
