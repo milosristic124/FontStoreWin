@@ -196,7 +196,7 @@
                  HorizontalContentAlignment="Stretch"
                  Height="329"
                  d:DataContext="{d:DesignData Source=../Dev/SampleFamilyTree.xaml}"
-                 ItemsSource="{Binding}" Padding="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Focusable="False" IsTextSearchEnabled="False" ScrollViewer.CanContentScroll="False">
+                 ItemsSource="{Binding}" Padding="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Focusable="False" IsTextSearchEnabled="False" ScrollViewer.CanContentScroll="False" Visibility="Collapsed">
           <ListBox.ItemTemplate>
             <DataTemplate DataType="{x:Type vm:FamilyVM}">
               <Expander Background="{x:Null}"
@@ -378,13 +378,13 @@
 
         </ListBox>
 
-        <StackPanel x:Name="SearchPanel" Height="329" Visibility="Collapsed">
-          <StackPanel Height="124">
+        <StackPanel x:Name="SearchPanel" Height="329">
+          <StackPanel Height="80">
             <StackPanel.Background>
               <SolidColorBrush Color="{DynamicResource FSBackgroundGrey}"/>
             </StackPanel.Background>
 
-            <Border CornerRadius="15" VerticalAlignment="Top" Margin="14,20,14,0" Background="White">
+            <Border CornerRadius="15" VerticalAlignment="Top" Margin="14,20,14,12" Background="White">
               <TextBox x:Name="SearchInput" BorderThickness="0" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="/Fontstore;component/Fonts/#Litmus" Height="30" Margin="14,0" VerticalContentAlignment="Center" Cursor="IBeam" KeyUp="SearchInput_KeyUp" >
                 <TextBox.SelectionBrush>
                   <SolidColorBrush Color="{DynamicResource FSBlue}"/>
@@ -394,16 +394,6 @@
                 </TextBox.Foreground>
               </TextBox>
             </Border>
-
-            <Button Style="{StaticResource FSSearchButton}" VerticalAlignment="Top" Margin="14,6,14,12" BorderBrush="{x:Null}" BorderThickness="0" Padding="0" FontFamily="/Fontstore;component/Fonts/#Litmus" Click="Button_Click" Height="30">
-              <Border CornerRadius="15" Height="30" Width="{Binding ActualWidth, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                <Border.Background>
-                  <SolidColorBrush Color="{DynamicResource FSButtonGrey}"/>
-                </Border.Background>
-
-                <Label Background="{x:Null}" Foreground="White" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Content="Search"/>
-              </Border>
-            </Button>
 
             <StackPanel x:Name="SearchResultArea"  Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
               <Label x:Name="SearchResultCount" FontFamily="/Fontstore;component/Fonts/#Litmus" Background="{x:Null}" Content="0" Padding="0" VerticalContentAlignment="Center">
@@ -425,7 +415,7 @@
                  Foreground="{x:Null}"
                  BorderThickness="0"
                  HorizontalContentAlignment="Stretch"
-                 Height="205"
+                 Height="249"
                  d:DataContext="{d:DesignData Source=../Dev/SampleFamilyTree.xaml}"
                  ItemsSource="{Binding}" Padding="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Focusable="False" IsTextSearchEnabled="False" ScrollViewer.CanContentScroll="False">
             <ListBox.ItemTemplate>

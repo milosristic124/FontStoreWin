@@ -40,9 +40,12 @@
       }
 
       if (_context.CatalogChannel?.IsJoined ?? false) {
-        _context.CatalogChannel?.Leave();
-      }
-      if (_context.UserChannel?.IsJoined ?? false) {
+        _context.CatalogChannel?.Leave().Then(delegate {
+          if (_context.UserChannel?.IsJoined ?? false) {
+            _context.UserChannel?.SendDisconnect(message);
+          }
+        });
+      } else if (_context.UserChannel?.IsJoined ?? false) {
         _context.UserChannel?.SendDisconnect(message);
       }
 

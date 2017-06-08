@@ -296,11 +296,6 @@ namespace UI.Views {
       SearchInput.Text = null;
     }
 
-    private void Button_Click(object sender, RoutedEventArgs e) {
-      _searchCollection?.Refresh();
-      UpdateSearchResult();
-    }
-
     private bool SearchFilter(object item) {
       ViewModels.FamilyVM fam = item as ViewModels.FamilyVM;
 
@@ -313,11 +308,9 @@ namespace UI.Views {
     }
 
     private void SearchInput_KeyUp(object sender, KeyEventArgs e) {
-      if (e.Key == Key.Enter) {
-        e.Handled = true;
-        _searchCollection?.Refresh();
-        UpdateSearchResult();
-      }
+      e.Handled = true;
+      _searchCollection?.Refresh();
+      UpdateSearchResult();
     }
 
     private void UpdateSearchResult() {
