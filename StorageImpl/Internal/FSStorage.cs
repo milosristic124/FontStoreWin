@@ -141,7 +141,6 @@ namespace Storage.Impl.Internal {
     }
 
     public Task Save(FamilyCollection collection) {
-
       Task metadataSaving;
       if (LastCatalogUpdate.HasValue && LastFontStatusUpdate.HasValue) {
         metadataSaving = Task.Run(() => {

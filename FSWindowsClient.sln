@@ -49,8 +49,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FontEncryptionImpl", "FontE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logger", "Logger\Logger.csproj", "{94E761D5-414B-42C6-8D32-3DAE9ADD920E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fontstore", "Fontstore\Fontstore.csproj", "{3B71C5F4-6EE5-47E6-880C-808BCA127C00}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Ubuntu|Any CPU = Debug_Ubuntu|Any CPU
@@ -775,38 +773,6 @@ Global
 		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release|x64.Build.0 = Release|Any CPU
 		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release|x86.ActiveCfg = Release|Any CPU
 		{94E761D5-414B-42C6-8D32-3DAE9ADD920E}.Release|x86.Build.0 = Release|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Debug_Ubuntu|ARM.ActiveCfg = Debug|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Debug_Ubuntu|ARM.Build.0 = Debug|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Debug_Ubuntu|x64.ActiveCfg = Debug|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Debug_Ubuntu|x64.Build.0 = Debug|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Debug_Ubuntu|x86.ActiveCfg = Debug|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Debug_Ubuntu|x86.Build.0 = Debug|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Debug|ARM.Build.0 = Debug|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Debug|x64.Build.0 = Debug|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Debug|x86.Build.0 = Debug|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Release_Ubuntu|Any CPU.ActiveCfg = Release|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Release_Ubuntu|ARM.ActiveCfg = Release|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Release_Ubuntu|ARM.Build.0 = Release|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Release_Ubuntu|x64.ActiveCfg = Release|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Release_Ubuntu|x64.Build.0 = Release|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Release_Ubuntu|x86.ActiveCfg = Release|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Release_Ubuntu|x86.Build.0 = Release|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Release|ARM.ActiveCfg = Release|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Release|ARM.Build.0 = Release|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Release|x64.ActiveCfg = Release|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Release|x64.Build.0 = Release|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Release|x86.ActiveCfg = Release|Any CPU
-		{3B71C5F4-6EE5-47E6-880C-808BCA127C00}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -36,10 +36,16 @@ namespace Storage.Impl {
       get {
         return _HDDStorage.LastCatalogUpdate;
       }
+      set {
+        _HDDStorage.LastCatalogUpdate = value;
+      }
     }
     public int? LastFontStatusUpdate {
       get {
         return _HDDStorage.LastFontStatusUpdate;
+      }
+      set {
+        _HDDStorage.LastFontStatusUpdate = value;
       }
     }
 

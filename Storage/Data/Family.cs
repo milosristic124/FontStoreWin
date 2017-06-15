@@ -32,6 +32,13 @@ namespace Storage.Data {
         ToggleFullFamilyActivation(value);
       }
     }
+
+    public Font DefaultFont {
+      get {
+        return Fonts.FirstOrDefault(font => (font.Style.ToLower() == "regular") || (font.Style.ToLower() == "book"))
+          ?? Fonts[(int)Math.Floor(Fonts.Count / 2.0)];
+      }
+    }
     #endregion
 
     #region delegates
@@ -112,10 +119,6 @@ namespace Storage.Data {
 
     public Font FindFont(string uid) {
       return Fonts.FirstOrDefault(font => font.UID == uid);
-    }
-
-    public Font DefaultFont() {
-      return Fonts.FirstOrDefault(font => font.Style.ToLower() == "regular");
     }
     #endregion
 

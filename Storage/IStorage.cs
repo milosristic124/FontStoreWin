@@ -16,8 +16,8 @@ namespace Storage {
     IFontInstaller Installer { get; }
     string SessionID { get; set; }
 
-    int? LastCatalogUpdate { get; }
-    int? LastFontStatusUpdate { get; }
+    int? LastCatalogUpdate { get; set; }
+    int? LastFontStatusUpdate { get; set; }
 
     bool Loaded { get; }
     bool HasChanged { get; }

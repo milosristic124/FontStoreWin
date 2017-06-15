@@ -38,8 +38,8 @@ namespace TestUtilities.Storage {
     }
     public bool HasChanged { get; private set; }
     public bool Loaded { get; private set; }
-    public int? LastCatalogUpdate { get; private set; }
-    public int? LastFontStatusUpdate { get; private set; }
+    public int? LastCatalogUpdate { get; set; }
+    public int? LastFontStatusUpdate { get; set; }
     #endregion
 
     #region events
