@@ -8,6 +8,7 @@
         xmlns:dev="clr-namespace:UI.Dev"
         xmlns:vm="clr-namespace:UI.ViewModels"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
+        xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"  
         xmlns:Controls="clr-namespace:UI.Controls" xmlns:Converters="clr-namespace:UI.Converters" x:Class="UI.Views.FontList"
         mc:Ignorable="d"
         gif:ImageBehavior.AnimateInDesignMode="True"
@@ -196,7 +197,7 @@
                  HorizontalContentAlignment="Stretch"
                  Height="329"
                  d:DataContext="{d:DesignData Source=../Dev/SampleFamilyTree.xaml}"
-                 ItemsSource="{Binding}" Padding="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Focusable="False" IsTextSearchEnabled="False" ScrollViewer.CanContentScroll="False" Visibility="Collapsed">
+                 ItemsSource="{Binding}" Padding="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Focusable="False" IsTextSearchEnabled="False" ScrollViewer.CanContentScroll="False">
           <ListBox.ItemTemplate>
             <DataTemplate DataType="{x:Type vm:FamilyVM}">
               <Expander Background="{x:Null}"
@@ -215,15 +216,15 @@
                       VerticalContentAlignment="Stretch"
                       ScrollViewer.CanContentScroll="False"
                       Width="Auto"
-                      Header="{Binding}" Cursor="Hand" >
+                      Header="{Binding}" Cursor="Hand">
                 <Expander.HeaderTemplate>
                   <DataTemplate DataType="{x:Type vm:FamilyVM}">
-                    <Grid Height="40" FlowDirection="LeftToRight" Margin="0" HorizontalAlignment="{Binding HorizontalAlignment, Mode=OneWayToSource, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}}" >
+                    <Grid Height="40" FlowDirection="LeftToRight" Margin="0" HorizontalAlignment="{Binding HorizontalAlignment, Mode=OneWayToSource, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}}">
                       <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
                       </Grid.ColumnDefinitions>
-                      <Label Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding Name}" Content="{Binding Name, Mode=OneWay}" >
+                      <Label Content="{Binding Name}" Padding="0" VerticalContentAlignment="Center" Background="{x:Null}" HorizontalAlignment="Left" MaxWidth="140" FontFamily="{Binding Name}">
                         <Label.Foreground>
                           <SolidColorBrush Color="{DynamicResource FSBlack}"/>
                         </Label.Foreground>
@@ -378,7 +379,7 @@
 
         </ListBox>
 
-        <StackPanel x:Name="SearchPanel" Height="329">
+        <StackPanel x:Name="SearchPanel" Height="329" Visibility="Collapsed">
           <StackPanel Height="80">
             <StackPanel.Background>
               <SolidColorBrush Color="{DynamicResource FSBackgroundGrey}"/>

@@ -1,12 +1,16 @@
 ﻿using FontInstaller;
+using Logging;
 using Storage;
 using Storage.Data;
 using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using System.Windows.Threading;
 using UI.Utilities;
+using UI.ViewModels;
 
 namespace UI.Views {
   /// <summary>
