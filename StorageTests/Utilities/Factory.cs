@@ -9,6 +9,7 @@ namespace Storage.Impl.Tests.Utilities {
         familyName: desc.FamilyName,
         style: desc.Style,
         downloadUrl: desc.DownloadUrl,
+        previewUrl: desc.PreviewUrl,
         sortRank: 0
       );
     }

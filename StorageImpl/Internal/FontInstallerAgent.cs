@@ -65,13 +65,13 @@ namespace Storage.Impl.Internal {
       _cancelSource.Cancel();
     }
 
-    public void QueueInstall(Font font, InstallationScope scope, Action<FontAPIResult> then = null) {
+    public void QueueInstall(Font font, Action<FontAPIResult> then = null) {
       _agent.Enqueue(delegate {
         FontAPIResult result;
 
         using (Stream cryptedData = _storage.ReadFontFile(font.UID).Result) {
           using (MemoryStream decryptedData = DecryptFontData(cryptedData).Result) {
-            result = _installer.InstallFont(font.UID, scope, decryptedData).Result;
+            result = _installer.InstallFont(font.UID, decryptedData).Result;
           }
         }
 
@@ -79,9 +79,9 @@ namespace Storage.Impl.Internal {
       });
     }
 
-    public void QueueUninstall(Font font, InstallationScope scope, Action<FontAPIResult> then = null) {
+    public void QueueUninstall(Font font, Action<FontAPIResult> then = null) {
       _agent.Enqueue(delegate {
-        FontAPIResult result = _installer.UninstallFont(font.UID, scope).Result;
+        FontAPIResult result = _installer.UninstallFont(font.UID).Result;
         then?.Invoke(result);
       });
     }

@@ -196,7 +196,7 @@ namespace Storage.Impl.Tests {
         return null;
       };
 
-      installer.OnInstallRequest += (string uid, InstallationScope scope) => true;
+      installer.OnInstallRequest += (string uid) => true;
 
       AutoResetEvent evt = new AutoResetEvent(false);
       storage.SynchronizeWithSystem(delegate {
@@ -211,11 +211,9 @@ namespace Storage.Impl.Tests {
       Assert.AreEqual(3, downloadCount, "SynchronizeWithSystem should download all the fonts in the catalog");
       installer.Verify("InstallFont", 4);
       installer.Verify("UnsintallFont", 0);
-
-      Assert.AreEqual(InstallationScope.Process, installer.FontInstallationScope(TestData.Font2_Description.UID),
-        "SynchronizeWithSystem should install deactivated fonts for process only");
-      Assert.AreEqual(InstallationScope.User | InstallationScope.Process, installer.FontInstallationScope(TestData.Font1_Description.UID),
-        "SynchronizeWithSystem should install activated fonts for process and user");
+      
+      Assert.IsTrue(installer.IsFontInstalled(TestData.Font1_Description.UID),
+        "SynchronizeWithSystem should install activated fonts");
     }
 
     [TestMethod]
@@ -237,7 +235,7 @@ namespace Storage.Impl.Tests {
         return null;
       };
 
-      installer.OnInstallRequest += (string uid, InstallationScope scope) => true;
+      installer.OnInstallRequest += (string uid) => true;
 
       AutoResetEvent evt = new AutoResetEvent(false);
       storage.SynchronizeWithSystem(delegate {
@@ -294,7 +292,7 @@ namespace Storage.Impl.Tests {
         return null;
       };
 
-      installer.OnInstallRequest += (string uid, InstallationScope scope) => true;
+      installer.OnInstallRequest += (string uid) => true;
 
       storage.BeginSynchronization();
 
@@ -307,11 +305,9 @@ namespace Storage.Impl.Tests {
       Assert.AreEqual(3, downloadCount, "BeginSynchronization should download all the buffered updates");
       installer.Verify("InstallFont", 4);
       installer.Verify("UnsintallFont", 0);
-
-      Assert.AreEqual(InstallationScope.Process, installer.FontInstallationScope(TestData.Font2_Description.UID),
-        "BeginSynchronization should install deactivated fonts for process only");
-      Assert.AreEqual(InstallationScope.User | InstallationScope.Process, installer.FontInstallationScope(TestData.Font1_Description.UID),
-        "BeginSynchronization should install activated fonts for process and user");
+      
+      Assert.IsTrue(installer.IsFontInstalled(TestData.Font1_Description.UID),
+        "BeginSynchronization should install activated fonts");
     }
 
     [TestMethod]
@@ -331,7 +327,7 @@ namespace Storage.Impl.Tests {
         return null;
       };
 
-      installer.OnInstallRequest += (string uid, InstallationScope scope) => true;
+      installer.OnInstallRequest += (string uid) => true;
 
       storage.BeginSynchronization();
 
@@ -351,11 +347,9 @@ namespace Storage.Impl.Tests {
       Assert.AreEqual(2, downloadCount, "BeginSynchronization should download fonts in realtime");
       installer.Verify("InstallFont", 3);
       installer.Verify("UnsintallFont", 0);
-
-      Assert.AreEqual(InstallationScope.Process, installer.FontInstallationScope(TestData.Font2_Description.UID),
-        "BeginSynchronization should install deactivated fonts for process only");
-      Assert.AreEqual(InstallationScope.User | InstallationScope.Process, installer.FontInstallationScope(TestData.Font1_Description.UID),
-        "BeginSynchronization should install activated fonts for process and user");
+      
+      Assert.IsTrue(installer.IsFontInstalled(TestData.Font1_Description.UID),
+        "BeginSynchronization should install activated fonts");
     }
 
     [TestMethod]
@@ -375,7 +369,7 @@ namespace Storage.Impl.Tests {
         return null;
       };
 
-      installer.OnInstallRequest += (string uid, InstallationScope scope) => true;
+      installer.OnInstallRequest += (string uid) => true;
 
       storage.EndSynchronization();
 
@@ -410,8 +404,8 @@ namespace Storage.Impl.Tests {
       };
 
       bool eventTriggered = false;
-      storage.OnFontInstall += (Font font, InstallationScope scope, bool succeed) => {
-        if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.User) {
+      storage.OnFontInstall += (Font font, bool succeed) => {
+        if (font.UID == TestData.Font1_Description.UID) {
           eventTriggered = true;
         }
       };
@@ -442,8 +436,8 @@ namespace Storage.Impl.Tests {
       };
 
       bool eventTriggered = false;
-      storage.OnFontUninstall += (Font font, InstallationScope scope, bool succeed) => {
-        if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.User) {
+      storage.OnFontUninstall += (Font font, bool succeed) => {
+        if (font.UID == TestData.Font1_Description.UID) {
           eventTriggered = true;
         }
       };
@@ -464,7 +458,7 @@ namespace Storage.Impl.Tests {
 
     [TestMethod]
     [TestCategory("Storage.Events")]
-    public void RemoveFont_shouldTriggerAllScopeUninstallationEvent() {
+    public void RemoveFont_shouldTriggerUninstallationEvent() {
       MockedHttpTransport transport = new MockedHttpTransport();
       MockedFontInstaller installer = new MockedFontInstaller();
       MockedCypher cypher = new MockedCypher();
@@ -475,11 +469,8 @@ namespace Storage.Impl.Tests {
       };
 
       bool userScopeTriggered = false;
-      bool procScopeTriggered = false;
-      storage.OnFontUninstall += (Font font, InstallationScope scope, bool succeed) => {
-        if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.Process) {
-          procScopeTriggered = true;
-        } else if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.User) {
+      storage.OnFontUninstall += (Font font, bool succeed) => {
+        if (font.UID == TestData.Font1_Description.UID) {
           userScopeTriggered = true;
         }
       };
@@ -495,39 +486,7 @@ namespace Storage.Impl.Tests {
       int timeout = 500;
       Assert.IsTrue(syncDone.WaitOne(timeout), "Storage.SynchronizeWithSystem should finish in less than {0} ms", timeout);
 
-      Assert.IsTrue(procScopeTriggered && userScopeTriggered,
-        "Storage.RemoveFont should trigger an uninstallation in Process and User scope event for uninstalled font");
-    }
-
-    [TestMethod]
-    [TestCategory("Storage.Events")]
-    public void AddFont_shouldTriggerProcessScopeInstallationEvent() {
-      MockedHttpTransport transport = new MockedHttpTransport();
-      MockedFontInstaller installer = new MockedFontInstaller();
-      MockedCypher cypher = new MockedCypher();
-      Storage storage = new Storage(transport, installer, cypher, TestPath);
-
-      transport.OnHttpRequestSent += (MockedHttpRequest request, string body) => {
-        return request.CreateResponse(System.Net.HttpStatusCode.OK, "blabla");
-      };
-
-      bool eventTriggered = false;
-      storage.OnFontInstall += (Font font, InstallationScope scope, bool succeed) => {
-        if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.Process) {
-          eventTriggered = true;
-        }
-      };
-
-      storage.AddFont(TestData.Font1_Description);
-
-      AutoResetEvent syncDone = new AutoResetEvent(false);
-      storage.SynchronizeWithSystem(delegate {
-        syncDone.Set();
-      });
-      int timeout = 500;
-      Assert.IsTrue(syncDone.WaitOne(timeout), "Storage.SynchronizeWithSystem should finish in less than {0} ms", timeout);
-
-      Assert.IsTrue(eventTriggered, "Storage.AddFont should trigger an installation in process scope event for added font");
+      Assert.IsTrue(userScopeTriggered, "Storage.RemoveFont should trigger an uninstallation event for uninstalled font");
     }
 
     [TestMethod]
@@ -552,21 +511,15 @@ namespace Storage.Impl.Tests {
       Assert.IsTrue(syncDone.WaitOne(timeout), "Storage.SynchronizeWithSystem should finish in less than {0} ms", timeout);
       // ensure font is downloaded/installed
 
-      bool procUninstall = false;
       bool userUninstall = false;
-      storage.OnFontUninstall += (Font font, InstallationScope scope, bool succeed) => {
-        if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.Process) {
-          procUninstall = true;
-        } else if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.User) {
+      storage.OnFontUninstall += (Font font, bool succeed) => {
+        if (font.UID == TestData.Font1_Description.UID) {
           userUninstall = true;
         }
       };
-      bool procInstall = false;
       bool userInstall = false;
-      storage.OnFontInstall += (Font font, InstallationScope scope, bool succeed) => {
-        if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.Process) {
-          procInstall = true;
-        } else if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.User) {
+      storage.OnFontInstall += (Font font, bool succeed) => {
+        if (font.UID == TestData.Font1_Description.UID) {
           userInstall = true;
         }
       };
@@ -577,9 +530,6 @@ namespace Storage.Impl.Tests {
         syncDone.Set();
       });
       Assert.IsTrue(syncDone.WaitOne(timeout), "Storage.SynchronizeWithSystem should finish in less than {0} ms", timeout);
-
-      Assert.IsTrue(procUninstall, "Updating a font should trigger Process scope uninstall");
-      Assert.IsTrue(procInstall, "Updating a font should trigger Process scope install");
 
       Assert.IsFalse(userUninstall, "Updating a deactivated font should not trigger a User scope uninstall");
       Assert.IsFalse(userInstall, "Updating a deactivated font should not trigger a User scope install");
@@ -608,23 +558,15 @@ namespace Storage.Impl.Tests {
       Assert.IsTrue(syncDone.WaitOne(timeout), "Storage.SynchronizeWithSystem should finish in less than {0} ms", timeout);
       // ensure font is downloaded/installed
 
-      bool procUninstall = false;
       bool userUninstall = false;
-      storage.OnFontUninstall += (Font font, InstallationScope scope, bool succeed) => {
-        if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.Process) {
-          procUninstall = true;
-        }
-        else if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.User) {
+      storage.OnFontUninstall += (Font font, bool succeed) => {
+        if (font.UID == TestData.Font1_Description.UID) {
           userUninstall = true;
         }
       };
-      bool procInstall = false;
       bool userInstall = false;
-      storage.OnFontInstall += (Font font, InstallationScope scope, bool succeed) => {
-        if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.Process) {
-          procInstall = true;
-        }
-        else if (font.UID == TestData.Font1_Description.UID && scope == InstallationScope.User) {
+      storage.OnFontInstall += (Font font, bool succeed) => {
+        if (font.UID == TestData.Font1_Description.UID) {
           userInstall = true;
         }
       };
@@ -635,9 +577,6 @@ namespace Storage.Impl.Tests {
         syncDone.Set();
       });
       Assert.IsTrue(syncDone.WaitOne(timeout), "Storage.SynchronizeWithSystem should finish in less than {0} ms", timeout);
-
-      Assert.IsTrue(procUninstall, "Updating a font should trigger Process scope uninstall");
-      Assert.IsTrue(procInstall, "Updating a font should trigger Process scope install");
 
       Assert.IsTrue(userUninstall, "Updating an activated font should trigger a User scope uninstall");
       Assert.IsTrue(userInstall, "Updating an activated font should trigger a User scope install");

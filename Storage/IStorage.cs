@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Storage {
-  public delegate void FontInstallationHandler(Font font, InstallationScope scope, bool succeed);
-  public delegate void FontUninstallationHandler(Font font, InstallationScope scope, bool succeed);
+  public delegate void FontInstallationHandler(Font font, bool succeed);
+  public delegate void FontUninstallationHandler(Font font, bool succeed);
   public delegate void FontActivationRequestHandler(Font font);
   public delegate void FontDeactivationRequestHandler(Font font);
 

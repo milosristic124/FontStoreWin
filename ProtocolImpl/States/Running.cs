@@ -99,16 +99,12 @@ namespace Protocol.Impl.States {
     #endregion
 
     #region installation events handling
-    private void Storage_OnFontUninstall(Font font, InstallationScope scope, bool succeed) {
-      if (scope.HasFlag(InstallationScope.User)) {
-        _context.UserChannel.SendFontUninstallationReport(font.UID, succeed);
-      }
+    private void Storage_OnFontUninstall(Font font, bool succeed) {
+      _context.UserChannel.SendFontUninstallationReport(font.UID, succeed);
     }
 
-    private void Storage_OnFontInstall(Font font, InstallationScope scope, bool succeed) {
-      if (scope.HasFlag(InstallationScope.User)) {
-        _context.UserChannel.SendFontInstallationReport(font.UID, succeed);
-      }
+    private void Storage_OnFontInstall(Font font, bool succeed) {
+      _context.UserChannel.SendFontInstallationReport(font.UID, succeed);
     }
     #endregion
   }

@@ -10,6 +10,8 @@ namespace Protocol.Payloads {
     public string FamilyName { get; set; }
     [JsonProperty("download_url")]
     public string DownloadUrl { get; set; }
+    [JsonProperty("preview_url")]
+    public string PreviewUrl { get; set; }
     [JsonProperty("transmitted_at")]
     public int TransmittedAt { get; set; }
     [JsonProperty("font_number")]

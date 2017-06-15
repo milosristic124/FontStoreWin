@@ -17,114 +17,61 @@ namespace FontInstaller.Impl.Test {
     }
     #endregion
 
-    [TestMethod]
-    [TestCategory("FontInstaller.Behavior")]
-    public void InstallFont_shouldSucceed_withProcessScope_whenFontIsNotInstalled() {
-      FontInstaller installer = new FontInstaller();
+    //[TestMethod]
+    //[TestCategory("FontInstaller.Behavior")]
+    //public void InstallFont_shouldSucceed_whenFontIsNotInstalled() {
+    //  FontInstaller installer = new FontInstaller();
 
-      FontAPIResult result = installer.InstallFont(FontUID, InstallationScope.Process, FontData).Result;
+    //  FontAPIResult result = installer.InstallFont(FontUID, FontData).Result;
 
-      InstalledFontCollection collection = new InstalledFontCollection();
-      bool familyExists = collection.Families.Any(family => family.Name == FamilyName);
+    //  InstalledFontCollection collection = new InstalledFontCollection();
+    //  bool familyExists = collection.Families.Any(family => family.Name == FamilyName);
 
-      Assert.AreEqual(FontAPIResult.Success, result, "Installing a font should succeed");
-      Assert.IsFalse(familyExists, "Fonts installed in the Process scope should not be enumerable");
-    }
+    //  installer.UninstallAllFonts().Wait();
+    //  Assert.AreEqual(FontAPIResult.Success, result, "Installing a font should succeed");
+    //  Assert.IsTrue(familyExists, "Fonts installed in the User scope should be enumerable");
 
-    [TestMethod]
-    [TestCategory("FontInstaller.Behavior")]
-    public void InstallFont_shouldSucceed_withUserScope_whenFontIsNotInstalled() {
-      FontInstaller installer = new FontInstaller();
+    //}
 
-      FontAPIResult result = installer.InstallFont(FontUID, InstallationScope.User, FontData).Result;
+    //[TestMethod]
+    //[TestCategory("FontInstaller.Behavior")]
+    //public void InstallFont_shouldDoNothing_whenFontIsInstalled() {
+    //  FontInstaller installer = new FontInstaller();
+    //  installer.InstallFont(FontUID, FontData).Wait();
 
-      InstalledFontCollection collection = new InstalledFontCollection();
-      bool familyExists = collection.Families.Any(family => family.Name == FamilyName);
+    //  FontAPIResult result = installer.InstallFont(FontUID, FontData).Result;
 
-      installer.UninstallAllFonts().Wait();
-      Assert.AreEqual(FontAPIResult.Success, result, "Installing a font should succeed");
-      Assert.IsTrue(familyExists, "Fonts installed in the User scope should be enumerable");
+    //  installer.UninstallAllFonts().Wait();
+    //  Assert.AreEqual(FontAPIResult.Noop, result, "Installing an installed font should do nothing");
+    //}
 
-    }
+    //[TestMethod]
+    //[TestCategory("FontInstaller.Behavior")]
+    //public void UninstallFont_shouldSucceed_whenFontIsInstalled() {
+    //  FontInstaller installer = new FontInstaller();
+    //  installer.InstallFont(FontUID, FontData).Wait();
 
-    [TestMethod]
-    [TestCategory("FontInstaller.Behavior")]
-    public void InstallFont_shouldDoNothing_withProcessScope_whenFontIsInstalled() {
-      FontInstaller installer = new FontInstaller();
-      installer.InstallFont(FontUID, InstallationScope.Process, FontData).Wait();
+    //  FontAPIResult result = FontAPIResult.Failure;
+    //  result = installer.UninstallFont(FontUID).Result;
 
-      FontAPIResult result = installer.InstallFont(FontUID, InstallationScope.Process, FontData).Result;
-
-      installer.UninstallAllFonts().Wait();
-      Assert.AreEqual(FontAPIResult.Noop, result, "Installing an installed font should do nothing");
-    }
-
-    [TestMethod]
-    [TestCategory("FontInstaller.Behavior")]
-    public void InstallFont_shouldDoNothing_withUserScope_whenFontIsInstalled() {
-      FontInstaller installer = new FontInstaller();
-      installer.InstallFont(FontUID, InstallationScope.User, FontData).Wait();
-
-      FontAPIResult result = installer.InstallFont(FontUID, InstallationScope.User, FontData).Result;
-
-      installer.UninstallAllFonts().Wait();
-      Assert.AreEqual(FontAPIResult.Noop, result, "Installing an installed font should do nothing");
-    }
-
-    [TestMethod]
-    [TestCategory("FontInstaller.Behavior")]
-    public void UninstallFont_shouldSucceed_withProcessScope_whenFontIsInstalled() {
-      FontInstaller installer = new FontInstaller();
-      installer.InstallFont(FontUID, InstallationScope.Process, FontData).Wait();
-
-      FontAPIResult result = installer.UninstallFont(FontUID, InstallationScope.Process).Result;
-
-      InstalledFontCollection collection = new InstalledFontCollection();
-      bool familyExists = collection.Families.Any(family => family.Name == FamilyName);
-
-      installer.UninstallAllFonts().Wait();
-      Assert.AreEqual(FontAPIResult.Success, result, "Uninstalling a font should succeed");
-      Assert.IsFalse(familyExists, "Uninstalled fonts should not be enumerable");
-    }
-
-    [TestMethod]
-    [TestCategory("FontInstaller.Behavior")]
-    public void UninstallFont_shouldSucceed_withUserScope_whenFontIsInstalled() {
-      FontInstaller installer = new FontInstaller();
-      installer.InstallFont(FontUID, InstallationScope.User, FontData).Wait();
-
-      FontAPIResult result = FontAPIResult.Failure;
-      result = installer.UninstallFont(FontUID, InstallationScope.User).Result;
-
-      InstalledFontCollection collection = new InstalledFontCollection();
-      bool familyExists = collection.Families.Any(family => family.Name == FamilyName);
+    //  InstalledFontCollection collection = new InstalledFontCollection();
+    //  bool familyExists = collection.Families.Any(family => family.Name == FamilyName);
 
 
-      installer.UninstallAllFonts().Wait();
-      Assert.AreEqual(FontAPIResult.Success, result, "Uninstalling a font should succeed");
-      Assert.IsFalse(familyExists, "Uninstalled fonts should not be enumerable");
-    }
+    //  installer.UninstallAllFonts().Wait();
+    //  Assert.AreEqual(FontAPIResult.Success, result, "Uninstalling a font should succeed");
+    //  Assert.IsFalse(familyExists, "Uninstalled fonts should not be enumerable");
+    //}
 
-    [TestMethod]
-    [TestCategory("FontInstaller.Behavior")]
-    public void UninstallFont_shouldDoNothing_withProcessScope_whenFontIsNotInstalled() {
-      FontInstaller installer = new FontInstaller();
+    //[TestMethod]
+    //[TestCategory("FontInstaller.Behavior")]
+    //public void UninstallFont_shouldDoNothing_whenFontIsNotInstalled() {
+    //  FontInstaller installer = new FontInstaller();
 
-      FontAPIResult result = installer.UninstallFont(FontUID, InstallationScope.Process).Result;
+    //  FontAPIResult result = installer.UninstallFont(FontUID).Result;
 
-      installer.UninstallAllFonts().Wait();
-      Assert.AreEqual(FontAPIResult.Noop, result, "Uninstalling an uninstalled font should do nothing");
-    }
-
-    [TestMethod]
-    [TestCategory("FontInstaller.Behavior")]
-    public void UninstallFont_shouldDoNothing_withUserScope_whenFontIsNotInstalled() {
-      FontInstaller installer = new FontInstaller();
-
-      FontAPIResult result = installer.UninstallFont(FontUID, InstallationScope.User).Result;
-
-      installer.UninstallAllFonts().Wait();
-      Assert.AreEqual(FontAPIResult.Noop, result, "Uninstalling an uninstalled font should do nothing");
-    }
+    //  installer.UninstallAllFonts().Wait();
+    //  Assert.AreEqual(FontAPIResult.Noop, result, "Uninstalling an uninstalled font should do nothing");
+    //}
   }
 }

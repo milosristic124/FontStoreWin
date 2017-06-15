@@ -3,6 +3,7 @@ using Protocol.Transport.Http;
 using Storage.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -81,17 +82,32 @@ namespace Storage.Impl.Internal {
       }
     }
 
-    public void QueueDownload(Font font, Action then = null) {
+    public void QueueFontDownload(Font font, Action then = null) {
       _agent.Enqueue(delegate {
-        Logger.Log("Download started: {0}", font.UID);
+        Logger.Log("Font download started: {0}", font.UID);
         DownloadFont(font).Wait();
         then?.Invoke();
       });
     }
 
-    public void QueueDeletion(Font font, Action then = null) {
+    public void QueueFontDeletion(Font font, Action then = null) {
       _agent.Enqueue(delegate {
         _storage.RemoveFontFile(font.UID).Wait();
+        then?.Invoke();
+      });
+    }
+
+    public void QueuePreviewDownload(Font font, Action then = null) {
+      _agent.Enqueue(delegate {
+        Logger.Log("Preview download started: {0}", font.UID);
+        DownloadPreview(font).Wait();
+        then?.Invoke();
+      });
+    }
+
+    public void QueuePreviewDeletion(Font font, Action then = null) {
+      _agent.Enqueue(delegate {
+        _storage.RemovePreviewFile(font.UID).Wait();
         then?.Invoke();
       });
     }
@@ -121,7 +137,41 @@ namespace Storage.Impl.Internal {
         }
       }
       else {
-        Logger.Log("Download already done: {0}", font.UID);
+        Logger.Log("Font download already done: {0}", font.UID);
+      }
+    }
+
+    private async Task DownloadPreview(Font font) {
+      font.PreviewPath = _storage.PreviewPath(font.UID);
+
+      if (!_storage.PreviewExists(font.UID)) {
+        try {
+#if DEBUG
+          using (Stream fileStream = File.OpenRead(font.PreviewUrl.AbsolutePath)) {
+            await _storage.SavePreviewFile(font.UID, fileStream, _cancelSource.Token);
+          }
+#else
+          IHttpRequest request = _transport.CreateHttpRequest(font.PreviewUrl.AbsoluteUri);
+          request.Method = WebRequestMethods.Http.Get;
+
+          lock (_dlRequests) {
+            _dlRequests.Add(font.UID, request);
+          }
+          IHttpResponse response = await request.Response;
+          using (response.ResponseStream) {
+            await _storage.SavePreviewFile(font.UID, response.ResponseStream, _cancelSource.Token);
+          }
+          lock (_dlRequests) {
+            _dlRequests.Remove(font.UID);
+          }
+#endif
+        }
+        catch (Exception e) {
+          Logger.Log("Preview downloading for font {0} failed: {1}", font.UID, e);
+        }
+      }
+      else {
+        Logger.Log("Preview download already done: {0}", font.UID);
       }
     }
     #endregion
@@ -134,6 +184,6 @@ namespace Storage.Impl.Internal {
     private void _agent_OnProcessingFinished(int processedCommands) {
       OnProcessingFinished?.Invoke(processedCommands);
     }
-    #endregion
+#endregion
   }
 }

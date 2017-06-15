@@ -284,13 +284,13 @@ namespace Protocol.Impl.Tests {
         AutoResetEvent catalogUpdateRequest = new AutoResetEvent(false);
         AutoResetEvent fontUpdateRequest = new AutoResetEvent(false);
 
-        installer.OnInstallRequest += (string uid, InstallationScope scope) => {
-          if (scope == InstallationScope.User && uid == TestData.Font2_Description.UID) {
+        installer.OnInstallRequest += (string uid) => {
+          if (uid == TestData.Font2_Description.UID) {
             return false;
           }
           return true;
         };
-        installer.OnUninstallRequest += (string uid, InstallationScope scope) => {
+        installer.OnUninstallRequest += (string uid) => {
           return uid != TestData.Font3_Description.UID;
         };
 
@@ -456,12 +456,11 @@ namespace Protocol.Impl.Tests {
         };
 
         Task asyncEvents = Task.Run(delegate {
-          storage.SimulateFontInstall(TestData.Font1_Description.UID, InstallationScope.Process, true);
-          storage.SimulateFontInstall(TestData.Font1_Description.UID, InstallationScope.User, true);
+          storage.SimulateFontInstall(TestData.Font1_Description.UID, true);
         });
         asyncEvents.Wait();
 
-        Assert.AreEqual(1, installReport, "Font install event should generate font install reports when scope is User");
+        Assert.AreEqual(1, installReport, "Font install event should generate font install reports");
         Assert.AreEqual(0, uninstallReport, "Font install event should not generate font uninstall reports");
       });
     }
@@ -488,13 +487,12 @@ namespace Protocol.Impl.Tests {
         };
 
         Task asyncEvents = Task.Run(delegate {
-          storage.SimulateFontUninstall(TestData.Font1_Description.UID, InstallationScope.Process, true);
-          storage.SimulateFontUninstall(TestData.Font1_Description.UID, InstallationScope.User, true);
+          storage.SimulateFontUninstall(TestData.Font1_Description.UID, true);
         });
         asyncEvents.Wait();
 
         Assert.AreEqual(0, installReport, "Font install event should not generate font install reports");
-        Assert.AreEqual(1, uninstallReport, "Font install event should generate font uninstall reports when scope is User");
+        Assert.AreEqual(1, uninstallReport, "Font install event should generate font uninstall reports");
       });
     }
 

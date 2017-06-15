@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 
 namespace UI.ViewModels {
   class FamilyVM : INotifyPropertyChanged {
@@ -28,6 +29,8 @@ namespace UI.ViewModels {
     public bool HasActivatedFont {
       get { return _model.HasActivatedFont; }
     }
+
+    public string PreviewPath { get; private set; }
     #endregion
 
     #region observable properties
@@ -50,6 +53,7 @@ namespace UI.ViewModels {
     #region ctor
     public FamilyVM(Storage.Data.Family model) {
       _model = model;
+      PreviewPath = _model.DefaultFont.PreviewPath;
 
       Fonts = new ObservableCollection<FontVM>(_model.Fonts.Select(fontModel => {
         return new FontVM(fontModel);

@@ -120,14 +120,13 @@ namespace Storage.Impl {
       return _HDDStorage.Load(loadedFont => {
         // font loaded, download it if necessary
         Logger.Log("Font loaded, download queued: {0}", loadedFont.UID);
-        _fsAgent.QueueDownload(loadedFont, delegate {
+        _fsAgent.QueueFontDownload(loadedFont, delegate {
           // install the font for the application
-          Logger.Log("Font loaded, install queued (process): {0}", loadedFont.UID);
-          _installAgent.QueueInstall(loadedFont, InstallationScope.Process, delegate {
-            // if the font was activated, install it for the user
+          Logger.Log("Font loaded, downloading preview: {0}", loadedFont.UID);
+          _fsAgent.QueuePreviewDownload(loadedFont, delegate {
             if (loadedFont.Activated) {
-              Logger.Log("Font loaded, install queued (user): {0}", loadedFont.UID);
-              _installAgent.QueueInstall(loadedFont, InstallationScope.User);
+              Logger.Log("Font loaded, install queued: {0}", loadedFont.UID);
+              _installAgent.QueueInstall(loadedFont);
             }
           });
         });
@@ -179,7 +178,8 @@ namespace Storage.Impl {
         familyName: description.FamilyName,
         style: description.Style,
         downloadUrl: description.DownloadUrl,
-        sortRank: description.SortRank
+        sortRank: description.SortRank,
+        previewUrl: description.PreviewUrl
       );
       FamilyCollection.AddFont(newFont);
       _HDDStorage.LastCatalogUpdate = description.TransmittedAt;
@@ -303,53 +303,51 @@ namespace Storage.Impl {
     #region font event handling
     private void FamilyCollection_OnActivationChanged(FamilyCollection sender, Family fontFamily, Font target) {
       if (target.Activated) {
-        _installAgent.QueueInstall(target, InstallationScope.User, result => {
-          Logger.Log("Font installed (user): {0} ({1})", target.UID, result);
+        _installAgent.QueueInstall(target, result => {
+          Logger.Log("Font installed: {0} ({1})", target.UID, result);
           if (result != FontAPIResult.Noop)
-            OnFontInstall?.Invoke(target, InstallationScope.User, result == FontAPIResult.Success);
+            OnFontInstall?.Invoke(target, result == FontAPIResult.Success);
         });
       } else {
-        _installAgent.QueueUninstall(target, InstallationScope.User, result => {
-          Logger.Log("Font uninstalled (user): {0} ({1})", target.UID, result);
+        _installAgent.QueueUninstall(target, result => {
+          Logger.Log("Font uninstalled: {0} ({1})", target.UID, result);
           if (result != FontAPIResult.Noop)
-            OnFontUninstall?.Invoke(target, InstallationScope.User, result == FontAPIResult.Success);
+            OnFontUninstall?.Invoke(target, result == FontAPIResult.Success);
         });
       }
       HasChanged = true;
     }
 
     private void FamilyCollection_OnFontUpdated(FamilyCollection sender, Family target, Font removedFont, Font updatedFont) {
-      _installAgent.QueueUninstall(removedFont, InstallationScope.User, userScopeResult => {
-        Logger.Log("Font uninstalled (user): {0} ({1})", removedFont.UID, userScopeResult);
-        if (userScopeResult == FontAPIResult.Failure) {
-          OnFontUninstall?.Invoke(removedFont, InstallationScope.User, false);
+      _installAgent.QueueUninstall(removedFont, uninstallResult => {
+        Logger.Log("Font uninstalled: {0} ({1})", removedFont.UID, uninstallResult);
+        if (uninstallResult == FontAPIResult.Failure) {
+          OnFontUninstall?.Invoke(removedFont, false);
         }
         else {
-          _installAgent.QueueUninstall(removedFont, InstallationScope.Process, processScopeResult => {
-            Logger.Log("Font uninstalled (process): {0} ({1})", removedFont.UID, processScopeResult);
-            if (processScopeResult == FontAPIResult.Failure) {
-              OnFontUninstall?.Invoke(removedFont, InstallationScope.Process, false);
-            }
-            else {
-              _fsAgent.QueueDeletion(removedFont, delegate {
-                Logger.Log("Font deleted: {0}", removedFont.UID);
-                if (userScopeResult != FontAPIResult.Noop) {
-                  OnFontUninstall?.Invoke(removedFont, InstallationScope.User, userScopeResult == FontAPIResult.Success);
-                }
-                if (processScopeResult != FontAPIResult.Noop) {
-                  OnFontUninstall?.Invoke(removedFont, InstallationScope.Process, processScopeResult == FontAPIResult.Success);
-                }
+          _fsAgent.QueuePreviewDeletion(removedFont, delegate {
+            Logger.Log("Font preview deleted: {0}", removedFont.UID);
+            _fsAgent.QueueFontDeletion(removedFont, delegate {
+              Logger.Log("Font deleted: {0}", removedFont.UID);
+              if (uninstallResult != FontAPIResult.Noop) {
+                OnFontUninstall?.Invoke(removedFont, uninstallResult == FontAPIResult.Success);
+              }
 
-                _fsAgent.QueueDownload(updatedFont, delegate {
-                  Logger.Log("Font downloaded: {0}", updatedFont.UID);
-                  _installAgent.QueueInstall(updatedFont, InstallationScope.Process, result => {
-                    Logger.Log("Font installed (process): {0} ({1})", updatedFont.UID, result);
-                    if (result != FontAPIResult.Noop)
-                      OnFontInstall?.Invoke(updatedFont, InstallationScope.Process, result == FontAPIResult.Success);
-                  });
+              _fsAgent.QueueFontDownload(updatedFont, delegate {
+                Logger.Log("Font downloaded: {0}", updatedFont.UID);
+                _fsAgent.QueuePreviewDownload(updatedFont, delegate {
+                  Logger.Log("Font preview downloaded: {0}", updatedFont.UID);
+                  if (updatedFont.Activated) {
+                    _installAgent.QueueInstall(updatedFont, installResult => {
+                      Logger.Log("Font installed: {0} ({1})", updatedFont.UID, installResult);
+                      if (installResult != FontAPIResult.Noop) {
+                        OnFontInstall?.Invoke(updatedFont, installResult == FontAPIResult.Success);
+                      }
+                    });
+                  }
                 });
               });
-            }
+            });
           });
         }
       });
@@ -357,26 +355,19 @@ namespace Storage.Impl {
     }
 
     private void FamilyCollection_OnFontRemoved(FamilyCollection sender, Family target, Font oldFont) {
-      _installAgent.QueueUninstall(oldFont, InstallationScope.User, userScopeResult => {
-        Logger.Log("Font uninstalled (user): {0} ({1})", oldFont.UID, userScopeResult);
+      _installAgent.QueueUninstall(oldFont, userScopeResult => {
+        Logger.Log("Font uninstalled: {0} ({1})", oldFont.UID, userScopeResult);
         if (userScopeResult == FontAPIResult.Failure) {
-          OnFontUninstall?.Invoke(oldFont, InstallationScope.User, false);
+          OnFontUninstall?.Invoke(oldFont, false);
         } else {
-          _installAgent.QueueUninstall(oldFont, InstallationScope.Process, processScopeResult => {
-            Logger.Log("Font uninstalled (process): {0} ({1})", oldFont.UID, processScopeResult);
-            if (processScopeResult == FontAPIResult.Failure) {
-              OnFontUninstall?.Invoke(oldFont, InstallationScope.Process, false);
-            } else {
-              _fsAgent.QueueDeletion(oldFont, delegate {
-                Logger.Log("Font deleted: {0}", oldFont.UID);
-                if (userScopeResult != FontAPIResult.Noop) {
-                  OnFontUninstall?.Invoke(oldFont, InstallationScope.User, userScopeResult == FontAPIResult.Success);
-                }
-                if (processScopeResult != FontAPIResult.Noop) {
-                  OnFontUninstall?.Invoke(oldFont, InstallationScope.Process, processScopeResult == FontAPIResult.Success);
-                }
-              });
-            }
+          _fsAgent.QueuePreviewDeletion(oldFont, delegate {
+            Logger.Log("Font preview deleted: {0}", oldFont.UID);
+            _fsAgent.QueueFontDeletion(oldFont, delegate {
+              Logger.Log("Font deleted: {0}", oldFont.UID);
+              if (userScopeResult != FontAPIResult.Noop) {
+                OnFontUninstall?.Invoke(oldFont, userScopeResult == FontAPIResult.Success);
+              }
+            });
           });
         }
       });
@@ -384,12 +375,10 @@ namespace Storage.Impl {
     }
 
     private void FamilyCollection_OnFontAdded(FamilyCollection sender, Family target, Font newFont) {
-      _fsAgent.QueueDownload(newFont, delegate {
+      _fsAgent.QueueFontDownload(newFont, delegate {
         Logger.Log("Font downloaded: {0}", newFont.UID);
-        _installAgent.QueueInstall(newFont, InstallationScope.Process, result => {
-          Logger.Log("Font installed (process): {0} ({1})", newFont.UID, result);
-          if (result != FontAPIResult.Noop)
-            OnFontInstall?.Invoke(newFont, InstallationScope.Process, result == FontAPIResult.Success);
+        _fsAgent.QueuePreviewDownload(newFont, delegate {
+          Logger.Log("Font preview downloaded: {0}", newFont.UID);
         });
       });
       HasChanged = true;

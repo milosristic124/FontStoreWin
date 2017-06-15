@@ -1,8 +1,6 @@
 ﻿using Logging;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Text;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -11,66 +9,31 @@ namespace FontInstaller.Impl {
   public class FontInstaller : IFontInstaller {
     #region private data
     private Dictionary<string, string> _userFonts;
-    private Dictionary<string, string> _privateFonts;
-    private Dictionary<string, PrivateFontCollection> _privateFontCollections;
 
     private string _userFilesDir;
-    private string _privateFilesDir;
     #endregion
 
     #region ctor
     public FontInstaller() {
       _userFonts = new Dictionary<string, string>();
-      _privateFonts = new Dictionary<string, string>();
-      _privateFontCollections = new Dictionary<string, PrivateFontCollection>();
 
       _userFilesDir = Path.GetTempPath() + Guid.NewGuid().ToString() + "\\";
       Directory.CreateDirectory(_userFilesDir);
-      _privateFilesDir = Path.GetTempPath() + Guid.NewGuid().ToString() + "\\";
-      Directory.CreateDirectory(_privateFilesDir);
+
+      Logger.Log("User font path used: {0}", _userFilesDir);
     }
     #endregion
 
     #region methods
-    public InstallationScope GetFontInstallationScope(string uid) {
-      bool privateScope = _privateFonts.ContainsKey(uid);
-      bool userScope = _userFonts.ContainsKey(uid);
-
-      InstallationScope scope = InstallationScope.None;
-      if (_privateFonts.ContainsKey(uid)) {
-        scope |= InstallationScope.Process;
-      }
-      if (_userFonts.ContainsKey(uid)) {
-        scope |= InstallationScope.User;
-      }
-      return scope;
-    }
-
-    public async Task<FontAPIResult> InstallFont(string uid, InstallationScope scope, MemoryStream fontData) {
+    public async Task<FontAPIResult> InstallFont(string uid, MemoryStream fontData) {
       return await Task.Run(delegate {
-        switch (scope) {
-          case InstallationScope.Process:
-            return InstallPrivateFont(uid, fontData);
-
-          case InstallationScope.User:
-            return InstallUserFont(uid, fontData);
-
-          default: return FontAPIResult.Failure;
-        }
+        return InstallUserFont(uid, fontData);
       });
     }
 
-    public async Task<FontAPIResult> UninstallFont(string uid, InstallationScope scope) {
+    public async Task<FontAPIResult> UninstallFont(string uid) {
       return await Task.Run(delegate {
-        switch (scope) {
-          case InstallationScope.Process:
-            return UninstallPrivateFont(uid);
-
-          case InstallationScope.User:
-            return UninstallUserFont(uid);
-
-          default: return FontAPIResult.Failure;
-        }
+        return UninstallUserFont(uid);
       });
     }
 
@@ -81,20 +44,9 @@ namespace FontInstaller.Impl {
           foreach (string path in Directory.EnumerateFiles(_userFilesDir)) {
             RemoveUserFont(path);
           }
-
-          Logger.Log("Uninstalling process fonts");
-          foreach (string path in Directory.EnumerateFiles(_privateFilesDir)) {
-            RemovePocessFont(path);
-          }
-
-          foreach (PrivateFontCollection collection in _privateFontCollections.Values) {
-            collection.Dispose();
-          }
         }
         catch (Exception) { }
         _userFonts.Clear();
-        _privateFonts.Clear();
-        _privateFontCollections.Clear();
         Logger.Log("Uninstalling fonts done");
       });
     }
@@ -103,70 +55,6 @@ namespace FontInstaller.Impl {
     #region private methods
     private string TempUserFilePath() {
       return _userFilesDir + Guid.NewGuid().ToString();
-    }
-
-    private string TempProcessFilePath() {
-      return _privateFilesDir + Guid.NewGuid().ToString();
-    }
-
-    private FontAPIResult InstallPrivateFont(string uid, MemoryStream data) {
-      if (_privateFonts.ContainsKey(uid)) {
-        return FontAPIResult.Noop;
-      }
-      else {
-        using (data) {
-          data.Seek(0, SeekOrigin.Begin);
-          string tempFilePath = TempProcessFilePath();
-          try {
-            using (FileStream fileStream = File.Create(tempFilePath)) {
-              data.CopyTo(fileStream);
-            }
-            bool activatedFonts = AddFontResourceEx(tempFilePath, FR_PRIVATE, IntPtr.Zero) != 0;
-
-            if (activatedFonts) {
-              _privateFonts[uid] = tempFilePath;
-              SendNotifyMessage(HWND_BROADCAST, WM_FONTCHANGE, IntPtr.Zero, IntPtr.Zero);
-
-              PrivateFontCollection collection = new PrivateFontCollection();
-              collection.AddFontFile(tempFilePath);
-              _privateFontCollections.Add(uid, collection);
-
-              return FontAPIResult.Success;
-            }
-
-            return FontAPIResult.Failure;
-          }
-          catch (Exception) {
-            if (File.Exists(tempFilePath)) {
-              File.Delete(tempFilePath);
-            }
-          }
-
-          return FontAPIResult.Failure;
-        }
-      }
-    }
-
-    private FontAPIResult UninstallPrivateFont(string uid) {
-      if (!_privateFonts.ContainsKey(uid)) {
-        return FontAPIResult.Noop;
-      }
-      else {
-        string fontFilePath = _privateFonts[uid];
-        if (RemovePocessFont(fontFilePath)) {
-          _privateFonts.Remove(uid);
-
-          PrivateFontCollection collection;
-          if (_privateFontCollections.TryGetValue(uid, out collection)) {
-            collection.Dispose();
-            _privateFontCollections.Remove(uid);
-          }
-
-          return FontAPIResult.Success;
-        }
-
-        return FontAPIResult.Failure;
-      }
     }
 
     private FontAPIResult InstallUserFont(string uid, MemoryStream data) {
@@ -218,20 +106,6 @@ namespace FontInstaller.Impl {
     #endregion
 
     #region font API encapsulation
-    private bool RemovePocessFont(string path) {
-      if (File.Exists(path)) {
-        int attempt = 0;
-        while (RemoveFontResourceEx(path, FR_PRIVATE, IntPtr.Zero) != 0) {
-          SendNotifyMessage(HWND_BROADCAST, WM_FONTCHANGE, IntPtr.Zero, IntPtr.Zero);
-          attempt += 1;
-        }
-
-        File.Delete(path);
-        return attempt > 0;
-      }
-      return false;
-    }
-
     private bool RemoveUserFont(string path) {
       if (File.Exists(path)) {
         int attempt = 0;

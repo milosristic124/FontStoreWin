@@ -23,6 +23,8 @@ namespace Storage.Impl.Internal {
 
     // font files
     private string _fontRootPath;
+    // preview files
+    private string _previewRootPath;
 
     private string _sessionID;
     private string _sessionPath;
@@ -95,6 +97,10 @@ namespace Storage.Impl.Internal {
         Directory.CreateDirectory(_fontRootPath);
       }
 
+      _previewRootPath = string.Format("{0}{1}", _storageRootPath, "prvs\\");
+      if (!Directory.Exists(_previewRootPath)) {
+        Directory.CreateDirectory(_previewRootPath);
+      }
     }
 
     internal FSStorage(FSStorage other): this(other._storageRootPath) {
@@ -125,7 +131,8 @@ namespace Storage.Impl.Internal {
               familyName: fontData.FamilyName,
               style: fontData.Name,
               downloadUrl: fontData.DownloadUrl,
-              sortRank: fontData.SortRank
+              sortRank: fontData.SortRank,
+              previewUrl: fontData.PreviewUrl
             );
             newFont.Activated = fontData.Activated;
             collection.AddFont(newFont);
@@ -220,11 +227,32 @@ namespace Storage.Impl.Internal {
     public async Task RemoveFontFile(string uid) {
       await RemoveFile(FontFilePath(uid));
     }
+
+
+    public bool PreviewExists(string uid) {
+      return File.Exists(PreviewFilePath(uid));
+    }
+
+    public string PreviewPath(string uid) {
+      return PreviewFilePath(uid);
+    }
+
+    public async Task SavePreviewFile(string uid, Stream data, CancellationToken token) {
+      await WriteData(PreviewFilePath(uid), data, token);
+    }
+
+    public async Task RemovePreviewFile(string uid) {
+      await RemoveFile(PreviewFilePath(uid));
+    }
     #endregion
 
     #region private methods
     private string FontFilePath(string uid) {
       return string.Format("{0}{1}", _fontRootPath, uid);
+    }
+
+    private string PreviewFilePath(string uid) {
+      return string.Format("{0}{1}.png", _previewRootPath, uid);
     }
 
     private Task<Stream> ReadData(string path) {
@@ -297,6 +325,8 @@ namespace Storage.Impl.Internal {
       public int CreatedAt { get; set; }
       [JsonProperty("download_url")]
       public string DownloadUrl { get; set; }
+      [JsonProperty("preview_url")]
+      public string PreviewUrl { get; set; }
       [JsonProperty("activated")]
       public bool Activated { get; set; }
       [JsonProperty("rank")]
@@ -310,6 +340,7 @@ namespace Storage.Impl.Internal {
         FamilyName = font.FamilyName;
         Name = font.Style;
         DownloadUrl = font.DownloadUrl.AbsoluteUri;
+        PreviewUrl = font.PreviewUrl.AbsoluteUri;
         Activated = font.Activated;
         SortRank = font.SortRank;
       }

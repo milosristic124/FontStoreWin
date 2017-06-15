@@ -33,6 +33,12 @@ namespace UI.ViewModels {
         return _model.SortRank;
       }
     }
+
+    public string PreviewPath {
+      get {
+        return _model.PreviewPath;
+      }
+    }
     #endregion
 
     #region observable properties
@@ -58,7 +64,6 @@ namespace UI.ViewModels {
     #region ctor
     public FontVM(Storage.Data.Font model) {
       _model = model;
-
       _model.OnActivationChanged += _model_OnActivationChanged;
     }
     #endregion

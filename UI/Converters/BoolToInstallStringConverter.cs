@@ -9,9 +9,9 @@ namespace UI.Converters {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
       bool installed = (bool)value;
       if (installed) {
-        return "Uninstall";
+        return "UNINSTALL";
       }
-      return "Install";
+      return "INSTALL";
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
