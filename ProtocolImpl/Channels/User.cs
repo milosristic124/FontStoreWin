@@ -35,8 +35,8 @@ namespace Protocol.Impl.Channels {
       _underlying.On("font:deactivation", (Payloads.TimestampedFontId fid) => {
         OnFontDeactivation?.Invoke(fid);
       });
-      _underlying.On("update:complete", () => {
-        OnUpdateComplete?.Invoke();
+      _underlying.On("update:complete", (Payloads.UpdateComplete up) => {
+        OnUpdateComplete?.Invoke(up.TransmittedAt);
       });
       _underlying.On("disconnect", (Payloads.Disconnect disc) => {
         OnDisconnection?.Invoke(disc.Reason);
@@ -104,7 +104,7 @@ namespace Protocol.Impl.Channels {
     #region delegates
     public delegate void FontActivationHandler(Payloads.TimestampedFontId fid);
     public delegate void FontDeactivationHandler(Payloads.TimestampedFontId fid);
-    public delegate void UpdateCompleteHandler();
+    public delegate void UpdateCompleteHandler(int timestamp);
     public delegate void DisconnectionHandler(string reason);
     #endregion
 

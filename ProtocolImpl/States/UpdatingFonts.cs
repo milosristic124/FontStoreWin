@@ -31,7 +31,8 @@ namespace Protocol.Impl.States {
     #endregion
 
     #region event handling
-    private void UserChannel_OnUpdateComplete() {
+    private void UserChannel_OnUpdateComplete(int timestamp) {
+      _context.Storage.LastFontStatusUpdate = timestamp;
       WillTransition = true;
       FSM.State = new Installing(_context);
     }

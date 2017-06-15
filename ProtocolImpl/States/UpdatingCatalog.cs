@@ -34,7 +34,8 @@ namespace Protocol.Impl.States {
     #endregion
 
     #region event handling
-    private void _chan_OnUpdateComplete() {
+    private void _chan_OnUpdateComplete(int timestamp) {
+      _context.Storage.LastCatalogUpdate = timestamp;
       WillTransition = true;
       FSM.State = new UpdatingFonts(_context);
     }

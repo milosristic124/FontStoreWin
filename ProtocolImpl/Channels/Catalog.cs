@@ -30,8 +30,8 @@ namespace Protocol.Impl.Channels {
       _underlying.On("font:deletion", (Payloads.TimestampedFontId del) => {
         OnFontDeletion?.Invoke(del);
       });
-      _underlying.On("update:complete", () => {
-        OnUpdateComplete?.Invoke();
+      _underlying.On("update:complete", (Payloads.UpdateComplete up) => {
+        OnUpdateComplete?.Invoke(up.TransmittedAt);
       });
       _underlying.On("fonts-package", () => {
         OnNewFontReleased?.Invoke();
@@ -63,7 +63,7 @@ namespace Protocol.Impl.Channels {
     #region delegates
     public delegate void FontDescriptionHandler(Payloads.FontDescription desc);
     public delegate void FontDeletionHandler(Payloads.TimestampedFontId fid);
-    public delegate void UpdateCompleteHandler();
+    public delegate void UpdateCompleteHandler(int timestamp);
     public delegate void FontReleasedHandler();
     #endregion
 
