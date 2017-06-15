@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Drawing.Text;
+using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -18,11 +18,6 @@ namespace FontInstaller {
   }
 
   public interface IFontInstaller {
-    #region properties
-    string UserFontDir { get; set; }
-    string PrivateFontDir { get; set; }
-    #endregion
-
     #region methods
     InstallationScope GetFontInstallationScope(string uid);
     Task<FontAPIResult> InstallFont(string uid, InstallationScope scope, MemoryStream fontData);

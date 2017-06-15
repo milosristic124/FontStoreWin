@@ -1,6 +1,7 @@
 ﻿using Logging;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Text;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -17,38 +18,16 @@ namespace FontInstaller.Impl {
     private string _privateFilesDir;
     #endregion
 
-    #region properties
-    public string UserFontDir {
-      get {
-        return _userFilesDir;
-      }
-      set {
-        _userFilesDir = value;
-        Directory.CreateDirectory(_userFilesDir);
-        Logger.Log("User font directory: {0}", _userFilesDir);
-      }
-    }
-
-    public string PrivateFontDir {
-      get {
-        return _privateFilesDir;
-      }
-      set {
-        _privateFilesDir = value;
-        Directory.CreateDirectory(_privateFilesDir);
-        Logger.Log("User font directory: {0}", _privateFilesDir);
-      }
-    }
-    #endregion
-
     #region ctor
     public FontInstaller() {
       _userFonts = new Dictionary<string, string>();
       _privateFonts = new Dictionary<string, string>();
       _privateFontCollections = new Dictionary<string, PrivateFontCollection>();
 
-      UserFontDir = Path.GetTempPath() + Guid.NewGuid().ToString() + "\\";
-      PrivateFontDir = Path.GetTempPath() + Guid.NewGuid().ToString() + "\\";
+      _userFilesDir = Path.GetTempPath() + Guid.NewGuid().ToString() + "\\";
+      Directory.CreateDirectory(_userFilesDir);
+      _privateFilesDir = Path.GetTempPath() + Guid.NewGuid().ToString() + "\\";
+      Directory.CreateDirectory(_privateFilesDir);
     }
     #endregion
 
@@ -99,12 +78,12 @@ namespace FontInstaller.Impl {
       await Task.Run(delegate {
         try {
           Logger.Log("Uninstalling user fonts");
-          foreach (string path in Directory.EnumerateFiles(UserFontDir)) {
+          foreach (string path in Directory.EnumerateFiles(_userFilesDir)) {
             RemoveUserFont(path);
           }
 
           Logger.Log("Uninstalling process fonts");
-          foreach (string path in Directory.EnumerateFiles(PrivateFontDir)) {
+          foreach (string path in Directory.EnumerateFiles(_privateFilesDir)) {
             RemovePocessFont(path);
           }
 
@@ -123,11 +102,11 @@ namespace FontInstaller.Impl {
 
     #region private methods
     private string TempUserFilePath() {
-      return UserFontDir + Guid.NewGuid().ToString();
+      return _userFilesDir + Guid.NewGuid().ToString();
     }
 
     private string TempProcessFilePath() {
-      return PrivateFontDir + Guid.NewGuid().ToString();
+      return _privateFilesDir + Guid.NewGuid().ToString();
     }
 
     private FontAPIResult InstallPrivateFont(string uid, MemoryStream data) {
@@ -142,7 +121,7 @@ namespace FontInstaller.Impl {
             using (FileStream fileStream = File.Create(tempFilePath)) {
               data.CopyTo(fileStream);
             }
-            bool activatedFonts = AddFontResourceEx(tempFilePath, FR_NOT_ENUM, IntPtr.Zero) != 0;
+            bool activatedFonts = AddFontResourceEx(tempFilePath, FR_PRIVATE, IntPtr.Zero) != 0;
 
             if (activatedFonts) {
               _privateFonts[uid] = tempFilePath;
@@ -242,7 +221,7 @@ namespace FontInstaller.Impl {
     private bool RemovePocessFont(string path) {
       if (File.Exists(path)) {
         int attempt = 0;
-        while (RemoveFontResourceEx(path, FR_NOT_ENUM, IntPtr.Zero) != 0) {
+        while (RemoveFontResourceEx(path, FR_PRIVATE, IntPtr.Zero) != 0) {
           SendNotifyMessage(HWND_BROADCAST, WM_FONTCHANGE, IntPtr.Zero, IntPtr.Zero);
           attempt += 1;
         }
