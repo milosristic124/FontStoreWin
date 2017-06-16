@@ -64,8 +64,7 @@ namespace Storage.Data {
       FamilyName = familyName;
       Style = style;
       DownloadUrl = new Uri(downloadUrl);
-      //PreviewUrl = new Uri(previewUrl);
-      PreviewUrl = new Uri("c:\\Users\\remyr\\Desktop\\Fontstore\\preview.png");
+      PreviewUrl = new Uri(previewUrl);
       _activated = false;
       _isNew = true;
       SortRank = sortRank;

@@ -1,5 +1,7 @@
 ﻿using Logging;
 using System;
+using System.Diagnostics;
+using System.Reflection;
 using System.Threading.Tasks;
 using UI.Utilities;
 
@@ -37,7 +39,6 @@ namespace UI.States {
       Application.Context.Connection.OnDisconnected += Connection_Disconnected;
       Application.Context.Connection.OnEstablished += Connection_OnEstablished;
       Application.Context.Connection.OnConnectionTerminated += Connection_Terminated;
-      Application.Context.Connection.OnConnectionClosed += Connection_OnConnectionClosed;
     }
     #endregion
 
@@ -71,7 +72,6 @@ namespace UI.States {
       Application.Context.Connection.OnCatalogUpdateFinished -= Connection_OnCatalogUpdateFinished;
       Application.Context.Connection.OnDisconnected -= Connection_Disconnected;
       Application.Context.Connection.OnConnectionTerminated -= Connection_Terminated;
-      Application.Context.Connection.OnConnectionClosed -= Connection_OnConnectionClosed;
     }
     #endregion
 
@@ -109,14 +109,31 @@ namespace UI.States {
 
     #region action handling
     private void _view_OnLogout() {
+      Application.Context.Connection.OnConnectionClosed += Connection_OnConnectionClosed_logout;
       Application.Context.Connection.Disconnect(Protocol.DisconnectReason.Logout);
     }
 
+    private async void Connection_OnConnectionClosed_logout() {
+      await Application.Context.Storage.SaveFonts();
+      await Application.Context.Storage.CleanCredentials();
+
+      string appPath = Assembly.GetEntryAssembly().Location;
+      _view.InvokeOnUIThread(delegate {
+        Process.Start(appPath);
+        Application.Shutdown();
+      });
+    }
+
     private void _view_OnExit() {
-      Application.Context.Connection.OnConnectionClosed -= Connection_OnConnectionClosed;
+      Application.Context.Connection.OnConnectionClosed += Connection_OnConnectionClosed_exit;
       Application.Context.Connection.Disconnect(Protocol.DisconnectReason.Quit);
-      Application.Context.Storage.SaveFonts().Wait();
-      Application.Shutdown();
+    }
+
+    private async void Connection_OnConnectionClosed_exit() {
+      await Application.Context.Storage.SaveFonts();
+      _view.InvokeOnUIThread(delegate {
+        Application.Shutdown();
+      });
     }
 
     private void _view_OnAboutClicked() {
@@ -150,19 +167,6 @@ namespace UI.States {
       _reconnecting = true;
       return _view.InvokeOnUIThread(delegate {
         return _view.Disconnected();
-      });
-    }
-
-    private async void Connection_OnConnectionClosed() {
-      await Application.Context.Storage.SaveFonts();
-      await Application.Context.Storage.CleanCredentials();
-      Application.Context.Storage.Clear();
-
-      _view.InvokeOnUIThread(() => {
-        WillTransition = true;
-        FSM.State = new Login(Application, WindowPosition.FromWindow(_view));
-        FSM.State.Show();
-        Dispose();
       });
     }
 

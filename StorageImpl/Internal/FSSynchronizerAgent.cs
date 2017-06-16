@@ -146,11 +146,6 @@ namespace Storage.Impl.Internal {
 
       if (!_storage.PreviewExists(font.UID)) {
         try {
-#if DEBUG
-          using (Stream fileStream = File.OpenRead(font.PreviewUrl.AbsolutePath)) {
-            await _storage.SavePreviewFile(font.UID, fileStream, _cancelSource.Token);
-          }
-#else
           IHttpRequest request = _transport.CreateHttpRequest(font.PreviewUrl.AbsoluteUri);
           request.Method = WebRequestMethods.Http.Get;
 
@@ -164,7 +159,6 @@ namespace Storage.Impl.Internal {
           lock (_dlRequests) {
             _dlRequests.Remove(font.UID);
           }
-#endif
         }
         catch (Exception e) {
           Logger.Log("Preview downloading for font {0} failed: {1}", font.UID, e);

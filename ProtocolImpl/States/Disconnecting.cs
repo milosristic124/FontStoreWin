@@ -39,22 +39,9 @@
           break;
       }
 
-      if (_context.CatalogChannel?.IsJoined ?? false) {
-        _context.CatalogChannel?.Leave().Then(delegate {
-          if (_context.UserChannel?.IsJoined ?? false) {
-            _context.UserChannel?.SendDisconnect(message);
-          }
-        });
-      } else if (_context.UserChannel?.IsJoined ?? false) {
-        _context.UserChannel?.SendDisconnect(message);
-      }
-
-
-      _context.Transport.Disconnect(() => {
-        _context.Storage.DeactivateAllFonts(() => {
-          WillTransition = true;
-          _context.TriggerConnectionClosed();
-        });
+      _context.Storage.DeactivateAllFonts(() => {
+        WillTransition = true;
+        _context.TriggerConnectionClosed();
       });
     }
     #endregion

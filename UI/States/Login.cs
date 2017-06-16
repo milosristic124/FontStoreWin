@@ -85,7 +85,7 @@ namespace UI.States {
     }
 
     private void _view_OnExit() {
-      Application.Context.Connection.Disconnect(Protocol.DisconnectReason.Quit);
+      //Application.Context.Connection.Disconnect(Protocol.DisconnectReason.Quit);
       Application.Shutdown();
     }
 
