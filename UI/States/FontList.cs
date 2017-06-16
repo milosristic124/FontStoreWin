@@ -113,27 +113,9 @@ namespace UI.States {
       Application.Context.Connection.Disconnect(Protocol.DisconnectReason.Logout);
     }
 
-    private async void Connection_OnConnectionClosed_logout() {
-      await Application.Context.Storage.SaveFonts();
-      await Application.Context.Storage.CleanCredentials();
-
-      string appPath = Assembly.GetEntryAssembly().Location;
-      _view.InvokeOnUIThread(delegate {
-        Process.Start(appPath);
-        Application.Shutdown();
-      });
-    }
-
     private void _view_OnExit() {
       Application.Context.Connection.OnConnectionClosed += Connection_OnConnectionClosed_exit;
       Application.Context.Connection.Disconnect(Protocol.DisconnectReason.Quit);
-    }
-
-    private async void Connection_OnConnectionClosed_exit() {
-      await Application.Context.Storage.SaveFonts();
-      _view.InvokeOnUIThread(delegate {
-        Application.Shutdown();
-      });
     }
 
     private void _view_OnAboutClicked() {
@@ -175,6 +157,24 @@ namespace UI.States {
         _reconnecting = false;
         await LoadContent(true);
       }
+    }
+
+    private async void Connection_OnConnectionClosed_logout() {
+      await Application.Context.Storage.SaveFonts();
+      await Application.Context.Storage.CleanCredentials();
+
+      string appPath = Assembly.GetEntryAssembly().Location;
+      _view.InvokeOnUIThread(delegate {
+        Process.Start(appPath);
+        Application.Shutdown();
+      });
+    }
+
+    private async void Connection_OnConnectionClosed_exit() {
+      await Application.Context.Storage.SaveFonts();
+      _view.InvokeOnUIThread(delegate {
+        Application.Shutdown();
+      });
     }
     #endregion
   }

@@ -226,10 +226,18 @@ namespace UI.Views {
     }
 
     private void Logout_Click(object sender, RoutedEventArgs e) {
+      Loader.Visibility = Visibility.Visible;
+      InstalledCountLabel.Visibility = Visibility.Collapsed;
+      NewCountLabel.Visibility = Visibility.Collapsed;
+      AllCountLabel.Visibility = Visibility.Collapsed;
       OnLogout?.Invoke();
     }
 
     private void Quit_Click(object sender, RoutedEventArgs e) {
+      Loader.Visibility = Visibility.Visible;
+      InstalledCountLabel.Visibility = Visibility.Collapsed;
+      NewCountLabel.Visibility = Visibility.Collapsed;
+      AllCountLabel.Visibility = Visibility.Collapsed;
       OnExit?.Invoke();
     }
     #endregion
@@ -319,9 +327,8 @@ namespace UI.Views {
 
     private void UpdateSearchResult() {
       if (_searchCollection?.IsEmpty ?? true) {
-        SearchResultArea.Visibility = Visibility.Hidden;
+        SearchResultCount.Content = "0";
       } else {
-        SearchResultArea.Visibility = Visibility.Visible;
         SearchResultCount.Content = _searchCollection.Count;
       }
     }
