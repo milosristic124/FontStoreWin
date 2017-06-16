@@ -12,6 +12,8 @@ namespace Protocol.Payloads {
     public string DownloadUrl { get; set; }
     [JsonProperty("preview_url")]
     public string PreviewUrl { get; set; }
+    [JsonProperty("family_preview_url")]
+    public string FamilyPreviewUrl { get; set; }
     [JsonProperty("transmitted_at")]
     public int TransmittedAt { get; set; }
     [JsonProperty("font_number")]

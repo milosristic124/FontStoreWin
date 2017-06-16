@@ -224,7 +224,7 @@
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
                       </Grid.ColumnDefinitions>
-                      <Image Stretch="None" Width="159" Height="40" HorizontalAlignment="Left" Source="{Binding PreviewPath, Mode=OneWay}"  />
+                      <Image Stretch="None" Width="159" Height="40" HorizontalAlignment="Left" Source="{Binding PreviewPath, Mode=OneWay}" MaxWidth="159" MaxHeight="40" />
 
                       <StackPanel Orientation="Horizontal" Margin="5,0" HorizontalAlignment="Right" Grid.Column="1">
                         <Label Background="{x:Null}" Padding="0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Right" Content="{Binding Fonts.Count, Mode=OneWay}">
@@ -276,7 +276,7 @@
                         </ListBoxItem.Background>
 
                         <Grid Height="40" HorizontalAlignment="Stretch" Margin="0" Background="{x:Null}">
-                          <Image Stretch="None" Width="140" Height="40" HorizontalAlignment="Left" Source="{Binding PreviewPath, Mode=OneWay}"  />
+                          <Image Stretch="None" Width="200" Height="40"  MaxWidth="200" MaxHeight="40" HorizontalAlignment="Left" Source="{Binding PreviewPath, Mode=OneWay}"  />
 
                           <ToggleButton BorderThickness="0"
                                         BorderBrush="{x:Null}"
@@ -437,7 +437,7 @@
                           <ColumnDefinition/>
                           <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Image Stretch="None" Width="159" Height="40" HorizontalAlignment="Left" Source="{Binding PreviewPath, Mode=OneWay}"  />
+                        <Image Stretch="None" Width="159" Height="40" MaxWidth="159" MaxHeight="40" HorizontalAlignment="Left" Source="{Binding PreviewPath, Mode=OneWay}"  />
 
                         <StackPanel Orientation="Horizontal" Margin="5,0" HorizontalAlignment="Right" Grid.Column="1">
                           <Label Background="{x:Null}" Padding="0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Right" Content="{Binding Fonts.Count, Mode=OneWay}">
@@ -489,7 +489,7 @@
                           </ListBoxItem.Background>
 
                           <Grid Height="40" HorizontalAlignment="Stretch" Margin="0" Background="{x:Null}">
-                            <Image Stretch="None" Width="140" Height="40" HorizontalAlignment="Left" Source="{Binding PreviewPath, Mode=OneWay}"  />
+                            <Image Stretch="None" Width="200" Height="40" MaxWidth="200" MaxHeight="40" HorizontalAlignment="Left" Source="{Binding PreviewPath, Mode=OneWay}"  />
 
                             <ToggleButton BorderThickness="0"
                                         BorderBrush="{x:Null}"

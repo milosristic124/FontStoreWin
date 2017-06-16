@@ -28,6 +28,7 @@ namespace Storage.Data {
     }
     public Uri DownloadUrl { get; private set; }
     public Uri PreviewUrl { get; private set; }
+    public Uri FamilyPreviewUrl { get; private set; }
     public bool Activated {
       get {
         return _activated;
@@ -42,6 +43,7 @@ namespace Storage.Data {
     public int SortRank { get; private set; }
 
     public string PreviewPath { get; set; }
+    public string FamilyPreviewPath { get; set; }
     #endregion
 
     #region delegates
@@ -59,12 +61,13 @@ namespace Storage.Data {
     #endregion
 
     #region ctor
-    public Font(string uid, string familyName, string style, int sortRank, string downloadUrl, string previewUrl) {
+    public Font(string uid, string familyName, string style, int sortRank, string downloadUrl, string previewUrl, string familyPreviewUrl) {
       UID = uid;
       FamilyName = familyName;
       Style = style;
       DownloadUrl = new Uri(downloadUrl);
       PreviewUrl = new Uri(previewUrl);
+      FamilyPreviewUrl = familyPreviewUrl != null ? new Uri(familyPreviewUrl): null;
       _activated = false;
       _isNew = true;
       SortRank = sortRank;

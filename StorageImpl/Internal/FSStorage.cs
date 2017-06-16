@@ -132,7 +132,8 @@ namespace Storage.Impl.Internal {
               style: fontData.Name,
               downloadUrl: fontData.DownloadUrl,
               sortRank: fontData.SortRank,
-              previewUrl: fontData.PreviewUrl
+              previewUrl: fontData.PreviewUrl,
+              familyPreviewUrl: fontData.FamilyPreviewUrl
             );
             newFont.Activated = fontData.Activated;
             collection.AddFont(newFont);
@@ -229,20 +230,20 @@ namespace Storage.Impl.Internal {
     }
 
 
-    public bool PreviewExists(string uid) {
-      return File.Exists(PreviewFilePath(uid));
+    public bool PreviewExists(string uid, bool forFamily = false) {
+      return File.Exists(PreviewFilePath(uid, forFamily));
     }
 
-    public string PreviewPath(string uid) {
-      return PreviewFilePath(uid);
+    public string PreviewPath(string uid, bool forFamily = false) {
+      return PreviewFilePath(uid, forFamily);
     }
 
-    public async Task SavePreviewFile(string uid, Stream data, CancellationToken token) {
-      await WriteData(PreviewFilePath(uid), data, token);
+    public async Task SavePreviewFile(string uid, bool forFamily, Stream data, CancellationToken token) {
+      await WriteData(PreviewFilePath(uid, forFamily), data, token);
     }
 
-    public async Task RemovePreviewFile(string uid) {
-      await RemoveFile(PreviewFilePath(uid));
+    public async Task RemovePreviewFile(string uid, bool forFamily) {
+      await RemoveFile(PreviewFilePath(uid, forFamily));
     }
     #endregion
 
@@ -251,8 +252,12 @@ namespace Storage.Impl.Internal {
       return string.Format("{0}{1}", _fontRootPath, uid);
     }
 
-    private string PreviewFilePath(string uid) {
-      return string.Format("{0}{1}.png", _previewRootPath, uid);
+    private string PreviewFilePath(string uid, bool forFamily) {
+      if (forFamily) {
+        return string.Format("{0}f_{1}.png", _previewRootPath, uid);
+      } else {
+        return string.Format("{0}{1}.png", _previewRootPath, uid);
+      }
     }
 
     private Task<Stream> ReadData(string path) {
@@ -327,6 +332,8 @@ namespace Storage.Impl.Internal {
       public string DownloadUrl { get; set; }
       [JsonProperty("preview_url")]
       public string PreviewUrl { get; set; }
+      [JsonProperty("family_preview_url")]
+      public string FamilyPreviewUrl { get; set; }
       [JsonProperty("activated")]
       public bool Activated { get; set; }
       [JsonProperty("rank")]

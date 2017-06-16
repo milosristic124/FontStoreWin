@@ -124,6 +124,7 @@ namespace TestUtilities.Storage {
         style: description.Style,
         downloadUrl: description.DownloadUrl,
         previewUrl: description.PreviewUrl,
+        familyPreviewUrl: description.FamilyPreviewUrl,
         sortRank: 0
       );
       FamilyCollection.AddFont(newFont);

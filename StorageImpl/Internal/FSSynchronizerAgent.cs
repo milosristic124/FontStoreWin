@@ -101,13 +101,17 @@ namespace Storage.Impl.Internal {
       _agent.Enqueue(delegate {
         Logger.Log("Preview download started: {0}", font.UID);
         DownloadPreview(font).Wait();
+        DownloadFamilyPreview(font).Wait();
         then?.Invoke();
       });
     }
 
     public void QueuePreviewDeletion(Font font, Action then = null) {
       _agent.Enqueue(delegate {
-        _storage.RemovePreviewFile(font.UID).Wait();
+        if (font.FamilyPreviewUrl != null) {
+          _storage.RemovePreviewFile(font.UID, true).Wait();
+        }
+        _storage.RemovePreviewFile(font.UID, false).Wait();
         then?.Invoke();
       });
     }
@@ -154,7 +158,7 @@ namespace Storage.Impl.Internal {
           }
           IHttpResponse response = await request.Response;
           using (response.ResponseStream) {
-            await _storage.SavePreviewFile(font.UID, response.ResponseStream, _cancelSource.Token);
+            await _storage.SavePreviewFile(font.UID, false, response.ResponseStream, _cancelSource.Token);
           }
           lock (_dlRequests) {
             _dlRequests.Remove(font.UID);
@@ -166,6 +170,37 @@ namespace Storage.Impl.Internal {
       }
       else {
         Logger.Log("Preview download already done: {0}", font.UID);
+      }
+    }
+
+    private async Task DownloadFamilyPreview(Font font) {
+      if (font.FamilyPreviewUrl != null) {
+        font.FamilyPreviewPath = _storage.PreviewPath(font.UID, true);
+
+        Logger.Log("Family preview download started: {0}", font.UID);
+        if (!_storage.PreviewExists(font.UID, true)) {
+          try {
+            IHttpRequest request = _transport.CreateHttpRequest(font.FamilyPreviewUrl.AbsoluteUri);
+            request.Method = WebRequestMethods.Http.Get;
+
+            lock (_dlRequests) {
+              _dlRequests.Add(font.UID, request);
+            }
+            IHttpResponse response = await request.Response;
+            using (response.ResponseStream) {
+              await _storage.SavePreviewFile(font.UID, true, response.ResponseStream, _cancelSource.Token);
+            }
+            lock (_dlRequests) {
+              _dlRequests.Remove(font.UID);
+            }
+          }
+          catch (Exception e) {
+            Logger.Log("Preview downloading for family {0} failed: {1}", font.UID, e);
+          }
+        }
+        else {
+          Logger.Log("Family preview download already done: {0}", font.UID);
+        }
       }
     }
     #endregion

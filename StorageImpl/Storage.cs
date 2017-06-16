@@ -179,7 +179,8 @@ namespace Storage.Impl {
         style: description.Style,
         downloadUrl: description.DownloadUrl,
         sortRank: description.SortRank,
-        previewUrl: description.PreviewUrl
+        previewUrl: description.PreviewUrl,
+        familyPreviewUrl: description.FamilyPreviewUrl
       );
       FamilyCollection.AddFont(newFont);
       _HDDStorage.LastCatalogUpdate = description.TransmittedAt;

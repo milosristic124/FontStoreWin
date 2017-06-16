@@ -8,13 +8,13 @@ namespace FontInstaller.Impl.Test {
   [TestClass]
   public class FontInstallerImplTests {
     #region data
-    private static readonly string FontUID = "test_uid";
-    private static readonly string FamilyName = "Eurosoft";
-    private MemoryStream FontData {
-      get {
-        return new MemoryStream(Properties.Resources.eurosoft_regular);
-      }
-    }
+    //private static readonly string FontUID = "test_uid";
+    //private static readonly string FamilyName = "Eurosoft";
+    //private MemoryStream FontData {
+    //  get {
+    //    return new MemoryStream(Properties.Resources.eurosoft_regular);
+    //  }
+    //}
     #endregion
 
     //[TestMethod]

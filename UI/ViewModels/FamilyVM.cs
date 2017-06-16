@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media;
 
 namespace UI.ViewModels {
   class FamilyVM : INotifyPropertyChanged {
@@ -53,7 +52,7 @@ namespace UI.ViewModels {
     #region ctor
     public FamilyVM(Storage.Data.Family model) {
       _model = model;
-      PreviewPath = _model.DefaultFont.PreviewPath;
+      PreviewPath = _model.Fonts.FirstOrDefault(fnt => fnt.FamilyPreviewPath != null)?.FamilyPreviewPath;
 
       Fonts = new ObservableCollection<FontVM>(_model.Fonts.Select(fontModel => {
         return new FontVM(fontModel);
