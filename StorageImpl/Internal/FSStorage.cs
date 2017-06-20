@@ -348,6 +348,7 @@ namespace Storage.Impl.Internal {
         Name = font.Style;
         DownloadUrl = font.DownloadUrl.AbsoluteUri;
         PreviewUrl = font.PreviewUrl.AbsoluteUri;
+        FamilyPreviewUrl = font.FamilyPreviewUrl?.AbsoluteUri;
         Activated = font.Activated;
         SortRank = font.SortRank;
       }

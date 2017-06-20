@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Media;
 
 namespace UI.ViewModels {
-  class FontVM : INotifyPropertyChanged {
+  class FontVM : INotifyPropertyChanged, IComparable<FontVM>, IEquatable<FontVM> {
     #region private data
     private Storage.Data.Font _model;
     #endregion
@@ -65,6 +65,16 @@ namespace UI.ViewModels {
     public FontVM(Storage.Data.Font model) {
       _model = model;
       _model.OnActivationChanged += _model_OnActivationChanged;
+    }
+    #endregion
+
+    #region methods
+    public int CompareTo(FontVM other) {
+      return _model.SortRank - other._model.SortRank;
+    }
+
+    public bool Equals(FontVM other) {
+      return _model.SortRank == other._model.SortRank;
     }
     #endregion
 

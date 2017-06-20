@@ -3,9 +3,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using Utilities.Extensions;
 
 namespace UI.ViewModels {
-  class FamilyVM : INotifyPropertyChanged {
+  class FamilyVM : INotifyPropertyChanged, IComparable<FamilyVM>, IEquatable<FamilyVM> {
     #region private data
     private Storage.Data.Family _model;
 
@@ -65,6 +66,16 @@ namespace UI.ViewModels {
     }
     #endregion
 
+    #region methods
+    public int CompareTo(FamilyVM other) {
+      return _model.Name.CompareTo(other._model.Name);
+    }
+
+    public bool Equals(FamilyVM other) {
+      return _model.Name == other._model.Name;
+    }
+    #endregion
+
     #region event handling
     private void _model_OnFullyActivatedChanged(Storage.Data.Family sender) {
       TriggerPropertyChanged("FullyActivated");
@@ -81,8 +92,7 @@ namespace UI.ViewModels {
 
     private void _model_OnFontAdded(Storage.Data.Family sender, Storage.Data.Font newFontModel) {
       ExecuteOnUIThread(() => {
-        Fonts.Add(new FontVM(newFontModel));
-        Fonts = (ObservableCollection<FontVM>)Fonts.OrderBy(rank);
+        Fonts.SortAdd(new FontVM(newFontModel));
       });
     }
 
@@ -92,7 +102,7 @@ namespace UI.ViewModels {
         if (removedVM != null) {
           Fonts.Remove(removedVM);
         }
-        Fonts.Add(new FontVM(updatedFont));
+        Fonts.SortAdd(new FontVM(updatedFont));
       });
     }
     #endregion

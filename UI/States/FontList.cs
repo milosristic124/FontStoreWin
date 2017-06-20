@@ -11,6 +11,7 @@ namespace UI.States {
     private Views.FontList _view = null;
     private bool _reconnecting = false;
     private bool _loading = false;
+    private bool _disconnecting = false;
     #endregion
 
     #region properties
@@ -77,7 +78,7 @@ namespace UI.States {
 
     #region private methods
     private async Task LoadContent(bool force = false) {
-      if (_loading) {
+      if (_disconnecting || _loading) {
         ShowLoadingState();
       } else if (force || !Application.Context.Storage.Loaded) {
         _loading = true;

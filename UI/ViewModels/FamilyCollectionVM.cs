@@ -1,10 +1,10 @@
-﻿using FontInstaller;
-using Storage.Data;
+﻿using Storage.Data;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using Utilities.Extensions;
 
 namespace UI.ViewModels {
   class FamilyCollectionVM: IDisposable {
@@ -36,13 +36,7 @@ namespace UI.ViewModels {
         return familyvm.Name;
       });
 
-      if (_filter != null) {
-        Families = new ObservableCollection<FamilyVM>(_vms.Where(family => {
-          return _filter(family);
-        }));
-      } else {
-        Families = new ObservableCollection<FamilyVM>(_vms);
-      }
+      Families = CreateCollection(_vms);
 
       _model.OnCollectionCleared += _model_OnCollectionCleared;
       _model.OnFamilyAdded += _model_OnFamilyAdded;
@@ -85,7 +79,7 @@ namespace UI.ViewModels {
         if (existingVm == null) {
           FamilyVM vm = new FamilyVM(newFamily);
           if (!FilterOut(vm)) {
-            Families.Add(vm);
+            Families.SortAdd(vm);
             OnCountChanged?.Invoke(this);
           }
         }
@@ -109,7 +103,7 @@ namespace UI.ViewModels {
 
         // family was not in the collection && family should be in the collection
         if (existingVm == null && !FilterOut(vm)) {
-          Families.Add(vm);
+          Families.SortAdd(vm);
           OnCountChanged?.Invoke(this);
         }
         // family was in the collection && family should not be in the collection
@@ -130,7 +124,7 @@ namespace UI.ViewModels {
 
         // family was not in the collection && family should be in the collection
         if (existingVm == null && !FilterOut(vm)) {
-          Families.Add(vm);
+          Families.SortAdd(vm);
           OnCountChanged?.Invoke(this);
         }
         // family was in the collection && family should not be in the collection
@@ -151,7 +145,7 @@ namespace UI.ViewModels {
 
         // family was not in the collection && family should be in the collection
         if (existingVm == null && !FilterOut(vm)) {
-          Families.Add(vm);
+          Families.SortAdd(vm);
           OnCountChanged?.Invoke(this);
         }
         // family was in the collection && family should not be in the collection
@@ -172,7 +166,7 @@ namespace UI.ViewModels {
 
         // family was not in the collection && family should be in the collection
         if (existingVm == null && !FilterOut(vm)) {
-          Families.Add(vm);
+          Families.SortAdd(vm);
           OnCountChanged?.Invoke(this);
         }
         // family was in the collection && family should not be in the collection
@@ -193,7 +187,7 @@ namespace UI.ViewModels {
 
         // family was not in the collection && family should be in the collection
         if (existingVm == null && !FilterOut(vm)) {
-          Families.Add(vm);
+          Families.SortAdd(vm);
           OnCountChanged?.Invoke(this);
         }
         // family was in the collection && family should not be in the collection
@@ -215,6 +209,17 @@ namespace UI.ViewModels {
 
     private void ExecuteOnUIThread(Action action) {
       Application.Current.Dispatcher.BeginInvoke(action);
+    }
+
+    private ObservableCollection<FamilyVM> CreateCollection(IEnumerable<FamilyVM> _vms) {
+      if (_filter != null) {
+        return new ObservableCollection<FamilyVM>(_vms.Where(family => {
+          return _filter(family);
+        }));
+      }
+      else {
+        return new ObservableCollection<FamilyVM>(_vms);
+      }
     }
     #endregion
   }

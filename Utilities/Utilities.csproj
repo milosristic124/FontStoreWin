@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\ObservableCollection.cs" />
     <Compile Include="Extensions\Task.cs" />
     <Compile Include="FSM\AState.cs" />
     <Compile Include="FSM\FiniteStateMachine.cs" />
