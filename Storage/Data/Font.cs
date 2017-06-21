@@ -51,6 +51,7 @@ namespace Storage.Data {
     public delegate void FontNewEventHandler(Font sender);
     public delegate void FontActivationRequestedHandler(Font sender);
     public delegate void FontDeactivationRequestedHandler(Font sender);
+    public delegate void FontInstallationHandler(Font sender, bool success);
     #endregion
 
     #region events
@@ -58,6 +59,8 @@ namespace Storage.Data {
     public event FontNewEventHandler OnNewChanged;
     public event FontActivationRequestedHandler OnActivationRequest;
     public event FontDeactivationRequestedHandler OnDeactivationRequest;
+    public event FontInstallationHandler OnFontInstalled;
+    public event FontInstallationHandler OnFontUninstalled;
     #endregion
 
     #region ctor
@@ -81,6 +84,14 @@ namespace Storage.Data {
 
     public void RequestActivation() {
       OnActivationRequest?.Invoke(this);
+    }
+
+    public void FontInstalled(bool success) {
+      OnFontInstalled?.Invoke(this, success);
+    }
+
+    public void FontUninstalled(bool success) {
+      OnFontUninstalled?.Invoke(this, success);
     }
     #endregion
   }

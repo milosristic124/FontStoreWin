@@ -40,6 +40,9 @@ namespace UI.States {
       Application.Context.Connection.OnDisconnected += Connection_Disconnected;
       Application.Context.Connection.OnEstablished += Connection_OnEstablished;
       Application.Context.Connection.OnConnectionTerminated += Connection_Terminated;
+
+      Application.Context.Storage.OnFontInstall += Storage_OnFontInstall;
+      Application.Context.Storage.OnFontUninstall += Storage_OnFontUninstall;
     }
     #endregion
 
@@ -73,6 +76,9 @@ namespace UI.States {
       Application.Context.Connection.OnCatalogUpdateFinished -= Connection_OnCatalogUpdateFinished;
       Application.Context.Connection.OnDisconnected -= Connection_Disconnected;
       Application.Context.Connection.OnConnectionTerminated -= Connection_Terminated;
+
+      Application.Context.Storage.OnFontInstall -= Storage_OnFontInstall;
+      Application.Context.Storage.OnFontUninstall -= Storage_OnFontUninstall;
     }
     #endregion
 
@@ -110,11 +116,13 @@ namespace UI.States {
 
     #region action handling
     private void _view_OnLogout() {
+      _disconnecting = true;
       Application.Context.Connection.OnConnectionClosed += Connection_OnConnectionClosed_logout;
       Application.Context.Connection.Disconnect(Protocol.DisconnectReason.Logout);
     }
 
     private void _view_OnExit() {
+      _disconnecting = true;
       Application.Context.Connection.OnConnectionClosed += Connection_OnConnectionClosed_exit;
       Application.Context.Connection.Disconnect(Protocol.DisconnectReason.Quit);
     }
@@ -176,6 +184,12 @@ namespace UI.States {
       _view.InvokeOnUIThread(delegate {
         Application.Shutdown();
       });
+    }
+
+    private void Storage_OnFontUninstall(Storage.Data.Font font, bool succeed) {
+    }
+
+    private void Storage_OnFontInstall(Storage.Data.Font font, bool succeed) {
     }
     #endregion
   }

@@ -22,6 +22,14 @@ namespace UI {
     public System.Windows.Forms.NotifyIcon NotifyIcon { get; private set; }
     #endregion
 
+    #region static properties
+    public static new App Current {
+      get {
+        return Application.Current as App;
+      }
+    }
+    #endregion
+
     #region ctor
     public App() {
       _ui = new FiniteStateMachine<States.UIState>(new States.NoUI(this), true);
@@ -80,7 +88,7 @@ namespace UI {
       NotifyIcon.Icon = UI.Properties.Resources.NotifIcon_54;
     }
 
-    public void ShowNotification(string message, System.Windows.Forms.ToolTipIcon icon) {
+    public void ShowNotification(string message, System.Windows.Forms.ToolTipIcon icon = System.Windows.Forms.ToolTipIcon.None) {
       try {
         Dispatcher.Invoke(() => {
           NotifyIcon.ShowBalloonTip(3000, "Fontstore", message, icon);
