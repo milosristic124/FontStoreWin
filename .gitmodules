@@ -1,0 +1,3 @@
+[submodule "PhoenixSocket.NET"]
+	path = PhoenixSocket.NET
+	url = git@github.com:kelostrada/PhoenixSocket.NET.git

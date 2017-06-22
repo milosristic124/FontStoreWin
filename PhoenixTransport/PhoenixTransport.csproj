@@ -34,10 +34,6 @@
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="PhoenixSocket, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PhoenixSocket.1.0.0\lib\net452\PhoenixSocket.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -61,6 +57,10 @@
     <ProjectReference Include="..\Logger\Logger.csproj">
       <Project>{94E761D5-414B-42C6-8D32-3DAE9ADD920E}</Project>
       <Name>Logger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhoenixSocket.NET\PhoenixSocket\PhoenixSocket.csproj">
+      <Project>{29a3ddb0-df0d-43d8-9bb9-12f1aa644b1f}</Project>
+      <Name>PhoenixSocket</Name>
     </ProjectReference>
     <ProjectReference Include="..\ProtocolPayloads\ProtocolPayloads.csproj">
       <Project>{DE2E0581-3B35-44BC-A408-F3F480D70F18}</Project>
