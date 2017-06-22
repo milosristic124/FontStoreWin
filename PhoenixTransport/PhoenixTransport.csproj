@@ -66,13 +66,13 @@
       <Project>{2f40baa9-89c9-44d7-8060-233b5230b94b}</Project>
       <Name>ProtocolTransport</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SuperSocket.ClientEngine\SuperSocket.ClientEngine.Net45.csproj">
+      <Project>{8bbfbe4a-b91a-4dcc-92d5-fb0436e2544f}</Project>
+      <Name>SuperSocket.ClientEngine.Net45</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utilities\Utilities.csproj">
       <Project>{B7896312-0281-4255-B8F3-1056E053FA3C}</Project>
       <Name>Utilities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WebSocket4Net\WebSocket4Net\WebSocket4Net.Net45.csproj">
-      <Project>{6920447f-76b1-4739-822e-9ce3a2882718}</Project>
-      <Name>WebSocket4Net.Net45</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -4,3 +4,6 @@
 [submodule "SuperSocket.ClientEngine"]
 	path = SuperSocket.ClientEngine
 	url = git@github.com:kerryjiang/SuperSocket.ClientEngine.git
+[submodule "PhoenixSocket.NET"]
+	path = PhoenixSocket.NET
+	url = git@github.com:kelostrada/PhoenixSocket.NET.git
