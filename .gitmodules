@@ -1,3 +1,6 @@
-[submodule "PhoenixSocket.NET"]
-	path = PhoenixSocket.NET
-	url = git@github.com:kelostrada/PhoenixSocket.NET.git
+[submodule "WebSocket4Net"]
+	path = WebSocket4Net
+	url = git@github.com:kerryjiang/WebSocket4Net.git
+[submodule "SuperSocket.ClientEngine"]
+	path = SuperSocket.ClientEngine
+	url = git@github.com:kerryjiang/SuperSocket.ClientEngine.git
