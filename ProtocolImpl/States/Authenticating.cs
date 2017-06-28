@@ -102,18 +102,12 @@ namespace Protocol.Impl.States {
           FSM.State = new Idle(_context);
           _context.TriggerValidationFailure(failure.Message);
         } else {
-#if DEBUG
           Logger.Log("Authentication failed: {0}", e);
-#endif
           WillTransition = true;
           FSM.State = new RetryAuthenticating(_context, _authPayload);
         }
-#if DEBUG
       } catch (Exception e) {
         Logger.Log("Authentication failed: {0}", e);
-#else
-      } catch (Exception ) {
-#endif
         WillTransition = true;
         FSM.State = new RetryAuthenticating(_context, _authPayload);
       }

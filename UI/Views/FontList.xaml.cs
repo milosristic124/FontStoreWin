@@ -73,7 +73,9 @@ namespace UI.Views {
       try {
         Dispatcher.Invoke(action);
       }
-      catch (Exception) { }
+      catch (Exception e) {
+        Logger.Log("[FontList] Invoke on UI thread failed {0}", e);
+      }
     }
 
     public TResult InvokeOnUIThread<TResult>(Func<TResult> action) {

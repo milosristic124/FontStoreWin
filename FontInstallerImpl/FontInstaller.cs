@@ -45,7 +45,9 @@ namespace FontInstaller.Impl {
             RemoveUserFont(path);
           }
         }
-        catch (Exception) { }
+        catch (Exception e) {
+          Logger.Log("Uninstalling user fonts failed {0}", e);
+        }
         _userFonts.Clear();
         Logger.Log("Uninstalling fonts done");
       });

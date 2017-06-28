@@ -46,12 +46,10 @@ namespace Protocol.Impl.States {
     #region installation events handling
     private void Storage_OnFontUninstall(Storage.Data.Font font, bool succeed) {
       _context.UserChannel.SendFontUninstallationReport(font.UID, succeed);
-      Logger.Log("[Installing] Font uninstalled: success = {0}", succeed);
     }
 
     private void Storage_OnFontInstall(Storage.Data.Font font, bool succeed) {
       _context.UserChannel.SendFontInstallationReport(font.UID, succeed);
-      Logger.Log("[Installing] Font installed: success = {0}", succeed);
     }
     #endregion
   }

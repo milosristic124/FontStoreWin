@@ -91,10 +91,12 @@ namespace UI {
     public void ShowNotification(string message, System.Windows.Forms.ToolTipIcon icon = System.Windows.Forms.ToolTipIcon.None) {
       try {
         Dispatcher.Invoke(() => {
-          NotifyIcon.ShowBalloonTip(3000, "Fontstore", message, icon);
+          NotifyIcon.ShowBalloonTip(1500, "Fontstore", message, icon);
         });
       }
-      catch (Exception) { }
+      catch (Exception e) {
+        Logging.Logger.Log("Dispatching notification failed {0}", e);
+      }
     }
     #endregion
 

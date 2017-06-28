@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Logging;
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -94,7 +95,9 @@ namespace UI.Views {
     public void InvokeOnUIThread(Action action) {
       try {
         Dispatcher.Invoke(action);
-      } catch (Exception) { }
+      } catch (Exception e) {
+        Logger.Log("[Login] Invoke on UI thread failed {0}", e);
+      }
     }
 
     public TResult InvokeOnUIThread<TResult>(Func<TResult> action) {
