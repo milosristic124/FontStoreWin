@@ -2,16 +2,12 @@
   public static class Constants {
     public static class Urls {
       #region private constants
-#if DEBUG
       private static readonly string WS = "wss";
       private static readonly string HTTP = "https";
-      //private static readonly string Host = "192.168.44.99:3000";
-      private static readonly string Host = "api.staging.fontstore.com";
-#else
-    private static readonly string WS = "wss://";
-    private static readonly string HTTP = "https://";
-    private static readonly string Host = "app.fontstore.com";
-#endif
+      // staging
+      //private static readonly string Host = "api.staging.fontstore.com";
+      // prod
+      private static readonly string Host = "api.fontstore.com";
       #endregion
 
       #region constants
@@ -31,11 +27,10 @@
 
     public static class Security {
       #region constants
-#if DEBUG
-      public static readonly string FontCypherKey = "lvcypbhupbdmg";
-#else
-      public static readonly string FontCypherKey = "lvycpbhupbdmg";
-#endif
+      // staging
+      //public static readonly string FontCypherKey = "lvcypbhupbdmg";
+      // prod
+      public static readonly string FontCypherKey = "ugpmfjbtlzpdgrut";
       #endregion
     }
   }

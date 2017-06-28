@@ -86,13 +86,13 @@
           <Label x:Name="LoginButtonLabel" Content="LOGIN" Foreground="White" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
         </Border>
       </Button>
-      <TextBlock x:Name="ForgotPasswordLink" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,20,0,0" FontFamily="/Fontstore;component/Fonts/#Litmus" FontWeight="Bold" Foreground="{x:Null}"><Hyperlink NavigateUri="http://www.fontstore.com/reset-password" RequestNavigate="Hyperlink_RequestNavigate" Style="{DynamicResource HyperlinkGrey}" Focusable="False"><Run Text="I've forgotten my password"/></Hyperlink></TextBlock>
+      <TextBlock x:Name="ForgotPasswordLink" TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,20,0,0" FontFamily="/Fontstore;component/Fonts/#Litmus" FontWeight="Bold" Foreground="{x:Null}"><Hyperlink NavigateUri="https://www.fontstore.com/reset-password" RequestNavigate="Hyperlink_RequestNavigate" Style="{DynamicResource HyperlinkGrey}" Focusable="False"><Run Text="I've forgotten my password"/></Hyperlink></TextBlock>
       <Label x:Name="SignupLabel" Content="Not a Member yet?" HorizontalAlignment="Center" Margin="0,25,0,0" VerticalAlignment="Top" FontFamily="/Fontstore;component/Fonts/#Litmus" FontWeight="Bold" Padding="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
         <Label.Foreground>
           <SolidColorBrush Color="{DynamicResource FSBlack}"/>
         </Label.Foreground>
       </Label>
-      <TextBlock x:Name="SignupLink" HorizontalAlignment="Center" Margin="0,8,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="/Fontstore;component/Fonts/#Litmus" FontWeight="Bold" TextAlignment="Center" Foreground="{x:Null}"><Hyperlink NavigateUri="http://www.fontstore.com/sign-up" RequestNavigate="Hyperlink_RequestNavigate" Style="{DynamicResource HyperlinkBlack}" Focusable="False"><Run Text="SIGN UP"/></Hyperlink></TextBlock>
+      <TextBlock x:Name="SignupLink" HorizontalAlignment="Center" Margin="0,8,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontFamily="/Fontstore;component/Fonts/#Litmus" FontWeight="Bold" TextAlignment="Center" Foreground="{x:Null}"><Hyperlink NavigateUri="https://www.fontstore.com/sign-up" RequestNavigate="Hyperlink_RequestNavigate" Style="{DynamicResource HyperlinkBlack}" Focusable="False"><Run Text="SIGN UP"/></Hyperlink></TextBlock>
     </StackPanel>
     <Grid Name="Loader" Panel.ZIndex="1" Margin="0,70,0,0" Visibility="Hidden" >
       <Grid.Background>
