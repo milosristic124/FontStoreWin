@@ -1,0 +1,22 @@
+﻿using Newtonsoft.Json;
+
+namespace Protocol.Payloads {
+  public class FontDescription {
+    [JsonProperty("uid")]
+    public string UID { get; set; }
+    [JsonProperty("font_style")]
+    public string Style { get; set; }
+    [JsonProperty("font_family")]
+    public string FamilyName { get; set; }
+    [JsonProperty("download_url")]
+    public string DownloadUrl { get; set; }
+    [JsonProperty("preview_url")]
+    public string PreviewUrl { get; set; }
+    [JsonProperty("family_preview_url")]
+    public string FamilyPreviewUrl { get; set; }
+    [JsonProperty("transmitted_at")]
+    public int TransmittedAt { get; set; }
+    [JsonProperty("font_number")]
+    public int SortRank { get; set; }
+  }
+}

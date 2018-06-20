@@ -1,0 +1,28 @@
+﻿<m:DesignFamilyCollection xmlns:m="clr-namespace:UI.Dev">
+  <m:DesignFamily>
+    <m:DesignFamily.Name>Family</m:DesignFamily.Name>
+
+    <m:DesignFamily.Fonts>
+      <m:DesignFont>
+        <m:DesignFont.Name>Family Regular</m:DesignFont.Name>
+        <m:DesignFont.Activated>False</m:DesignFont.Activated>
+      </m:DesignFont>
+      
+      <m:DesignFont>
+        <m:DesignFont.Name>Family Bold</m:DesignFont.Name>
+        <m:DesignFont.Activated>False</m:DesignFont.Activated>
+      </m:DesignFont>
+      
+      <m:DesignFont>
+        <m:DesignFont.Name>Family Italic</m:DesignFont.Name>
+        <m:DesignFont.Activated>True</m:DesignFont.Activated>
+      </m:DesignFont>
+      
+      <m:DesignFont>
+        <m:DesignFont.Name>Family Bold Italic</m:DesignFont.Name>
+        <m:DesignFont.Activated>True</m:DesignFont.Activated>
+      </m:DesignFont>
+    </m:DesignFamily.Fonts>
+    
+  </m:DesignFamily>
+</m:DesignFamilyCollection>

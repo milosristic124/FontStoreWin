@@ -1,0 +1,201 @@
+﻿<Application x:Class="UI.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:UI"
+             xmlns:Data="clr-namespace:Storage.Data;assembly=Storage"
+             ShutdownMode="OnExplicitShutdown"
+             Exit="Application_Exit">
+  <Application.Resources>
+
+    <!--Theme color definitions-->
+    <Color x:Key="FSBlack">#FF1B1B1B</Color>
+    <Color x:Key="FSGrey">#FFCDCDCD</Color>
+    <Color x:Key="FSBlue">#FF0078FF</Color>
+    <Color x:Key="FSButtonGrey">#FFB4B4B4</Color>
+    <Color x:Key="FSBackgroundGrey">#FFF4F4F4</Color>
+
+    <!--Theme brush definitions-->
+    <SolidColorBrush Color="{StaticResource FSBlack}" x:Key="FSBlackBrush"/>
+    <SolidColorBrush Color="{StaticResource FSGrey}" x:Key="FSGreyBrush"/>
+    <SolidColorBrush Color="{StaticResource FSBlue}" x:Key="FSBlueBrush"/>
+    <SolidColorBrush Color="{StaticResource FSButtonGrey}" x:Key="FSButtonGreyBrush"/>
+    <SolidColorBrush Color="{StaticResource FSBackgroundGrey}" x:Key="FSBackgroundGreyBrush"/>
+
+    <!--Controls styling-->
+    <Style TargetType="{x:Type Hyperlink}" x:Key="HyperlinkBlack">
+      <Setter Property="Foreground" Value="{StaticResource FSBlackBrush}" />
+      <Setter Property="TextDecorations" Value="None"/>
+      <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True">
+          <Setter Property="TextDecorations" Value="Underline"/>
+        </Trigger>
+        <Trigger Property="IsEnabled" Value="False">
+          <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+        </Trigger>
+        <Trigger Property="IsEnabled" Value="True">
+          <Setter Property="Cursor" Value="Hand"/>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type Hyperlink}" x:Key="HyperlinkGrey">
+      <Setter Property="Foreground" Value="{StaticResource FSGreyBrush}" />
+      <Setter Property="TextDecorations" Value="Underline"/>
+      <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True">
+          <Setter Property="Foreground" Value="{StaticResource FSBlackBrush}" />
+        </Trigger>
+        <Trigger Property="IsEnabled" Value="False">
+          <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+        </Trigger>
+        <Trigger Property="IsEnabled" Value="True">
+          <Setter Property="Cursor" Value="Hand"/>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type Button}" x:Key="FSButton">
+      <Setter Property="OverridesDefaultStyle" Value="True" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type Button}">
+            <Border x:Name="border" BorderThickness="0" BorderBrush="Black" Background="{TemplateBinding Background}">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="Button.IsMouseOver" Value="True">
+                <Setter Property="Button.Opacity" Value="0.8" />
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Cursor" Value="Arrow"/>
+                <Setter Property="Button.Opacity" Value="0.5" />
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="True">
+                <Setter Property="Cursor" Value="Hand"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type Button}" x:Key="FSMenuButton">
+      <Setter Property="OverridesDefaultStyle" Value="True" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type Button}">
+            <Border x:Name="border" BorderThickness="0" BorderBrush="Black" Background="{TemplateBinding Background}">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="Button.IsEnabled" Value="True">
+                <Setter Property="Button.Opacity" Value="1" />
+              </Trigger>
+
+              <Trigger Property="Button.IsEnabled" Value="False">
+                <Setter Property="Button.Opacity" Value="0.7" />
+              </Trigger>
+
+              <Trigger Property="Button.IsMouseOver" Value="True">
+                <Setter Property="Button.Opacity" Value="0.8" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type RadioButton}" x:Key="FSNavButton">
+      <Setter Property="OverridesDefaultStyle" Value="True"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type RadioButton}">
+            <Border x:Name="border" BorderThickness="0" BorderBrush="Black" Background="{TemplateBinding Background}">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+      
+      <Style.Resources>
+        <Style TargetType="{x:Type Label}">
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=IsEnabled}" Value="False">
+              <Setter Property="Foreground" Value="{DynamicResource FSGreyBrush}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=IsEnabled}" Value="True">
+              <Setter Property="Foreground" Value="{DynamicResource FSBlackBrush}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=IsMouseOver}" Value="True">
+              <Setter Property="Opacity" Value="0.8" />
+              <Setter Property="Foreground" Value="{DynamicResource FSBlueBrush}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=IsChecked}" Value="True">
+              <Setter Property="Opacity" Value="1" />
+              <Setter Property="Foreground" Value="{DynamicResource FSBlueBrush}" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Style.Resources>
+    </Style>
+
+    <Style TargetType="{x:Type ToggleButton}" x:Key="FSInstallButton">
+      <Setter Property="OverridesDefaultStyle" Value="True"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type ToggleButton}">
+            <Border BorderThickness="0" BorderBrush="{x:Null}" Background="{x:Null}">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+
+      <Style.Resources>
+        <Style TargetType="{x:Type Border}">
+          <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter Property="Opacity" Value="0.8" />
+            </Trigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton}, Path=IsChecked}" Value="False">
+              <Setter Property="Background" Value="{StaticResource FSBlueBrush}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton}, Path=IsChecked}" Value="True">
+              <Setter Property="Background" Value="{StaticResource FSButtonGreyBrush}" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Style.Resources>
+    </Style>
+
+    <Style TargetType="{x:Type Button}" x:Key="FSSearchButton">
+      <Setter Property="OverridesDefaultStyle" Value="True"/>
+      <Setter Property="Cursor" Value="Hand"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type Button}">
+            <Border BorderThickness="0" BorderBrush="{x:Null}" Background="{x:Null}">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+
+      <Style.Resources>
+        <Style TargetType="{x:Type Border}">
+          <Style.Triggers>
+            <Trigger Property="Border.IsMouseOver" Value="True">
+              <Setter Property="Border.Background" Value="{StaticResource FSBlackBrush}" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </Style.Resources>
+    </Style>
+
+    <ControlTemplate x:Key="NoScroll">
+      <ItemsPresenter></ItemsPresenter>
+    </ControlTemplate>
+    
+  </Application.Resources>
+</Application>

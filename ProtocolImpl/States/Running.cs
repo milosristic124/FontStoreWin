@@ -1,0 +1,111 @@
+﻿using FontInstaller;
+using Storage.Data;
+
+namespace Protocol.Impl.States {
+  class Running : ConnectionState {
+    #region data
+    private int _newFontCount = 0;
+    #endregion
+
+    #region ctor
+    public Running(int newFontCount, Connection connection): this("Running", newFontCount, connection) {
+    }
+
+    private Running(string name, int newFontCount, Connection connection) : base(name, connection) {
+      _newFontCount = newFontCount;
+    }
+    #endregion
+
+    #region methods
+    public override void Abort() {
+      _context.Storage.AbortSynchronization();
+      UnregisterEvents();
+    }
+
+    public override void Stop() {
+      _context.Storage.EndSynchronization();
+      UnregisterEvents();
+    }
+
+    protected override void Start() {
+      RegisterEvents();
+      WillTransition = true; // This state is supposed to change at any moment
+      _context.Storage.BeginSynchronization();
+      _context.UserChannel.TransitionToRealtimeCommunication();
+
+      _context.TriggerUpdateFinished(_newFontCount);
+    }
+    #endregion
+
+    #region private methods
+    private void RegisterEvents() {
+      _context.CatalogChannel.OnFontDescription += CatalogChannel_OnFontDescription;
+      _context.CatalogChannel.OnFontDeletion += CatalogChannel_OnFontDeletion;
+      _context.CatalogChannel.OnNewFontReleased += CatalogChannel_OnNewFontReleased;
+
+      _context.UserChannel.OnFontActivation += UserChannel_OnFontActivation;
+      _context.UserChannel.OnFontDeactivation += UserChannel_OnFontDeactivation;
+
+      _context.Storage.OnFontInstall += Storage_OnFontInstall;
+      _context.Storage.OnFontUninstall += Storage_OnFontUninstall;
+
+      _context.Storage.OnFontActivationRequest += Storage_OnFontActivationRequest;
+      _context.Storage.OnFontDeactivationRequest += Storage_OnFontDeactivationRequest;
+    }
+
+    private void UnregisterEvents() {
+      _context.CatalogChannel.OnFontDescription -= CatalogChannel_OnFontDescription;
+      _context.CatalogChannel.OnFontDeletion -= CatalogChannel_OnFontDeletion;
+      _context.CatalogChannel.OnNewFontReleased -= CatalogChannel_OnNewFontReleased;
+
+      _context.UserChannel.OnFontActivation -= UserChannel_OnFontActivation;
+      _context.UserChannel.OnFontDeactivation -= UserChannel_OnFontDeactivation;
+
+      _context.Storage.OnFontInstall -= Storage_OnFontInstall;
+      _context.Storage.OnFontUninstall -= Storage_OnFontUninstall;
+    }
+    #endregion
+
+    #region event handling
+    private void UserChannel_OnFontDeactivation(Payloads.TimestampedFontId fid) {
+      _context.Storage.DeactivateFont(fid);
+    }
+
+    private void UserChannel_OnFontActivation(Payloads.TimestampedFontId fid) { // activation from server
+      _context.Storage.ActivateFont(fid);
+    }
+
+    private void CatalogChannel_OnFontDeletion(Payloads.TimestampedFontId fid) {
+      _context.Storage.RemoveFont(fid);
+    }
+
+    private void CatalogChannel_OnFontDescription(Payloads.FontDescription desc) {
+      _context.Storage.AddFont(desc);
+    }
+
+    private void CatalogChannel_OnNewFontReleased() {
+      _context.Storage.ResetNewStatus();
+    }
+    #endregion
+
+    #region activation requests handling
+    private void Storage_OnFontDeactivationRequest(Font font) {
+      _context.UserChannel.RequestFontDeactivation(font.UID);
+    }
+
+    private void Storage_OnFontActivationRequest(Font font) {
+      _context.UserChannel.RequestFontActivation(font.UID);
+    }
+    #endregion
+
+    #region installation events handling
+    private void Storage_OnFontUninstall(Font font, bool succeed) {
+      _context.UserChannel.SendFontUninstallationReport(font.UID, succeed);
+    }
+
+    private void Storage_OnFontInstall(Font font, bool succeed) {
+      _context.UserChannel.SendFontInstallationReport(font.UID, succeed);
+    }
+    #endregion
+  }
+}

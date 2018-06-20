@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AFFD1EF0-DCDD-4E15-AD2A-35038BB3AAE8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CoreIntegrationTests</RootNamespace>
+    <AssemblyName>CoreIntegrationTests</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProtocolIntegrationTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ConnectionTestUtilities\ConnectionTestUtilities.csproj">
+      <Project>{79871541-3A7D-4FB6-83CF-E585DB53E403}</Project>
+      <Name>ConnectionTestUtilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FontEncryption\FontEncryption.csproj">
+      <Project>{acc76fe8-b6ec-4925-ba91-f7d70ae18b3e}</Project>
+      <Name>FontEncryption</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FontInstaller\FontInstaller.csproj">
+      <Project>{7d9852a5-6911-478f-b863-c31fbcdd8065}</Project>
+      <Name>FontInstaller</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProtocolImpl\ProtocolImpl.csproj">
+      <Project>{DFDC0E22-4E95-447B-9DE2-EF4139CDEDC1}</Project>
+      <Name>ProtocolImpl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProtocolPayloads\ProtocolPayloads.csproj">
+      <Project>{DE2E0581-3B35-44BC-A408-F3F480D70F18}</Project>
+      <Name>ProtocolPayloads</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProtocolTransport\ProtocolTransport.csproj">
+      <Project>{2F40BAA9-89C9-44D7-8060-233B5230B94B}</Project>
+      <Name>ProtocolTransport</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Protocol\Protocol.csproj">
+      <Project>{B7175444-75C9-4579-87FC-706DE922C89F}</Project>
+      <Name>Protocol</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StorageImpl\StorageImpl.csproj">
+      <Project>{26aec3e4-35ae-41ee-afa6-3abe08b296d1}</Project>
+      <Name>StorageImpl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Storage\Storage.csproj">
+      <Project>{115A3A3E-95CD-45AE-BE11-7ECC218FB91E}</Project>
+      <Name>Storage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestUtilities\TestUtilities.csproj">
+      <Project>{46D69BAD-6E11-4AEE-A242-5335AE3FFC7A}</Project>
+      <Name>TestUtilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
